@@ -556,6 +556,9 @@
           
 
   
+    <div id="gitalk-container"></div>
+
+  
 
 
 
@@ -933,6 +936,21 @@
 
 
 
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+        var gitalk = new Gitalk({
+          clientID: 'dbbb41b4b5cb67b7abc7',
+          clientSecret: 'bc34f9315b09e4f330043a8a0eea6e664fc2d197',
+          repo: 'lanshiqin-blog',
+          owner: 'lanshiqin',
+          admin: ['lanshiqin'],
+          id: location.pathname,
+          distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')           
+       </script>
 
   
 
