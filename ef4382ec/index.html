@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="API重放攻击（Replay Attacks）又称重播攻击、回放攻击。他的原理就是把之前窃听到的数据原封不动的重新发送给接收方。HTTPS并不能防止这种攻击，虽然传输的数据是经过加密的，窃听者无法得到数据的准确定义，但是可以从请求的接收方地址分析出这些数据的作用。比如用户登录请求时攻击者虽然无法窃听密码，但是却可以截取加密后的口令然后将其重放，从而利用这种方式进行有效的攻击。">
+<meta name="keywords" content="API 后端 安全">
+<meta property="og:type" content="article">
+<meta property="og:title" content="API接口防止参数篡改和重放攻击">
+<meta property="og:url" content="https://www.lanshiqin.com/ef4382ec/index.html">
+<meta property="og:site_name" content="蓝士钦">
+<meta property="og:description" content="API重放攻击（Replay Attacks）又称重播攻击、回放攻击。他的原理就是把之前窃听到的数据原封不动的重新发送给接收方。HTTPS并不能防止这种攻击，虽然传输的数据是经过加密的，窃听者无法得到数据的准确定义，但是可以从请求的接收方地址分析出这些数据的作用。比如用户登录请求时攻击者虽然无法窃听密码，但是却可以截取加密后的口令然后将其重放，从而利用这种方式进行有效的攻击。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.lanshiqin.com/ef4382ec/攻击防护.png">
+<meta property="og:image" content="https://www.lanshiqin.com/ef4382ec/api_security.png">
+<meta property="og:updated_time" content="2018-09-23T13:07:20.961Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="API接口防止参数篡改和重放攻击">
+<meta name="twitter:description" content="API重放攻击（Replay Attacks）又称重播攻击、回放攻击。他的原理就是把之前窃听到的数据原封不动的重新发送给接收方。HTTPS并不能防止这种攻击，虽然传输的数据是经过加密的，窃听者无法得到数据的准确定义，但是可以从请求的接收方地址分析出这些数据的作用。比如用户登录请求时攻击者虽然无法窃听密码，但是却可以截取加密后的口令然后将其重放，从而利用这种方式进行有效的攻击。">
+<meta name="twitter:image" content="https://www.lanshiqin.com/ef4382ec/攻击防护.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="蓝士钦" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="https://www.lanshiqin.com/ef4382ec/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>API接口防止参数篡改和重放攻击 | 蓝士钦</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">蓝士钦</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">编程是一种信仰</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.lanshiqin.com/ef4382ec/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蓝士钦">
+      <meta itemprop="description" content="蓝士钦">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蓝士钦">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">API接口防止参数篡改和重放攻击
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-12-21 11:32:36" itemprop="dateCreated datePublished" datetime="2017-12-21T11:32:36+08:00">2017-12-21</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-09-23 21:07:20" itemprop="dateModified" datetime="2018-09-23T21:07:20+08:00">2018-09-23</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/API/" itemprop="url" rel="index"><span itemprop="name">API</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon"
+            >
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <img src="/ef4382ec/攻击防护.png" title="攻击防护">
+<blockquote>
+<p>API重放攻击（Replay Attacks）又称重播攻击、回放攻击。他的原理就是把之前窃听到的数据原封不动的重新发送给接收方。HTTPS并不能防止这种攻击，虽然传输的数据是经过加密的，窃听者无法得到数据的准确定义，但是可以从请求的接收方地址分析出这些数据的作用。比如用户登录请求时攻击者虽然无法窃听密码，但是却可以截取加密后的口令然后将其重放，从而利用这种方式进行有效的攻击。</p>
+</blockquote>
+<a id="more"></a>
+<blockquote>
+<p>所谓重放攻击就是攻击者发送一个目的主机已接收过的包，来达到欺骗系统的目的，主要用于身份认证过程，重放攻击是计算机世界黑客常用的攻击方式之一。</p>
+</blockquote>
+<p>一次HTTP请求，从请求方到接收方中间要经过很多个路由器和交换机，攻击者可以在中途截获请求的数据。假设在一个网上存款系统中，一条消息表示用户支取了一笔存款，攻击者完全可以多次发送这条消息而偷窃存款。</p>
+<p>重放是二次请求，如果API接口没有做对应的安全防护，将可能造成很严重的后果。</p>
+<h4 id="API接口常见的安全防护要做的主要有如下几点："><a href="#API接口常见的安全防护要做的主要有如下几点：" class="headerlink" title="API接口常见的安全防护要做的主要有如下几点："></a>API接口常见的安全防护要做的主要有如下几点：</h4><ul>
+<li>防止sql注入</li>
+<li>防止xss攻击</li>
+<li>防止请求参数被串改</li>
+<li>防止重放攻击</li>
+</ul>
+<hr>
+<p>主要防御措施可以归纳为两点：</p>
+<ul>
+<li>对请求的合法性进行校验</li>
+<li>对请求的数据进行校验</li>
+</ul>
+<blockquote>
+<p>防止重放攻击必须要保证请求仅一次有效<br>需要通过在请求体中携带当前请求的唯一标识，并且进行签名防止被篡改。<br>所以防止重放攻击需要建立在防止签名被串改的基础之上。</p>
+</blockquote>
+<h1 id="请求参数防篡改"><a href="#请求参数防篡改" class="headerlink" title="请求参数防篡改"></a>请求参数防篡改</h1><p>采用https协议可以将传输的明文进行加密，但是黑客仍然可以截获传输的数据包，进一步伪造请求进行重放攻击。如果黑客使用特殊手段让请求方设备使用了伪造的证书进行通信，那么https加密的内容也将会被解密。<br>在API接口中我们除了使用https协议进行通信外，还需要有自己的一套加解密机制，对请求参数进行保护，防止被篡改。<br>过程如下：</p>
+<blockquote>
+<ol>
+<li>客户端使用约定好的秘钥对传输参数进行加密，得到签名值signature，并且将签名值也放入请求参数中，发送请求给服务端</li>
+<li>服务端接收客户端的请求，然后使用约定好的秘钥对请求的参数（除了signature以外）再次进行签名，得到签名值autograph。</li>
+<li>服务端对比signature和autograph的值，如果对比一致，认定为合法请求。如果对比不一致，说明参数被篡改，认定为非法请求。</li>
+</ol>
+</blockquote>
+<p>因为黑客不知道签名的秘钥，所以即使截取到请求数据，对请求参数进行篡改，但是却无法对参数进行签名，无法得到修改后参数的签名值signature。<br>签名的秘钥我们可以使用很多方案，可以采用对称加密或者非对称加密。</p>
+<h1 id="防止重放攻击"><a href="#防止重放攻击" class="headerlink" title="防止重放攻击"></a>防止重放攻击</h1><h2 id="基于timestamp的方案"><a href="#基于timestamp的方案" class="headerlink" title="基于timestamp的方案"></a>基于timestamp的方案</h2><p>每次HTTP请求，都需要加上timestamp参数，然后把timestamp和其他参数一起进行数字签名。因为一次正常的HTTP请求，从发出到达服务器一般都不会超过60s，所以服务器收到HTTP请求之后，首先判断时间戳参数与当前时间相比较，是否超过了60s，如果超过了则认为是非法的请求。</p>
+<p>一般情况下，黑客从抓包重放请求耗时远远超过了60s，所以此时请求中的timestamp参数已经失效了。<br>如果黑客修改timestamp参数为当前的时间戳，则signature参数对应的数字签名就会失效，因为黑客不知道签名秘钥，没有办法生成新的数字签名。</p>
+<p>但这种方式的漏洞也是显而易见的，如果在60s之后进行重放攻击，那就没办法了，所以这种方式不能保证请求仅一次有效。</p>
+<h2 id="基于nonce的方案"><a href="#基于nonce的方案" class="headerlink" title="基于nonce的方案"></a>基于nonce的方案</h2><p>nonce的意思是仅一次有效的随机字符串，要求每次请求时，该参数要保证不同，所以该参数一般与时间戳有关，我们这里为了方便起见，直接使用时间戳的16进制，实际使用时可以加上客户端的ip地址，mac地址等信息做个哈希之后，作为nonce参数。<br>我们将每次请求的nonce参数存储到一个“集合”中，可以json格式存储到数据库或缓存中。<br>每次处理HTTP请求时，首先判断该请求的nonce参数是否在该“集合”中，如果存在则认为是非法请求。</p>
+<p>nonce参数在首次请求时，已经被存储到了服务器上的“集合”中，再次发送请求会被识别并拒绝。<br>nonce参数作为数字签名的一部分，是无法篡改的，因为黑客不清楚token，所以不能生成新的sign。</p>
+<p>这种方式也有很大的问题，那就是存储nonce参数的“集合”会越来越大，验证nonce是否存在“集合”中的耗时会越来越长。我们不能让nonce“集合”无限大，所以需要定期清理该“集合”，但是一旦该“集合”被清理，我们就无法验证被清理了的nonce参数了。也就是说，假设该“集合”平均1天清理一次的话，我们抓取到的该url，虽然当时无法进行重放攻击，但是我们还是可以每隔一天进行一次重放攻击的。而且存储24小时内，所有请求的“nonce”参数，也是一笔不小的开销。</p>
+<h2 id="基于timestamp和nonce的方案"><a href="#基于timestamp和nonce的方案" class="headerlink" title="基于timestamp和nonce的方案"></a>基于timestamp和nonce的方案</h2><p>nonce的一次性可以解决timestamp参数60s的问题，timestamp可以解决nonce参数“集合”越来越大的问题。<br>防止重放攻击一般和防止请求参数被串改一起做，请求的Headers数据如下图所示。<br><img src="/ef4382ec/api_security.png" title="攻击防护"></p>
+<p>我们在timestamp方案的基础上，加上nonce参数，因为timstamp参数对于超过60s的请求，都认为非法请求，所以我们只需要存储60s的nonce参数的“集合”即可。<br>API接口验证流程：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取token</span></span><br><span class="line">String token = request.getHeader(<span class="string">"token"</span>);</span><br><span class="line"><span class="comment">// 获取时间戳</span></span><br><span class="line">String timestamp = request.getHeader(<span class="string">"timestamp"</span>);</span><br><span class="line"><span class="comment">// 获取随机字符串</span></span><br><span class="line">String nonceStr = request.getHeader(<span class="string">"nonceStr"</span>);</span><br><span class="line"><span class="comment">// 获取请求地址</span></span><br><span class="line">String url = request.getHeader(<span class="string">"url"</span>);</span><br><span class="line"><span class="comment">// 获取签名</span></span><br><span class="line">String signature = request.getHeader(<span class="string">"signature"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 判断参数是否为空</span></span><br><span class="line"><span class="keyword">if</span> (StringUtils.isBlank(token) || StringUtils.isBlank(timestamp) || StringUtils.isBlank(nonceStr) || StringUtils.isBlank(url) || StringUtils.isBlank(signature)) &#123;</span><br><span class="line">    <span class="comment">//非法请求</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//验证token有效性，得到用户信息</span></span><br><span class="line">UserTokenInfo userTokenInfo = TokenUtils.getUserTokenInfo(token);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (userTokenInfo == <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="comment">//token认证失败（防止token伪造）</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 判断请求的url参数是否正确</span></span><br><span class="line"><span class="keyword">if</span> (!request.getRequestURI().equals(url))&#123;</span><br><span class="line">    <span class="comment">//非法请求 (防止跨域攻击)</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 判断时间是否大于60秒</span></span><br><span class="line"><span class="keyword">if</span>(DateUtils.getSecond()-DateUtils.toSecond(timestamp)&gt;<span class="number">60</span>)&#123;</span><br><span class="line">    <span class="comment">//请求超时(防止重放攻击)</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 判断该用户的nonceStr参数是否已经在redis中</span></span><br><span class="line"><span class="keyword">if</span> (RedisUtils.haveNonceStr(userTokenInfo,nonceStr))&#123;</span><br><span class="line">    <span class="comment">//请求仅一次有效（防止短时间内的重放攻击）</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对请求头参数进行签名</span></span><br><span class="line">String stringB = SignUtil.signature(token, timestamp, nonceStr, url,request);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果签名验证不通过</span></span><br><span class="line"><span class="keyword">if</span> (!signature.equals(stringB)) &#123;</span><br><span class="line">    <span class="comment">//非法请求（防止请求参数被篡改）</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将本次用户请求的nonceStr参数存到redis中设置60秒后自动删除</span></span><br><span class="line">RedisUtils.saveNonceStr(userTokenInfo,nonceStr,<span class="number">60</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//开始处理合法的请求</span></span><br></pre></td></tr></table></figure></p>
+<p>基于以上的方案就可以做到防止API接收的参数被篡改和防止API请求重放攻击。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/API-后端-安全/" rel="tag"># API 后端 安全</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/b2d6036c/" rel="next" title="JSON WEB TOKEN">
+                <i class="fa fa-chevron-left"></i> JSON WEB TOKEN
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/d7e81382/" rel="prev" title="Hello World 的漏洞">
+                Hello World 的漏洞 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="蓝士钦" />
+            
+              <p class="site-author-name" itemprop="name">蓝士钦</p>
+              <p class="site-description motion-element" itemprop="description">蓝士钦</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">28</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/lanshiqin" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:lanshiqin@outlook.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#API接口常见的安全防护要做的主要有如下几点："><span class="nav-number">1.</span> <span class="nav-text">API接口常见的安全防护要做的主要有如下几点：</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#请求参数防篡改"><span class="nav-number"></span> <span class="nav-text">请求参数防篡改</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#防止重放攻击"><span class="nav-number"></span> <span class="nav-text">防止重放攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基于timestamp的方案"><span class="nav-number"></span> <span class="nav-text">基于timestamp的方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于nonce的方案"><span class="nav-number"></span> <span class="nav-text">基于nonce的方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于timestamp和nonce的方案"><span class="nav-number"></span> <span class="nav-text">基于timestamp和nonce的方案</span></a></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">蓝士钦</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+  <div class="footer-custom">闽ICP备15027850号</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv" title="总访客量">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="site-pv" title="总访问量">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.4.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 --> 
+<script type="text/javascript" src="/js/src/love.js"></script>
+<!--崩溃欺骗-->
+<script type="text/javascript" src="/js/src/crash_cheat.js"></script>

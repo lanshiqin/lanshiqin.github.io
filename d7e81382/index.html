@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="任何程序都有漏洞，包括简单的 Hello World程序，这是一个客观存在的事实。也许你会质疑，一个用C/C++语言编写的输出一句 Hello World 的程序漏洞在哪里？实际上，程序漏洞不一定全部都来自代码逻辑，漏洞还发生在程序运行时期。通过技术手段干扰程序执行，使程序不能得到预期的执行结果，那么这个程序就出现了漏洞。">
+<meta name="keywords" content="逆向 汇编 实验">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hello World 的漏洞">
+<meta property="og:url" content="https://www.lanshiqin.com/d7e81382/index.html">
+<meta property="og:site_name" content="蓝士钦">
+<meta property="og:description" content="任何程序都有漏洞，包括简单的 Hello World程序，这是一个客观存在的事实。也许你会质疑，一个用C/C++语言编写的输出一句 Hello World 的程序漏洞在哪里？实际上，程序漏洞不一定全部都来自代码逻辑，漏洞还发生在程序运行时期。通过技术手段干扰程序执行，使程序不能得到预期的执行结果，那么这个程序就出现了漏洞。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.lanshiqin.com/d7e81382/bug.png">
+<meta property="og:image" content="https://www.lanshiqin.com/d7e81382/hello_run.png">
+<meta property="og:image" content="https://www.lanshiqin.com/d7e81382/1.png">
+<meta property="og:image" content="https://www.lanshiqin.com/d7e81382/2.png">
+<meta property="og:image" content="https://www.lanshiqin.com/d7e81382/3.png">
+<meta property="og:image" content="https://www.lanshiqin.com/d7e81382/4.png">
+<meta property="og:image" content="https://www.lanshiqin.com/d7e81382/5.png">
+<meta property="og:image" content="https://www.lanshiqin.com/d7e81382/6.png">
+<meta property="og:image" content="https://www.lanshiqin.com/d7e81382/7.png">
+<meta property="og:image" content="https://www.lanshiqin.com/d7e81382/8.png">
+<meta property="og:updated_time" content="2018-09-23T13:08:42.144Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hello World 的漏洞">
+<meta name="twitter:description" content="任何程序都有漏洞，包括简单的 Hello World程序，这是一个客观存在的事实。也许你会质疑，一个用C/C++语言编写的输出一句 Hello World 的程序漏洞在哪里？实际上，程序漏洞不一定全部都来自代码逻辑，漏洞还发生在程序运行时期。通过技术手段干扰程序执行，使程序不能得到预期的执行结果，那么这个程序就出现了漏洞。">
+<meta name="twitter:image" content="https://www.lanshiqin.com/d7e81382/bug.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="蓝士钦" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="https://www.lanshiqin.com/d7e81382/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Hello World 的漏洞 | 蓝士钦</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">蓝士钦</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">编程是一种信仰</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.lanshiqin.com/d7e81382/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蓝士钦">
+      <meta itemprop="description" content="蓝士钦">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蓝士钦">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Hello World 的漏洞
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-01-26 11:23:03" itemprop="dateCreated datePublished" datetime="2018-01-26T11:23:03+08:00">2018-01-26</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-09-23 21:08:42" itemprop="dateModified" datetime="2018-09-23T21:08:42+08:00">2018-09-23</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/实验/" itemprop="url" rel="index"><span itemprop="name">实验</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon"
+            >
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <img src="/d7e81382/bug.png" title="bug">
+<blockquote>
+<p>任何程序都有漏洞，包括简单的 Hello World程序，这是一个客观存在的事实。<br>也许你会质疑，一个用C/C++语言编写的输出一句 Hello World 的程序漏洞在哪里？<br>实际上，程序漏洞不一定全部都来自代码逻辑，漏洞还发生在程序运行时期。<br>通过技术手段干扰程序执行，使程序不能得到预期的执行结果，那么这个程序就出现了漏洞。</p>
+</blockquote>
+<a id="more"></a>
+<p>分析者在没有程序源代码的情况下，只能通过逆分析程序的漏洞，常规操作通常是找到程序的入口点，<br>进一步跟踪程序的调用逻辑和数据，通过修改其中的调用或者数据，使程序出现漏洞。</p>
+<h2 id="要做的事："><a href="#要做的事：" class="headerlink" title="要做的事："></a>要做的事：</h2><ol>
+<li>用C/C++编写一个输出”Hello,World!”的可执行的exe程序。</li>
+<li>在程序运行期间修改内存中的数据，使程序输出 “Hi,lanshiqin”</li>
+</ol>
+<h2 id="使用的工具："><a href="#使用的工具：" class="headerlink" title="使用的工具："></a>使用的工具：</h2><ol>
+<li>VisualStudio</li>
+<li>Ollydbg</li>
+</ol>
+<p>为了减小篇幅，不再啰嗦怎么创建项目，直接上代码<br>经典的 Hello，World！源代码如下：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"Hello,World!\n"</span>);</span><br><span class="line">	system(<span class="string">"pause"</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>将程序编译成可执行程序 HelloWorld.exe 并运行<br><img src="/d7e81382/hello_run.png" title="HelloWorld"><br>可以看到程序按源代码所编写的语句执行，得到了预期的输出结果。</p>
+<p>也许有人会问，我直接修改程序的源代码，然后再编译成可执行程序运行，就可以得到想要的输出结果了，<br>为什么要用反汇编工具调试这么麻烦？</p>
+<p>因为我们日常使用的绝大多数软件都是软件公司或者其他个人开发者的产品，我们不是这些软件的开发者，所以我们没有这些软件的源代码，所以只能通过逆向来对程序进行分析。在互联网上我们可以看到有很多正版的收费软件有对应的破解版，这些破解版软件就是有人通过逆向找到程序入口并修改其中的数据，通过程序逻辑漏洞或者运行时期的漏洞对软件进行破解。</p>
+<p><code>一个程序要被CPU执行，首先需要先被载入内存中，我们想要达到修改程序的预期输出结果，就需要找到这块内存并修改其中的数据，以达到我们的目的。</code></p>
+<h2 id="逆向工具"><a href="#逆向工具" class="headerlink" title="逆向工具"></a>逆向工具</h2><p>在Windows平台的逆向领域中，有两个很好用的工具，一个是Ollydbg(简称OD),经常用来做动态调试，另一个是IDA 经常被用来静态分析。<br>OD用来调试运行时期的程序，可以将CPU执行的机器指令反成汇编指令，可以实时断点查看当前执行的指令，这对分析一些病毒的行为很有用，可以细微到每一条指令的调用，分析出程序具体做了什么。<br>IDA 主要用来分析复杂的代码，通过可执行程序可以得到伪代码，对于一些高级语言编写的程序甚至可以得到近似于程序的源代码，这样就很方便去查找程序里的逻辑漏洞。<br>OD和IDA这两个工具是逆向领域的倚天剑和屠龙刀，具体介绍和功能使用可以查阅相关文档。</p>
+<h2 id="操作步骤"><a href="#操作步骤" class="headerlink" title="操作步骤"></a>操作步骤</h2><p>1.使用OD来打开HelloWorld.exe<br><img src="/d7e81382/1.png" title="bug"><br>此时程序还没执行到输出“Hello，World！”的语句，此时是程序刚刚被载入内存，OD界面上可以看到程序当前执行的指令</p>
+<p>2.组合键 Alt+M，打开 Memory map 窗口，这是程序运行时的内存数据<br><img src="/d7e81382/2.png" title="bug"></p>
+<p>3.组合键 Ctrl+B, 搜索内存中的数据<br><img src="/d7e81382/3.png" title="bug"><br>ASCII码这里输入要需要替换的“Hello,World!”,底下HEX+00这里是对应ASCII码字符的十六进制数据。</p>
+<p>4.点击搜索，可以看到如下图所示，已经搜索到了数据。<br><img src="/d7e81382/4.png" title="bug"><br>可以看到对应的内存地址，HEX dump 和ASCII</p>
+<p>5.组合键Ctrl+E, 或者点击Edit-&gt;Binary edit 对内存数据进行编辑<br><img src="/d7e81382/5.png" title="bug"><br>将ASCII码的“Hello,World!”修改成“Hi,lanshiqin”，点击OK</p>
+<p>6.继续运行程序，可以看到控制台输出了 “Hi,lanshiqin”。<br><img src="/d7e81382/6.png" title="bug"><br>通过修改程序运行时的内存数据，我们已经成功的改变了程序的预期结果。</p>
+<p>通过运行时调试只能影响程序当前运行的结果，如果要影响每次运行的结果，我们可以将此次修改的指令和数据保存成新的可执行程序，以补丁包的形式附加成一个目标程序。（在没有程序源代码的情况下，这种做法相当于达到软件破解的目的，这个补丁相当于破解补丁，功能是使程序输出Hi,lanshiqin）</p>
+<font color="red">现在已经证实了，所有程序都有漏洞，包括仅仅是输出一句 “Hello,World!”的程序。</font>
+
+<p>所以，很多程序为了防止被破解，通常都使用了代码混淆，程序加壳等保护措施。这些措施可以加大程序被破解的难度，但是仍然存在漏洞。代码混淆后编译使分析者很难读懂代码，程序加壳主要是为了程序的保护，防止分析者找到程序的入口点。</p>
+<p>对于代码混淆，可以在一定程度上防止自己的程序被人还原出源代码，目前的APP应用程序，通常是为了防止应用被抄袭，这点混淆就很有用，因为分析者花费大量精力来分析还原出一个程序的工作量，都可以够他重新写出好几个新的程序了。但是混淆后程序行为依然可以被轻易的分析，所有的程序运行时都需要先被载入内存，然后被CPU执行，分析者可以通过CPU的执行指令进行调试分析，可以对运行时的内存进行分析，进一步修改内存数据，达到破解目的，比如这是个木马APP,安全人员可以跟踪这个程序，分析出这个程序究竟做了什么。</p>
+<p>对于程序加壳，通常可以去壳，然后再找程序的入口点。<br>程序的启动过程和入口点是一个比较大的话题，通过C/C++编写的 Hello World 程序逆向分析发现，</p>
+<font color="red" size="5" face="黑体">程序的入口点并不是main()函数。</font><br>教科书为了易于理解，通常都告诉我们程序的入口点是main()函数，这是在代码逻辑的角度看。<br>如果从程序执行的角度来看，程序的入口点并不是main()函数。入口点其实是一个地址。<br>入口点地址不是main()函数的开端，而是另一段来自运行时的代码。<br><br>通过前面的OD分析HelloWorld.exe可执行程序，我们发现程序并不是从Main函数开始执行的，<br>教科书上所谓的“入口地址Main函数“其实也是一个参数，需要被别人调用。<br><br>对于逆向寻找程序入口点 不再记录笔记，因为已经有人写了很好的文章：<br><a href="https://bbs.pediy.com/thread-216976.htm" target="_blank" rel="noopener">https://bbs.pediy.com/thread-216976.htm</a><br><br>使用VisualStudio断点调试HelloWorld的源代码<br><img src="/d7e81382/7.png" title="bug"><br><br>在调用堆栈窗口可以看到函数调用关系，打开mainCRTStartup，可以看到如下图所示：<br><img src="/d7e81382/8.png" title="bug"><br>可以发现有这么一句赋值语句，<font color="red" size="5" face="黑体">mainret = main(argc, argv, envp);</font><br>main函数作为参数赋值给了mainret变量。<br><br>在微软的Windows操作系统上，可执行程序c中提供了mainCRTStartup(）运行配置函数，<br>里面包含了程序运行需要的库以及相关的存储资源，<br>在配置完成后，调用 mainret = main(argc, argv, envp); 这条语句<br><font color="red" size="5" face="黑体">所以main并不是程序的入口，main只是作为普通的函数。</font>
+
+<p>计算机程序最终都需要在计算机上运行，程序本身可能存在逻辑漏洞，执行程序的计算机硬件也存在被干扰的可能。我们对程序的定义是：<code>程序是可以被计算机执行的指令集合</code>。<br>从虚拟的数学逻辑到现实的物理化学，我们可以通过一切已知的工具和未知的技术手段去寻找程序的漏洞，<br>所以受外界条件的影响，<code>任何程序都有漏洞，程序漏洞永远存在</code>。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/逆向-汇编-实验/" rel="tag"># 逆向 汇编 实验</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/ef4382ec/" rel="next" title="API接口防止参数篡改和重放攻击">
+                <i class="fa fa-chevron-left"></i> API接口防止参数篡改和重放攻击
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/e2f22ec7/" rel="prev" title="缓冲区溢出攻击实验">
+                缓冲区溢出攻击实验 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="蓝士钦" />
+            
+              <p class="site-author-name" itemprop="name">蓝士钦</p>
+              <p class="site-description motion-element" itemprop="description">蓝士钦</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">28</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/lanshiqin" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:lanshiqin@outlook.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#要做的事："><span class="nav-number">1.</span> <span class="nav-text">要做的事：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用的工具："><span class="nav-number">2.</span> <span class="nav-text">使用的工具：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#逆向工具"><span class="nav-number">3.</span> <span class="nav-text">逆向工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#操作步骤"><span class="nav-number">4.</span> <span class="nav-text">操作步骤</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">蓝士钦</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+  <div class="footer-custom">闽ICP备15027850号</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv" title="总访客量">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="site-pv" title="总访问量">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.4.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 --> 
+<script type="text/javascript" src="/js/src/love.js"></script>
+<!--崩溃欺骗-->
+<script type="text/javascript" src="/js/src/crash_cheat.js"></script>

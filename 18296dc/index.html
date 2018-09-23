@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="最近看上一款很时尚的水杯，我要买的初衷就是因为杯子好看，但是我也很注重杯子的质量，比如是否有异味等。这款商品在淘宝上的评论有十几万条，里面掺杂着各种各样的评价，这么多评论一条一条的看显然是个笨方法，我的需求很简单，就是想马上知道这么多评论里究竟有多少人评论有异味。如果质量不过关，我马上换其他商品，这样可以节省我的购物时间。作为一只程序猿，这种体力劳动当然是要用编程来解决了，只需要写一个爬虫并且">
+<meta name="keywords" content="Python 爬虫">
+<meta property="og:type" content="article">
+<meta property="og:title" content="编写爬虫分析商品评论内容">
+<meta property="og:url" content="https://www.lanshiqin.com/18296dc/index.html">
+<meta property="og:site_name" content="蓝士钦">
+<meta property="og:description" content="最近看上一款很时尚的水杯，我要买的初衷就是因为杯子好看，但是我也很注重杯子的质量，比如是否有异味等。这款商品在淘宝上的评论有十几万条，里面掺杂着各种各样的评价，这么多评论一条一条的看显然是个笨方法，我的需求很简单，就是想马上知道这么多评论里究竟有多少人评论有异味。如果质量不过关，我马上换其他商品，这样可以节省我的购物时间。作为一只程序猿，这种体力劳动当然是要用编程来解决了，只需要写一个爬虫并且">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.lanshiqin.com/18296dc/spider.png">
+<meta property="og:image" content="https://www.lanshiqin.com/18296dc/taobao_img.png">
+<meta property="og:image" content="https://www.lanshiqin.com/18296dc/taobao_common.png">
+<meta property="og:image" content="https://www.lanshiqin.com/18296dc/taobao_common_1.png">
+<meta property="og:updated_time" content="2018-09-23T13:09:15.799Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="编写爬虫分析商品评论内容">
+<meta name="twitter:description" content="最近看上一款很时尚的水杯，我要买的初衷就是因为杯子好看，但是我也很注重杯子的质量，比如是否有异味等。这款商品在淘宝上的评论有十几万条，里面掺杂着各种各样的评价，这么多评论一条一条的看显然是个笨方法，我的需求很简单，就是想马上知道这么多评论里究竟有多少人评论有异味。如果质量不过关，我马上换其他商品，这样可以节省我的购物时间。作为一只程序猿，这种体力劳动当然是要用编程来解决了，只需要写一个爬虫并且">
+<meta name="twitter:image" content="https://www.lanshiqin.com/18296dc/spider.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="蓝士钦" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="https://www.lanshiqin.com/18296dc/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>编写爬虫分析商品评论内容 | 蓝士钦</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">蓝士钦</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">编程是一种信仰</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.lanshiqin.com/18296dc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蓝士钦">
+      <meta itemprop="description" content="蓝士钦">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蓝士钦">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">编写爬虫分析商品评论内容
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-04-29 23:58:30" itemprop="dateCreated datePublished" datetime="2018-04-29T23:58:30+08:00">2018-04-29</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-09-23 21:09:15" itemprop="dateModified" datetime="2018-09-23T21:09:15+08:00">2018-09-23</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon"
+            >
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <img src="/18296dc/spider.png" title="spider">
+<blockquote>
+<p>最近看上一款很时尚的水杯，我要买的初衷就是因为杯子好看，但是我也很注重杯子的质量，比如是否有异味等。这款商品在淘宝上的评论有十几万条，里面掺杂着各种各样的评价，这么多评论一条一条的看显然是个笨方法，我的需求很简单，就是想马上知道这么多评论里究竟有多少人评论有异味。如果质量不过关，我马上换其他商品，这样可以节省我的购物时间。<br>作为一只程序猿，这种体力劳动当然是要用编程来解决了，只需要写一个爬虫并且分析评论内容即可。</p>
+</blockquote>
+<a id="more"></a>
+<p>非常中意这款水杯，除了这几种款式还有其他的风格可以选择并且可以免费刻字，颜值已经达到了我的要求，就看质量如何了。我的目的就一个，编写程序来自动分析评论内容，得到我想要的结果，然后决定买不买。<br><img src="/18296dc/taobao_img.png" title="taobao_img"></p>
+<pre><code>编程的最终目的就是为了解决生活中的实际问题，让计算机代替人类去做一些重复性的工作。
+</code></pre><p>在编写工具程序时，我用的最多的是Python，毋庸置疑他是目前用来编写工具程序效率最高的语言之一。<br>Python凭借着简洁的语法和强大的第三方库，在运维、机器学习、以及自动化领域有着非常广泛的应用。</p>
+<p>使用Python编写自动化程序有很多种方式，比如我之前用WebDriver库来控制浏览器进行自动化操作，这种方式基本上可以说是很暴力，一般的反爬虫手段对这种方法都没有很好的解决方案，因为他的的确确是真的浏览器在操作，不过WebDriver一般用来做浏览器端的自动化测试。爬虫程序一般是自己构造一个客户端去做网络请求，使用专门的库去做数据的获取和解析操作，比如XPath等。有些网页是通过ajax等方式来异步加载数据的，这时候就要分析并找出网页数据的调用接口，然后再用自己的程序去自动化调用。</p>
+<p>通过分析淘宝的宝贝链接和评论页面的数据获取可以发现淘宝是采用异步调用数据的，返回的数据是json格式，所以这里用不到XPath，只需要调用接口并且解析json即可。</p>
+<p>要做的步骤</p>
+<ol>
+<li>编写爬虫根据宝贝链接爬取评论数据并保存到本地文件</li>
+<li>分析评论数据里面的关键字得到感兴趣的内容<!-- 爬虫，顾名思义就是像蜘蛛一样在网络上不知疲倦的穿梭，代替人类去重复执行某个操作。是一种自动化的程序。网页爬虫的作用其实就是获取网页源代码并从中提取感兴趣的内容。 -->
+</li>
+</ol>
+<p>不说废话，上代码<br>新建一个分析淘宝商品评论的工具类 taobao.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取商品评论</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_commodity_comments</span><span class="params">(order_url, file_name)</span>:</span></span><br><span class="line">    <span class="comment"># 获取商品评论信息，解析json数据</span></span><br><span class="line">    response_content = requests.get(order_url)</span><br><span class="line">    response_json = json.loads(response_content.text.strip().strip(<span class="string">'()'</span>))</span><br><span class="line">    <span class="comment"># 商品评论条数</span></span><br><span class="line">    total = response_json[<span class="string">'total'</span>]</span><br><span class="line">    <span class="comment"># 当前评论所在页数</span></span><br><span class="line">    page = <span class="number">1</span></span><br><span class="line">    <span class="comment"># 当前评论所在行数</span></span><br><span class="line">    count = <span class="number">0</span></span><br><span class="line">    <span class="comment"># 打开指定文件，准备将请求到的数据写入到文件中</span></span><br><span class="line">    file = open(file_name, <span class="string">'w'</span>)</span><br><span class="line">    <span class="keyword">while</span> count &lt; total:</span><br><span class="line">        res = requests.get(order_url[:<span class="number">-1</span>] + str(page))</span><br><span class="line">        page = page + <span class="number">1</span></span><br><span class="line">        response_json = json.loads(res.text.strip().strip(<span class="string">'()'</span>))</span><br><span class="line">        comments = response_json[<span class="string">'comments'</span>]</span><br><span class="line">        <span class="keyword">if</span> comments <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">            <span class="keyword">return</span> total</span><br><span class="line">        <span class="keyword">for</span> common_item <span class="keyword">in</span> comments:</span><br><span class="line">            file.writelines(common_item[<span class="string">'user'</span>][<span class="string">'nick'</span>] + <span class="string">'评论:'</span> + common_item[<span class="string">'content'</span>])</span><br><span class="line">            count = count + <span class="number">1</span></span><br><span class="line">    <span class="comment"># 关闭文件流</span></span><br><span class="line">    file.close()</span><br><span class="line">    <span class="keyword">return</span> total</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 分析评论，统计关键字在评论里出现的次数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">analysis_commodity</span><span class="params">(file_name, key)</span>:</span></span><br><span class="line">    file = open(file_name, <span class="string">'r'</span>)</span><br><span class="line">    content = file.read()</span><br><span class="line">    <span class="keyword">return</span> content.count(key)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">select_keyword_count</span><span class="params">(commodity_link, key_word)</span>:</span></span><br><span class="line">    <span class="comment"># 获取链接中的商品id</span></span><br><span class="line">    order_id = commodity_link[commodity_link.find(<span class="string">'&amp;id='</span>) + <span class="number">4</span>:]</span><br><span class="line">    <span class="comment"># 根据商品id，查询评论接口</span></span><br><span class="line">    order_url = <span class="string">'https://rate.taobao.com/feedRateList.htm?auctionNumId='</span> + order_id + <span class="string">'&amp;currentPageNum=1'</span></span><br><span class="line">    <span class="comment"># 获取商品评论，保存到指定文件，并且返回商品条数</span></span><br><span class="line">    total = get_commodity_comments(order_url, order_id + <span class="string">'.txt'</span>)</span><br><span class="line">    <span class="comment"># 根据关键字分析评论，得出分析结果</span></span><br><span class="line">    keyword_count = analysis_commodity(order_id + <span class="string">'.txt'</span>, key_word)</span><br><span class="line">    <span class="keyword">return</span> total, keyword_count</span><br></pre></td></tr></table></figure></p>
+<p>新建一个demo.py 用来测试刚刚写的工具类<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> taobao</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 商品链接</span></span><br><span class="line">    commodity_link = <span class="string">'https://detail.tmall.com/item.htm?spm=a220o.1000855.1000983.1.301635bfuvpObC&amp;id=557148927006'</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 要查询的评论关键字</span></span><br><span class="line">    key_word = <span class="string">'有异味'</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 执行查询返回结果</span></span><br><span class="line">    total, keyword_count = taobao.select_keyword_count(commodity_link, key_word)</span><br><span class="line">    print(<span class="string">'您选择的宝贝共有'</span>, str(total), <span class="string">'条评论'</span>, <span class="string">'其中有'</span> + str(keyword_count), <span class="string">'人评论'</span>, key_word)</span><br></pre></td></tr></table></figure></p>
+<p>运行程序,程序根据商品链接中的商品id作为文件名，将评论数据写入了文件中。<br>程序再次读入文件中的评论数据，对关键字进行统计。</p>
+<img src="/18296dc/taobao_common.png" title="taobao_common">
+<p>通过控制台可以看到当前商品评论中<code>有异味</code>的有85条。<br>然而简单的字符统计无法应对中华文化的博大精深， <font color="red" size="5" face="黑体">有异味</font>前面如果加个<font color="red" size="5" face="黑体">没</font>,那就变成了<font color="red" size="5" face="黑体">没有异味</font>这完全是相反的意思。这是一个包含关系，当前的结果里面可能包含了没有异味的评论。</p>
+<p>这里本应该用到机器学习，但是在自然语言处理方面微软早已做了很多年了，对个人来说自己去训练数据集去理解用户的语义的成本是相当大的，TensorFlow我接触的不多，机器学习方面我可以说是一个小白，目前没有能力去写出这样一个卷积算法。不过如果就针对目前这当个词法而言却变得不那么复杂，完全可以通过程序多重判断来得出大致的结论。这里目前占时就low一点，修改关键词为<font color="red" size="5" face="黑体">没有异味</font>再运行一次程序，然后把<font color="red" size="5" face="黑体">有异味</font>减去<font color="red" size="5" face="黑体">没有异味</font>，最后的结果就是有异味的评论。</p>
+<img src="/18296dc/taobao_common_1.png" title="taobao_common_1">
+<p>可以看到没有异味的有80条评论，所以<font color="blue" size="5" face="黑体">真正评论有异味的评论条数为 85-80=5</font></p>
+<p>看一个商品的用户评价的时候，过多的关注正面评价一般没有多大意义，有可能很多是刷的虚假信息，但是负面评价一般是真实的用户评论，排除竞争对手的恶意评论，基本上只有用户在使用过程中遇到问题，很生气的情况下才会特意来对商品进行负面的评论，所以当喜欢一个商品要购买时，就尽可能多的在负面评论中参考，看看自己对这个东西的喜欢是否打过他的缺点。</p>
+<p>经过统计，在122650条评论中只有5个人说杯子有异味，所以三个字 <font color="red" size="6" face="黑体">买买买！</font><br><!-- 
+一个简单的Python爬虫只需要3行代码：
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line">html = requests.get(<span class="string">'https://www.lanshiqin.com'</span>)</span><br><span class="line">print(html.text)</span><br></pre></td></tr></table></figure></p>
+<p>第一步：使用import语句导入网络库  requests</p>
+<p>第二部：使用requests的get方法获取指定的网页链接的源代码，并赋值给变量html</p>
+<p>第三部：使用print函数打印html的文本内容</p>
+<img src="/18296dc/request_resp.png" title="request_resp">
+<p>可以看到，该网页的内容已经被全部打印出来了。</p>
+<p>这只是爬虫获取网页数据的一个示例。</p>
+<p>作为一只好的爬虫，应该考虑到各种问题，其中最基础的两个问题是：</p>
+<p>1.如何从网页中抓取感兴趣的内容</p>
+<p>2.如何应对反爬虫机制</p>
+<p>对于获取感兴趣的内容，相对来说还是比较容易，在获取到网页源代码后，可以使用正则表达式来提取内容，但是有些网页层次结构非常复杂，使用正则表达式要考虑很久，如果某一天爬取的网页结构改变，我们对自己的爬虫程序做对应的修改维护是很麻烦的，这里推荐一个工具 Xpath<br>那么什么是XPath呢，我们来看一下维基百科的介绍：<br><img src="/18296dc/xpath.png" title="xpath"></p>
+<p>XPath与正则表达式的对比</p>
+<p>XPath可以用来提取信息</p>
+<p>XPath比正则表达式简单，更高效</p>
+<p>很多工具都支持XPath，比如Google的Chrome浏览器。</p>
+<p>首先，使用Chrome浏览器打开我们要爬取的网站：比如 <a href="http://www.jcodecraeer.com/">http://www.jcodecraeer.com/</a> –&gt;</p>
+--></p>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python-爬虫/" rel="tag"># Python 爬虫</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/38f11925/" rel="next" title="搭建ngrok服务器">
+                <i class="fa fa-chevron-left"></i> 搭建ngrok服务器
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/e31a6908/" rel="prev" title="使用Spring Boot开发应用程序">
+                使用Spring Boot开发应用程序 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="蓝士钦" />
+            
+              <p class="site-author-name" itemprop="name">蓝士钦</p>
+              <p class="site-description motion-element" itemprop="description">蓝士钦</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">28</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/lanshiqin" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:lanshiqin@outlook.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">蓝士钦</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+  <div class="footer-custom">闽ICP备15027850号</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv" title="总访客量">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="site-pv" title="总访问量">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.4.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 --> 
+<script type="text/javascript" src="/js/src/love.js"></script>
+<!--崩溃欺骗-->
+<script type="text/javascript" src="/js/src/crash_cheat.js"></script>

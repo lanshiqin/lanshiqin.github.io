@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="遇到这样一个需求，需要将旧系统中的几十个页面做国际化。由于之前是写死中文，所以需要耗费大量的工作将系统中的中文全部提取出来做翻译工作。人工查找不仅费时费力，而且还有可能出现遗漏。站在开发者的角度思考问题，我们应该把抽象的问题具体化，并且将可行的方案用程序实现，将重复工作交给计算机去做，下次遇到同样的问题就可以直接使用上次的工具，避免重复无用的劳动力。">
+<meta name="keywords" content="自动化 工具 Python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="避免无用的重复劳动力">
+<meta property="og:url" content="https://www.lanshiqin.com/7c398525/index.html">
+<meta property="og:site_name" content="蓝士钦">
+<meta property="og:description" content="遇到这样一个需求，需要将旧系统中的几十个页面做国际化。由于之前是写死中文，所以需要耗费大量的工作将系统中的中文全部提取出来做翻译工作。人工查找不仅费时费力，而且还有可能出现遗漏。站在开发者的角度思考问题，我们应该把抽象的问题具体化，并且将可行的方案用程序实现，将重复工作交给计算机去做，下次遇到同样的问题就可以直接使用上次的工具，避免重复无用的劳动力。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.lanshiqin.com/7c398525/py_robot.svg">
+<meta property="og:updated_time" content="2018-09-23T13:13:46.435Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="避免无用的重复劳动力">
+<meta name="twitter:description" content="遇到这样一个需求，需要将旧系统中的几十个页面做国际化。由于之前是写死中文，所以需要耗费大量的工作将系统中的中文全部提取出来做翻译工作。人工查找不仅费时费力，而且还有可能出现遗漏。站在开发者的角度思考问题，我们应该把抽象的问题具体化，并且将可行的方案用程序实现，将重复工作交给计算机去做，下次遇到同样的问题就可以直接使用上次的工具，避免重复无用的劳动力。">
+<meta name="twitter:image" content="https://www.lanshiqin.com/7c398525/py_robot.svg">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="蓝士钦" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="https://www.lanshiqin.com/7c398525/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>避免无用的重复劳动力 | 蓝士钦</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">蓝士钦</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">编程是一种信仰</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.lanshiqin.com/7c398525/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蓝士钦">
+      <meta itemprop="description" content="蓝士钦">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蓝士钦">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">避免无用的重复劳动力
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-09-21 20:43:14" itemprop="dateCreated datePublished" datetime="2018-09-21T20:43:14+08:00">2018-09-21</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-09-23 21:13:46" itemprop="dateModified" datetime="2018-09-23T21:13:46+08:00">2018-09-23</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/工作分享-Python-工具/" itemprop="url" rel="index"><span itemprop="name">工作分享 Python 工具</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon"
+            >
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <img src="/7c398525/py_robot.svg" title="java">
+<blockquote>
+<p>遇到这样一个需求，需要将旧系统中的几十个页面做国际化。由于之前是写死中文，所以需要耗费大量的工作将系统中的中文全部提取出来做翻译工作。人工查找不仅费时费力，而且还有可能出现遗漏。站在开发者的角度思考问题，我们应该把抽象的问题具体化，并且将可行的方案用程序实现，将重复工作交给计算机去做，下次遇到同样的问题就可以直接使用上次的工具，避免重复无用的劳动力。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="原始需求分析"><a href="#原始需求分析" class="headerlink" title="原始需求分析"></a>原始需求分析</h2><p>系统需要做国际化，涉及的工程模块比较多，需要将每个html页面中写死的中文修改成国际化支持。<br>要找出所有页面的中文，将中文罗列出来交给专业人士进行一一对应的翻译，<br>翻译后要逐个替换为国际化支持的表达式，其中的键名在翻译前就需要确定。<br>主要的体力劳动在于找出所有的中文和替换掉所有的中文为表达式的操作。</p>
+<h2 id="问题具体化"><a href="#问题具体化" class="headerlink" title="问题具体化"></a>问题具体化</h2><p>目前系统页面的写法：中文内容写死在html中<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">title</span>&gt;</span>vue-demo<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"vue.min.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- Vue示例 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"app"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">p</span>&gt;</span>中文内容<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">        <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line"><span class="javascript">            el: <span class="string">'#app'</span></span></span><br><span class="line"><span class="undefined">        &#125;);</span></span><br><span class="line"><span class="undefined">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>使用VueI18n国际化的写法：不同语种对应的词使用相同的键名，页面根据键名取值，值内容由语言环境决定<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">title</span>&gt;</span>vue-i18n-demo<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"vue.min.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"vue-i18n.min.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"app"</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- 根据键名输出值 --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">p</span>&gt;</span>&#123;&#123; $t("message.title") &#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">        <span class="comment">// 消息定义，一般将不同语种分别放置到不同的文件中</span></span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> messages = &#123;</span></span><br><span class="line"><span class="undefined">            en: &#123;</span></span><br><span class="line"><span class="undefined">                message: &#123;</span></span><br><span class="line"><span class="javascript">                    title: <span class="string">'English Content'</span></span></span><br><span class="line"><span class="undefined">                &#125;</span></span><br><span class="line"><span class="undefined">            &#125;,</span></span><br><span class="line"><span class="undefined">            cn: &#123;</span></span><br><span class="line"><span class="undefined">                message: &#123;</span></span><br><span class="line"><span class="javascript">                    title: <span class="string">'中文内容'</span></span></span><br><span class="line"><span class="undefined">                &#125;</span></span><br><span class="line"><span class="undefined">            &#125;</span></span><br><span class="line"><span class="undefined">        &#125;;</span></span><br><span class="line"><span class="javascript">        <span class="comment">// VueI18n 实例，设置当前语言环境和消息对象</span></span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> i18n = <span class="keyword">new</span> VueI18n(&#123;</span></span><br><span class="line"><span class="javascript">            locale: <span class="string">'en'</span>,</span></span><br><span class="line"><span class="undefined">            messages: messages,</span></span><br><span class="line"><span class="undefined">        &#125;);</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">        <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line"><span class="javascript">            el: <span class="string">'#app'</span>,</span></span><br><span class="line"><span class="undefined">            i18n: i18n</span></span><br><span class="line"><span class="undefined">        &#125;);</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>在实际使用中，我们一般将不同的语种放置到不同的文件中，每个语种都可以请相关专业的人进行翻译。<br>系统使用时再跟进语言环境加载不同的语言包文件，这点和Android App等移动开发类似，也是采用这种方案。</p>
+<h2 id="实现方案"><a href="#实现方案" class="headerlink" title="实现方案"></a>实现方案</h2><p>1.将工程下所有的html页面中的所有中文提取到一个文件中（提取内容要忽略掉代码中的注释文件）<br>2.将提取出来的中文做翻译工作（可以交给专业人士翻译），每个语种对应生成一个js语言变量文件。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> en = &#123;</span><br><span class="line">	简体中文标题: <span class="string">'English Title'</span>,</span><br><span class="line">	简体中文内容: <span class="string">'English Content'</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中js变量文件中自动生成好默认的键,根据源代码中开发者写死的中文作为键的好处是翻译人员可以明确要翻译的内容，翻译后把对应的值赋值上即可。程序中也以当前开发者之前所写的语言作为键，省去人工比对翻译键值对的操作。</p>
+<p>3.将html的中文替换为VueI18n模板表达式，变量值为语言文件中对应的键</p>
+<p>做完上述工作后就可以根据语言环境的切换自动加载不同的语言文件，页面上的文字值显示的为对应js语言文件中的值。</p>
+<h2 id="编码实现"><a href="#编码实现" class="headerlink" title="编码实现"></a>编码实现</h2><p>第一步：提取中文到指定文件 TextUtils.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line">__author__ = <span class="string">'蓝士钦'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取指定目录下指定后缀的文件全路径名，返回数组</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_file_path_list</span><span class="params">(path, find_suffix)</span>:</span></span><br><span class="line">    files = os.listdir(path)  <span class="comment"># 得到文件夹下的所有文件名称</span></span><br><span class="line">    s = []</span><br><span class="line">    <span class="keyword">for</span> file <span class="keyword">in</span> files:  <span class="comment"># 遍历文件夹</span></span><br><span class="line">        <span class="keyword">if</span> os.path.splitext(file)[<span class="number">1</span>] == find_suffix:</span><br><span class="line">            s.append(path + <span class="string">"/"</span> + file)</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 读取文件,根据匹配规则查找目标，输出到指定文件</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">read_file_match_out</span><span class="params">(match_rule, exclude_rule, file_path_list, write_file)</span>:</span></span><br><span class="line">    out_file = open(write_file, <span class="string">"w"</span>)</span><br><span class="line">    <span class="keyword">for</span> file_obj <span class="keyword">in</span> file_path_list:</span><br><span class="line">        file = open(file_obj, <span class="string">'r'</span>)</span><br><span class="line">        line = file.readline()</span><br><span class="line">        <span class="keyword">while</span> line:</span><br><span class="line">            text_list = text_split_list(match_rule, exclude_rule, line)</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> text_list:</span><br><span class="line">                <span class="keyword">pass</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">for</span> text <span class="keyword">in</span> text_list:</span><br><span class="line">                    out_file.write(text + <span class="string">'\n'</span>)</span><br><span class="line">            line = file.readline()</span><br><span class="line">        file.close()</span><br><span class="line">    out_file.close()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 根据规则查找出目标文字，返回数组</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">text_split_list</span><span class="params">(match_rule, exclude_rule, text_str)</span>:</span></span><br><span class="line">    <span class="keyword">for</span> exr <span class="keyword">in</span> exclude_rule:</span><br><span class="line">        text_str = re.sub(exr, <span class="string">""</span>, text_str)</span><br><span class="line">    array_list = match_rule.split(text_str)</span><br><span class="line">    <span class="keyword">while</span> <span class="string">''</span> <span class="keyword">in</span> array_list:</span><br><span class="line">        array_list.remove(<span class="string">''</span>)</span><br><span class="line">    <span class="keyword">return</span> array_list</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 根据你的实际情况</span></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    <span class="comment"># 要匹配的文件路径和文件后缀</span></span><br><span class="line">    file_input_path = <span class="string">'/Users/lanshiqin/Temp/vue-demo'</span></span><br><span class="line">    file_input_list = get_file_path_list(file_input_path, <span class="string">'.html'</span>)</span><br><span class="line">    <span class="comment"># 要匹配的规则</span></span><br><span class="line">    match_re = re.compile(<span class="string">'[^\u4E00-\u9FA5]'</span>)</span><br><span class="line">    <span class="comment"># 要排除的规则数组 排除html中的&lt;!-- 和 // 注释</span></span><br><span class="line">    exclude_re = [<span class="string">r'&lt;!--.*$'</span>, <span class="string">r'//.*$'</span>]</span><br><span class="line">    <span class="comment"># 匹配到的值要输出到的指定文件</span></span><br><span class="line">    file_out_path = <span class="string">'/Users/lanshiqin/Desktop/zh_cn.txt'</span></span><br><span class="line">    <span class="comment"># 匹配输出</span></span><br><span class="line">    read_file_match_out(match_re, exclude_re, file_input_list, file_out_path)</span><br></pre></td></tr></table></figure></p>
+<p>第二步：生成需要翻译的多语种js文件 GenerateUtils.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 生成多语言js文件</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_language_js_files</span><span class="params">(file_input, file_output_list)</span>:</span></span><br><span class="line">    <span class="keyword">for</span> file_output <span class="keyword">in</span> file_output_list:</span><br><span class="line">        file_out = open(file_output + <span class="string">'.js'</span>, <span class="string">'w'</span>)</span><br><span class="line">        file_out.write(<span class="string">'const '</span> + file_output + <span class="string">' = &#123;\n'</span>)</span><br><span class="line">        file = open(file_input, <span class="string">'r'</span>)</span><br><span class="line">        line = file.readline()</span><br><span class="line">        <span class="keyword">while</span> line:</span><br><span class="line">            line = line.replace(<span class="string">"\n"</span>, <span class="string">""</span>)</span><br><span class="line">            print(line)</span><br><span class="line">            file_out.write(<span class="string">"\t"</span> + line + <span class="string">": '"</span> + line + <span class="string">"',\n"</span>)</span><br><span class="line">            line = file.readline()</span><br><span class="line">        file_out.write(<span class="string">"&#125;"</span>)</span><br><span class="line">        file.close()</span><br><span class="line">        file_out.close()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    <span class="comment"># 第一步找到的简体中文</span></span><br><span class="line">    input_file = <span class="string">'/Users/lanshiqin/Desktop/zh_cn.txt'</span></span><br><span class="line">    <span class="comment"># 要输出的目标语种文件文件</span></span><br><span class="line">    output_file_list = [<span class="string">'cn'</span>, <span class="string">'en'</span>]</span><br><span class="line">    <span class="comment"># 生成多语言目标文件</span></span><br><span class="line">    generate_language_js_files(input_file, output_file_list)</span><br></pre></td></tr></table></figure></p>
+<p>第三步：替换html中的中文为VueI18n模板表达式，其中的键为语种文件的变量<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 按行读取文件内容转换成数组</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">read_file_to_list</span><span class="params">(file_input)</span>:</span></span><br><span class="line">    file = open(file_input, <span class="string">'r'</span>)</span><br><span class="line">    line = file.readline()</span><br><span class="line">    file_list = []</span><br><span class="line">    <span class="keyword">while</span> line:</span><br><span class="line">        line = line.replace(<span class="string">'\n'</span>, <span class="string">''</span>)</span><br><span class="line">        file_list.append(line)</span><br><span class="line">        line = file.readline()</span><br><span class="line">    <span class="keyword">return</span> file_list</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 根据中文键名称替换目标文件集合中的中文为VueI18n的模板表达式</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">replace_I18n_template</span><span class="params">(key_list, file_path_list)</span>:</span></span><br><span class="line">    <span class="keyword">for</span> file_obj <span class="keyword">in</span> file_path_list:</span><br><span class="line">        file_obj_temp = <span class="string">''</span></span><br><span class="line">        <span class="keyword">for</span> key <span class="keyword">in</span> key_list:</span><br><span class="line">            file = open(file_obj, <span class="string">'r'</span>)</span><br><span class="line">            line = file.readline()</span><br><span class="line">            <span class="keyword">while</span> line:</span><br><span class="line">                line = line.replace(key, <span class="string">'&#123;&#123; $t("'</span> + key + <span class="string">'") &#125;&#125;'</span>)</span><br><span class="line">                file_obj_temp += line</span><br><span class="line">                line = file.readline()</span><br><span class="line">            file.close()</span><br><span class="line">            file_write = open(file_obj, <span class="string">'w'</span>)</span><br><span class="line">            file_write.write(file_obj_temp)</span><br><span class="line">            file_obj_temp = <span class="string">''</span></span><br><span class="line">            file_write.close()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 根据你的实际情况</span></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    <span class="comment"># 读取指定文件包装成数组</span></span><br><span class="line">    input_file = <span class="string">'/Users/lanshiqin/Desktop/zh_cn.txt'</span></span><br><span class="line">    file_key_list = read_file_to_list(input_file)</span><br><span class="line">    <span class="comment"># 要匹配的文件路径和文件后缀</span></span><br><span class="line">    file_input_path = <span class="string">'/Users/lanshiqin/Temp/vue-demo'</span></span><br><span class="line">    file_input_list = get_file_path_list(file_input_path, <span class="string">'.html'</span>)</span><br><span class="line">    <span class="comment"># 对匹配的文件进行VueI18n模板表达式替换</span></span><br><span class="line">    replace_I18n_template(file_key_list, file_input_list)</span><br></pre></td></tr></table></figure></p>
+<p>这样一个传统的Vue构建的前端本地化工程，就可以实现一秒钟完成国际化的操作。<br>如果觉得多语言文件中的键采用中文有不妥，可以继续采用匹配方案，将所有的键都批量重命名。<br>默认采用中文作为键，这样做的目的是高效，精确，节省时间。<br>我的考虑是：采用开发者原生语言作为键，也就是我们本土化的人都认识的语言，然后将对应的语言文件交给掌握本土化语言并且掌握目标要翻译语言的这样一个人，这样他就能够精确高效的翻译，翻译后的文件也是程序可直接使用的。</p>
+<p>开发者无需关系键名和键值，如果比较强迫症，某一天突然想好了这个键要取什么名字，可以进行匹配替换操作。<br>这里仅仅针对传统开发的Vue进行I18n的支持，如果需要翻译Android App的多语言文件，或者其他类似平台的多语言文件时，这些平台可能不能使用中文作为键，中文作为键可以认为是一个中间过程，等翻译工作全部完成后，再写个自动化脚本自动批量替换想好的键即可。</p>
+<h2 id="一键国际化演示"><a href="#一键国际化演示" class="headerlink" title="一键国际化演示"></a>一键国际化演示</h2><video data-v-a091ef6c="" controls="controls" webkit-playsinline="true" playsinline="playsinline" src="http://gslb.ins.miaopai.com/stream/ins_rsecCARMUXVm~ABUsdFR-w8aLE-Fcz6I.mp4?mpflag=32&amp;ssig=144671b4fb92041406814f59bedebb90&amp;time_stamp=1537590421227" preload="preload" id="video" class="video"></video>
+
+<p>为了操作方便，我把3个python文件的代码都放在一个vue_language_global.py 文件中了<br>github地址：<a href="https://github.com/lanshiqin/VueLanguageUtils" target="_blank" rel="noopener">https://github.com/lanshiqin/VueLanguageUtils</a><br>欢迎 Star&amp;Fork</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>如果涉及到英语以及其他外语，单纯的国际化支持其实是不够的，除了不能用机器翻译外，还需要考虑每个字词对应的翻译内容长度，原先的UI设计和交互可能就需要改变，因此语言跨度比较大的国际化，一般会单独做一个版本。</p>
+<p>本次遇到的需求其实是需要支持繁体中文，每个汉字对应一个繁体字，不涉及语法以及词序的问题。<br>所以这步翻译操作可以采用调用api的方式完成自动化翻译生成文件。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/自动化-工具-Python/" rel="tag"># 自动化 工具 Python</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/7545587/" rel="next" title="全局异常处理机制">
+                <i class="fa fa-chevron-left"></i> 全局异常处理机制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="蓝士钦" />
+            
+              <p class="site-author-name" itemprop="name">蓝士钦</p>
+              <p class="site-description motion-element" itemprop="description">蓝士钦</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">28</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/lanshiqin" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:lanshiqin@outlook.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#原始需求分析"><span class="nav-number">1.</span> <span class="nav-text">原始需求分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题具体化"><span class="nav-number">2.</span> <span class="nav-text">问题具体化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现方案"><span class="nav-number">3.</span> <span class="nav-text">实现方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编码实现"><span class="nav-number">4.</span> <span class="nav-text">编码实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一键国际化演示"><span class="nav-number">5.</span> <span class="nav-text">一键国际化演示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">蓝士钦</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+  <div class="footer-custom">闽ICP备15027850号</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv" title="总访客量">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="site-pv" title="总访问量">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.4.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 --> 
+<script type="text/javascript" src="/js/src/love.js"></script>
+<!--崩溃欺骗-->
+<script type="text/javascript" src="/js/src/crash_cheat.js"></script>
