@@ -118,27 +118,18 @@
 
 
 
-  <meta name="description" content="sql注入在互联网应用早期很常见，大多数是因为程序员没有考虑到sql注入的问题对sql语句进行过滤，直接使用字符串拼接的方式来传值着就给sql注入造成了可能。">
-<meta name="keywords" content="杂谈">
+  <meta name="description" content="项目中出现多次取到重复UUID的情况，导致使用UUID作为数据库主键的记录因为存在相同id插入失败。造成这个问题的根本原因是因为使用了错误的UUID生成策略。发现代码中使用 UUID.randomUUID()这个方法来取得UUID，用这个方法取到的UUID是有可能重复的。因为这个取UUID的策略是随机数策略，目前计算机中产生的随机数都是伪随机数。">
+<meta name="keywords" content="笔记">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SQL注入攻击">
-<meta property="og:url" content="https://www.lanshiqin.com/d9130e7c/index.html">
+<meta property="og:title" content="正确的使用UUID">
+<meta property="og:url" content="https://www.lanshiqin.com/cfcd1d83/index.html">
 <meta property="og:site_name" content="蓝士钦">
-<meta property="og:description" content="sql注入在互联网应用早期很常见，大多数是因为程序员没有考虑到sql注入的问题对sql语句进行过滤，直接使用字符串拼接的方式来传值着就给sql注入造成了可能。">
+<meta property="og:description" content="项目中出现多次取到重复UUID的情况，导致使用UUID作为数据库主键的记录因为存在相同id插入失败。造成这个问题的根本原因是因为使用了错误的UUID生成策略。发现代码中使用 UUID.randomUUID()这个方法来取得UUID，用这个方法取到的UUID是有可能重复的。因为这个取UUID的策略是随机数策略，目前计算机中产生的随机数都是伪随机数。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://www.lanshiqin.com/d9130e7c/sql执行脚本.png">
-<meta property="og:image" content="https://www.lanshiqin.com/d9130e7c/login.png">
-<meta property="og:image" content="https://www.lanshiqin.com/d9130e7c/dologin.png">
-<meta property="og:image" content="https://www.lanshiqin.com/d9130e7c/student_db.png">
-<meta property="og:image" content="https://www.lanshiqin.com/d9130e7c/login_page.png">
-<meta property="og:image" content="https://www.lanshiqin.com/d9130e7c/fail_page.png">
-<meta property="og:image" content="https://www.lanshiqin.com/d9130e7c/login_page_2.png">
-<meta property="og:image" content="https://www.lanshiqin.com/d9130e7c/success_page.png">
-<meta property="og:updated_time" content="2018-09-23T13:06:12.564Z">
+<meta property="og:updated_time" content="2018-10-05T06:43:44.958Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SQL注入攻击">
-<meta name="twitter:description" content="sql注入在互联网应用早期很常见，大多数是因为程序员没有考虑到sql注入的问题对sql语句进行过滤，直接使用字符串拼接的方式来传值着就给sql注入造成了可能。">
-<meta name="twitter:image" content="https://www.lanshiqin.com/d9130e7c/sql执行脚本.png">
+<meta name="twitter:title" content="正确的使用UUID">
+<meta name="twitter:description" content="项目中出现多次取到重复UUID的情况，导致使用UUID作为数据库主键的记录因为存在相同id插入失败。造成这个问题的根本原因是因为使用了错误的UUID生成策略。发现代码中使用 UUID.randomUUID()这个方法来取得UUID，用这个方法取到的UUID是有可能重复的。因为这个取UUID的策略是随机数策略，目前计算机中产生的随机数都是伪随机数。">
 
 
 
@@ -147,7 +138,7 @@
 
 
 
-  <link rel="canonical" href="https://www.lanshiqin.com/d9130e7c/"/>
+  <link rel="canonical" href="https://www.lanshiqin.com/cfcd1d83/"/>
 
 
 
@@ -157,7 +148,7 @@
   };
 </script>
 
-  <title>SQL注入攻击 | 蓝士钦</title>
+  <title>正确的使用UUID | 蓝士钦</title>
   
 
 
@@ -361,7 +352,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.lanshiqin.com/d9130e7c/">
+    <link itemprop="mainEntityOfPage" href="https://www.lanshiqin.com/cfcd1d83/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="蓝士钦">
@@ -378,7 +369,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">SQL注入攻击
+          <h1 class="post-title" itemprop="name headline">正确的使用UUID
               
             
           </h1>
@@ -403,7 +394,7 @@
                 
               
 
-              <time title="创建时间：2017-12-05 09:40:43" itemprop="dateCreated datePublished" datetime="2017-12-05T09:40:43+08:00">2017-12-05</time>
+              <time title="创建时间：2018-10-03 15:45:22" itemprop="dateCreated datePublished" datetime="2018-10-03T15:45:22+08:00">2018-10-03</time>
             
 
             
@@ -420,29 +411,11 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-09-23 21:06:12" itemprop="dateModified" datetime="2018-09-23T21:06:12+08:00">2018-09-23</time>
+                <time title="修改时间：2018-10-05 14:43:44" itemprop="dateModified" datetime="2018-10-05T14:43:44+08:00">2018-10-05</time>
               
             
           </span>
 
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/杂谈/" itemprop="url" rel="index"><span itemprop="name">杂谈</span></a></span>
-
-                
-                
-              
-            </span>
           
 
           
@@ -479,34 +452,29 @@
       
 
       
-        <img src="/d9130e7c/sql执行脚本.png" title="sql注入攻击">
-<!-- 最近和一家第三方公司一起做了个外包项目，发现他们非常抵触用框架开发项目，通过多次接触发现他们公司的这个项目负责人曾经因为框架使用不当导致一些意想不到的BUG，从此对使用框架开发的人嗤之以鼻。
-这里我想说的是框架只是一个工具，框架能够挥多少威力关键在于使用它的人。 -->
-<p>sql注入在互联网应用早期很常见，大多数是因为程序员没有考虑到sql注入的问题对sql语句进行过滤，直接使用字符串拼接的方式来传值<br>着就给sql注入造成了可能。<br><a id="more"></a></p>
-<!-- 像Spring、Hibernate这些框架经过这么多年的发展已经非常成熟了，开源社区也有很多大牛在支持，贡献自己的代码，我们可以从框架的源代码中学到很多设计模式和知识，甚至自己实现一套框架。
-
-这个外包项目有移动端，pc网页端，还有后台接口，我负责写后台接口，这家第三方公司负责写pc的web端。我用SpringBoot+Mybatis用了一周的时间把后台接口都写好了，他们web端由于不使用框架，还在缓慢的进行着。通过后来了解得知，他们的项目清一色全部用最传统最原始的方式开发，全部用jsp写，美其名曰这是底层，效率高。这我就不吐槽什么了，最关键的是我发现他们有大量复杂的json竟然是手动一个一个拼接上去的！这是最让我无语的地方，他们连一些基本的工具都不会使用，对象和json之前的转换用一个Gson库就好了呀，毕竟Google出品总比用手动拼接的开发效率高一百倍吧。这种开发方式就像大学刚学编程基础的人才会做的傻事，而这样的公司竟然能活到现在也是奇迹，换个角度说还蛮厉害的！
-我并不想刻意贬低谁，但这真的是我们目前遇到最坑的合作伙伴，不断的刷新我的下限。
-
-在项目交付前还没给安全公司做渗透测试之前，他们这个项目从来没考虑过安全性问题，框架帮我们做了很多基础工作，比如可以方便的过滤xss攻击和sql注入等问题。而这个web端再次刷新我的下限。
-我用了简单的sql注入，xss注入，发现可以很轻松的进入后台，随意添加任何代码... -->
-<p>不能公开做违法乱纪的事，所以我自己写了个示例程序，来重现一下当时遇到的安全问题。<br>首先是sql注入</p>
-<p>简单的登录表单页面<br><img src="/d9130e7c/login.png" title="登录表单"></p>
-<p>执行登录验证操作的程序<br><img src="/d9130e7c/dologin.png" title="登录验证"></p>
-<p>数据库<br><img src="/d9130e7c/student_db.png" title="数据库"></p>
-<p>启动Tomcat服务器，访问项目<br><img src="/d9130e7c/login_page.png" title="登录表单"></p>
-<p>输入用户名和密码，假设我们不知道密码，这里故意输错密码，随便输入一个错误的密码，<br>点击登录<br><img src="/d9130e7c/fail_page.png" title="登录失败页面"></p>
-<p>我们回到登录页面，测试一下sql注入<br><img src="/d9130e7c/login_page_2.png" title="登录失败页面"></p>
-<p>点击登录，发现登录成功！<br><img src="/d9130e7c/success_page.png" title="登录失败页面"></p>
-<p>我们在不知道用户名和密码的情况下成功的登录到了登录成功后的页面，实现了sql注入。<br>问题主要出在执行登录程序的数据库查询的sql语句<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="keyword">user</span> <span class="keyword">WHERE</span> username=<span class="string">'"+userName+"'</span> <span class="keyword">AND</span> <span class="keyword">password</span>=<span class="string">'"+passWord+"'</span><span class="string">"</span></span><br></pre></td></tr></table></figure></p>
-<p>使用这种拼接的方式容易给攻击者注入的机会，这里拼接上我们传进来的用户名和密码，我在登录表单那里输入的数据拼接进来后变成这样<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="keyword">user</span> <span class="keyword">WHERE</span> username=<span class="string">''</span> <span class="keyword">or</span> <span class="number">1</span>=<span class="number">1</span> #<span class="string">' AND password='</span><span class="number">1234567890</span><span class="string">'</span></span><br></pre></td></tr></table></figure></p>
-<p>可以看到前面的符号 ‘ 把我们把用户名值切断掉，让数据库查询条件变成查询用户名为空字符串的，此时数据库虽然没有匹配的记录，但是我们在后面再拼接上 or 1=1 这样就可以把数据库中user表的所有记录都查询出来，然后输入#号会把后面的sql语句都注释掉不执行<br>最终执行的sql语句变成这样：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="keyword">user</span> <span class="keyword">WHERE</span> username=<span class="string">''</span> <span class="keyword">or</span> <span class="number">1</span>=<span class="number">1</span></span><br></pre></td></tr></table></figure></p>
-<p>我们成功注入 or 1=1 并且跳转到登录成功后的页面，这种注入还可以让我们执行任意sql语句，比如执行删除语句把整个数据库数据都删除！</p>
-<p>如果程序中的sql拼接改成这样<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="keyword">user</span> <span class="keyword">WHERE</span> username=<span class="string">"+userName+"</span> <span class="keyword">AND</span> <span class="keyword">password</span>=<span class="string">"+passWord</span></span><br></pre></td></tr></table></figure></p>
-<p>那我们的sql注入就需要多加个’号<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">'' or 1=1 #</span><br></pre></td></tr></table></figure></p>
-<p>对应mysql数据库，注释符是用#号，如果是其他数据库，比如SQL Server数据库，我们要使用两个 - 符号即可注释掉后面的sql语句。sql拼接的这种语句很容易让攻击者注入，只需要多试几次就可以实现注入。</p>
-<p>为了防止这种常见的低级注入，我们不要使用拼接sql的方式来查询数据库。我发现目前的教科书和学校教的web编程课程中都没有提到类似的安全性问题，为了便于学生理解，很多都是使用sql拼接，我觉得关于web安全这点在学习过程中一定要时刻注意，防止犯一些低级错误。<br>要始终牢记，用户的输入永远都是不可信的，一定要做校验和转换。<br>像hibernate这类ORM框架已经替我们实现好了这一点，如果要自己用jdbc写的话，建议使用PreparedStatement进行传参数的方式防止sql注入。<br>从网络安全的角度去思考问题，有助于开发出比较健壮相对比较安全的网站。对提高自身编程水平也是有帮助的。如果从事web开发，这种安全问题其实也是必须要指定并且尽量去避免的。<br>框架虽然帮我们实现了这些功能但是我们还是要去学习他，我们可以学习框架的设计思想，达到提高自己的目的。<br>比较常见的web攻击除了sql注入，还有xss等。我在后续的文章中会讲到。</p>
-
+        <p>项目中出现多次取到重复UUID的情况，导致使用UUID作为数据库主键的记录因为存在相同id插入失败。造成这个问题的根本原因是因为使用了错误的UUID生成策略。发现代码中使用 <code>UUID.randomUUID()</code>这个方法来取得UUID，用这个方法取到的UUID是有可能重复的。因为这个取UUID的策略是随机数策略，目前计算机中产生的随机数都是伪随机数。</p>
+<a id="more"></a>
+<p>特意查阅了一下网上关于UUID的示例文章，很多都是介绍了一堆UUID的概念：根据全局的机器识别码、网卡MAC地址和时间戳来生成UUID，最后使用方法的时候很不负责任的用了一个<code>UUID.randomUUID()</code>方法来取UUID，这样取到的UUID根本就不包含网卡MAC地址和时间戳这些信息，这种方式生成的UUID是随机数，是有可能重复的。</p>
+<h1 id="常见的使用方式"><a href="#常见的使用方式" class="headerlink" title="常见的使用方式"></a>常见的使用方式</h1><p>网上很多文章里，获取UUID的方式:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UUID.randomUUID().toString()</span><br></pre></td></tr></table></figure></p>
+<p>以下是UUID类的源码，randomUUID方法的实现</p>
+<h2 id="randomUUID-源码"><a href="#randomUUID-源码" class="headerlink" title="randomUUID()源码"></a>randomUUID()源码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Static factory to retrieve a type 4 (pseudo randomly generated) UUID.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * The &#123;<span class="doctag">@code</span> UUID&#125; is generated using a cryptographically strong pseudo</span></span><br><span class="line"><span class="comment"> * random number generator.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span>  A randomly generated &#123;<span class="doctag">@code</span> UUID&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> UUID <span class="title">randomUUID</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    SecureRandom ng = Holder.numberGenerator;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">byte</span>[] randomBytes = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">16</span>];</span><br><span class="line">    ng.nextBytes(randomBytes);</span><br><span class="line">    randomBytes[<span class="number">6</span>]  &amp;= <span class="number">0x0f</span>;  <span class="comment">/* clear version        */</span></span><br><span class="line">    randomBytes[<span class="number">6</span>]  |= <span class="number">0x40</span>;  <span class="comment">/* set to version 4     */</span></span><br><span class="line">    randomBytes[<span class="number">8</span>]  &amp;= <span class="number">0x3f</span>;  <span class="comment">/* clear variant        */</span></span><br><span class="line">    randomBytes[<span class="number">8</span>]  |= <span class="number">0x80</span>;  <span class="comment">/* set to IETF variant  */</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> UUID(randomBytes);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过源码和注释可以知道randomUUID这个静态方法使用了随机数的策略来生成UUID。randomUUID方法内使用SecureRandom类提供了强加密的随机数生成。在SecureRandom类的源码注释中提供了一个网址<a href="http://www.ietf.org/rfc/rfc1750.txt" target="_blank" rel="noopener">http://www.ietf.org/rfc/rfc1750.txt</a> 提出了关于强加密生成随机数的实现考量和具体细节。<br>目前分析的是JDK1.8的源码，相比之前版本做了一些微小的改进，有关SecureRandom随机数的生成方式的具体实现可以自行阅读源码。<br>randomUUID方法最后将生成好的16位随机数字节数组传给UUID构造函数<code>UUID(byte[] data)</code>进行有效位计算</p>
+<h2 id="UUID-byte-data-源码"><a href="#UUID-byte-data-源码" class="headerlink" title="UUID(byte[] data)源码"></a>UUID(byte[] data)源码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Constructors and Factories</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Private constructor which uses a byte array to construct the new UUID.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="title">UUID</span><span class="params">(<span class="keyword">byte</span>[] data)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">long</span> msb = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">long</span> lsb = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">assert</span> data.length == <span class="number">16</span> : <span class="string">"data must be 16 bytes in length"</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;<span class="number">8</span>; i++)</span><br><span class="line">        msb = (msb &lt;&lt; <span class="number">8</span>) | (data[i] &amp; <span class="number">0xff</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">8</span>; i&lt;<span class="number">16</span>; i++)</span><br><span class="line">        lsb = (lsb &lt;&lt; <span class="number">8</span>) | (data[i] &amp; <span class="number">0xff</span>);</span><br><span class="line">    <span class="keyword">this</span>.mostSigBits = msb;</span><br><span class="line">    <span class="keyword">this</span>.leastSigBits = lsb;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>UUID(byte[] data)</code>构造函数根据传入的字节数组进行有效位计算，将前8个字节赋值给高64位mostSigBits，后8个字节赋值给低64位leastsigbits，组合成完整的UUID长度为(64+64)128位。</p>
+<p><font color="red" face="黑体">可以发现通过<code>randomUUID</code>方式获取UUID的整个过程就是对取到的随机数进行计算，根本没有网上某些文章所说的根据网卡MAC地址和时间戳进行生成。</font><br>通过UUID.randomUUID().toString()生成的UUID格式如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1f1fa8ea-06fe-4bdf-a0cb-e0fe7baca34c</span><br></pre></td></tr></table></figure></p>
+<p>之所以输出这种格式，是因为调用了UUID中的toString方法，该方法通过<code>-</code>符号将UUID最终的值分为5段组合，前3段分别为：高64位右移32取8位16进制字符串拼接<code>-</code>，高64位右移16位取4位16进制字符串拼接<code>-</code>,高64位取4位16进制字符串拼接<code>-</code>，<br>后2段分别是：低64位右移48取4位16进制字符串拼接<code>-</code>，低64位取12位16进制字符串。</p>
+<h2 id="UUID-toString"><a href="#UUID-toString" class="headerlink" title="UUID toString()"></a>UUID toString()</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (digits(mostSigBits &gt;&gt; <span class="number">32</span>, <span class="number">8</span>) + <span class="string">"-"</span> +</span><br><span class="line">            digits(mostSigBits &gt;&gt; <span class="number">16</span>, <span class="number">4</span>) + <span class="string">"-"</span> +</span><br><span class="line">            digits(mostSigBits, <span class="number">4</span>) + <span class="string">"-"</span> +</span><br><span class="line">            digits(leastSigBits &gt;&gt; <span class="number">48</span>, <span class="number">4</span>) + <span class="string">"-"</span> +</span><br><span class="line">            digits(leastSigBits, <span class="number">12</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最终整个完整的值长度为<code>8-4-4-4-12</code>，去掉<code>-</code>符号，就是网上常说的32位16进制字符串。<br>很多旧的项目工程中也很习惯性的采用<code>UUID.randomUUID().toString()</code>这种方式去获取UUID，通过UUID类的静态方法取值确实写起来很方便，但是如果应用在分布式集群等需要作为记录凭据的唯一性时就有可能出现问题，因为randomUUID()方法取到的UUID无法保证全局唯一性。</p>
+<h1 id="UUID的定义"><a href="#UUID的定义" class="headerlink" title="UUID的定义"></a>UUID的定义</h1><p>UUID全称:Universally Unique Identifier，通用唯一识别码。<br>在JDK中UUID有4种不同的策略实现</p>
+<h1 id="JDK中的UUID策略实现"><a href="#JDK中的UUID策略实现" class="headerlink" title="JDK中的UUID策略实现"></a>JDK中的UUID策略实现</h1><p>通过阅读UUID源代码，并且从UUID类上的注释可知<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">* &lt;p&gt; The version field holds a value that describes the type of <span class="keyword">this</span> &#123;<span class="meta">@code</span></span><br><span class="line">* UUID&#125;.  There are four different basic types of UUIDs: time-based, DCE</span><br><span class="line">* security, name-based, and randomly generated UUIDs.  These types have a</span><br><span class="line">* version value of <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span> and <span class="number">4</span>, respectively.</span><br></pre></td></tr></table></figure></p>
+<p>在JDK的UUID类中有四种不同的实现类型：基于时间、基于DCE安全、基于名字，基于随机数。<br>文章开头提到的就是第4种，基于随机数的类型。这种生成方式在大一点的分布式环境下取到重复值的概率是很大的。<br>下面来具体分析一下目前JDK中4中不同的UUID生成方式区别</p>
+<h2 id="UUID1-基于时间戳"><a href="#UUID1-基于时间戳" class="headerlink" title="UUID1 基于时间戳"></a>UUID1 基于时间戳</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="UUID2-基于DCE安全"><a href="#UUID2-基于DCE安全" class="headerlink" title="UUID2 基于DCE安全"></a>UUID2 基于DCE安全</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="UUID3-基于名字"><a href="#UUID3-基于名字" class="headerlink" title="UUID3 基于名字"></a>UUID3 基于名字</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">UUID uuid3 = UUID.nameUUIDFromBytes(<span class="string">"蓝士钦"</span>.getBytes());</span><br><span class="line">System.out.println(uuid3.toString());</span><br></pre></td></tr></table></figure>
+<p>nameUUIDFromBytes源码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Static factory to retrieve a type 3 (name based) &#123;<span class="doctag">@code</span> UUID&#125; based on</span></span><br><span class="line"><span class="comment"> * the specified byte array.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span>  name</span></span><br><span class="line"><span class="comment"> *         A byte array to be used to construct a &#123;<span class="doctag">@code</span> UUID&#125;</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span>  A &#123;<span class="doctag">@code</span> UUID&#125; generated from the specified array</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> UUID <span class="title">nameUUIDFromBytes</span><span class="params">(<span class="keyword">byte</span>[] name)</span> </span>&#123;</span><br><span class="line">    MessageDigest md;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        md = MessageDigest.getInstance(<span class="string">"MD5"</span>);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (NoSuchAlgorithmException nsae) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> InternalError(<span class="string">"MD5 not supported"</span>, nsae);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">byte</span>[] md5Bytes = md.digest(name);</span><br><span class="line">    md5Bytes[<span class="number">6</span>]  &amp;= <span class="number">0x0f</span>;  <span class="comment">/* clear version        */</span></span><br><span class="line">    md5Bytes[<span class="number">6</span>]  |= <span class="number">0x30</span>;  <span class="comment">/* set to version 3     */</span></span><br><span class="line">    md5Bytes[<span class="number">8</span>]  &amp;= <span class="number">0x3f</span>;  <span class="comment">/* clear variant        */</span></span><br><span class="line">    md5Bytes[<span class="number">8</span>]  |= <span class="number">0x80</span>;  <span class="comment">/* set to IETF variant  */</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> UUID(md5Bytes);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到这种策略是将传入的名字数组进行MD5计算得到一个MD5数组值，然后再将得到的值进行高低位计算得到UUID。想要生成的ID不同，传入的name就必须不同。</p>
+<p><font color="red" face="黑体">两段不同内容的字符串，可能会产生相同的MD5值，俗称的MD5碰撞。</font>所以这里传入的name值越长，内容越多，产生碰撞的概率越小。</p>
+<h2 id="UUID4-基于随机数"><a href="#UUID4-基于随机数" class="headerlink" title="UUID4 基于随机数"></a>UUID4 基于随机数</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
 
@@ -526,7 +494,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/杂谈/" rel="tag"><i class="fa fa-tag"></i> 杂谈</a>
+            <a href="/tags/笔记/" rel="tag"><i class="fa fa-tag"></i> 笔记</a>
           
         </div>
       
@@ -539,8 +507,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/e8cdb82b/" rel="next" title="编程是一种信仰">
-                <i class="fa fa-chevron-left"></i> 编程是一种信仰
+              <a href="/7c398525/" rel="next" title="避免无用的重复劳动力">
+                <i class="fa fa-chevron-left"></i> 避免无用的重复劳动力
               </a>
             
           </div>
@@ -549,8 +517,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/4fa736d8/" rel="prev" title="XSS攻击">
-                XSS攻击 <i class="fa fa-chevron-right"></i>
+              <a href="/21f173fb/" rel="prev" title="整合SSH框架之基础搭建">
+                整合SSH框架之基础搭建 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -599,8 +567,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -764,6 +741,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#常见的使用方式"><span class="nav-number">1.</span> <span class="nav-text">常见的使用方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#randomUUID-源码"><span class="nav-number">1.1.</span> <span class="nav-text">randomUUID()源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UUID-byte-data-源码"><span class="nav-number">1.2.</span> <span class="nav-text">UUID(byte[] data)源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UUID-toString"><span class="nav-number">1.3.</span> <span class="nav-text">UUID toString()</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#UUID的定义"><span class="nav-number">2.</span> <span class="nav-text">UUID的定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JDK中的UUID策略实现"><span class="nav-number">3.</span> <span class="nav-text">JDK中的UUID策略实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#UUID1-基于时间戳"><span class="nav-number">3.1.</span> <span class="nav-text">UUID1 基于时间戳</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UUID2-基于DCE安全"><span class="nav-number">3.2.</span> <span class="nav-text">UUID2 基于DCE安全</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UUID3-基于名字"><span class="nav-number">3.3.</span> <span class="nav-text">UUID3 基于名字</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UUID4-基于随机数"><span class="nav-number">3.4.</span> <span class="nav-text">UUID4 基于随机数</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
