@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "6d134c3b"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="按键精灵想必很多人都玩过，使用录制功能将鼠标和键盘的操作录制下来，录制好后就可以通过回放自动执行之前录制的操作，可以设置重复执行的次数，这样就可以将一些重复的劳动交给脚本自动化去完成。使用Python编写一个和脚本精灵一样的程序非常简单，并且代码量足够少，好处是可以不再依赖按键精灵，像我这种有轻微洁癖的程序猿就喜欢自己动手实现,依赖Python的为所欲为的特性，可以任意编码让自己的按键精灵更加强大">
+<meta name="keywords" content="Python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Python实现一个按键精灵">
+<meta property="og:url" content="https://www.lanshiqin.com/2fb233e2/index.html">
+<meta property="og:site_name" content="蓝士钦">
+<meta property="og:description" content="按键精灵想必很多人都玩过，使用录制功能将鼠标和键盘的操作录制下来，录制好后就可以通过回放自动执行之前录制的操作，可以设置重复执行的次数，这样就可以将一些重复的劳动交给脚本自动化去完成。使用Python编写一个和脚本精灵一样的程序非常简单，并且代码量足够少，好处是可以不再依赖按键精灵，像我这种有轻微洁癖的程序猿就喜欢自己动手实现,依赖Python的为所欲为的特性，可以任意编码让自己的按键精灵更加强大">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-01-18T11:40:17.124Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用Python实现一个按键精灵">
+<meta name="twitter:description" content="按键精灵想必很多人都玩过，使用录制功能将鼠标和键盘的操作录制下来，录制好后就可以通过回放自动执行之前录制的操作，可以设置重复执行的次数，这样就可以将一些重复的劳动交给脚本自动化去完成。使用Python编写一个和脚本精灵一样的程序非常简单，并且代码量足够少，好处是可以不再依赖按键精灵，像我这种有轻微洁癖的程序猿就喜欢自己动手实现,依赖Python的为所欲为的特性，可以任意编码让自己的按键精灵更加强大">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="蓝士钦" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="https://www.lanshiqin.com/2fb233e2/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>使用Python实现一个按键精灵 | 蓝士钦</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">蓝士钦</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">编程是一种信仰</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.lanshiqin.com/2fb233e2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蓝士钦">
+      <meta itemprop="description" content="编程是一种信仰">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蓝士钦">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">使用Python实现一个按键精灵
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-17 19:11:59" itemprop="dateCreated datePublished" datetime="2019-01-17T19:11:59+08:00">2019-01-17</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-18 19:40:17" itemprop="dateModified" datetime="2019-01-18T19:40:17+08:00">2019-01-18</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon"
+            >
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>按键精灵想必很多人都玩过，使用录制功能将鼠标和键盘的操作录制下来，录制好后就可以通过回放自动执行之前录制的操作，可以设置重复执行的次数，这样就可以将一些重复的劳动交给脚本自动化去完成。使用Python编写一个和脚本精灵一样的程序非常简单，并且代码量足够少，好处是可以不再依赖按键精灵，像我这种有轻微洁癖的程序猿就喜欢自己动手实现,依赖Python的为所欲为的特性，可以任意编码让自己的<code>按键精灵</code>更加强大。<br><a id="more"></a><br><code>按键精灵</code>的实现可以拆解分为录制和回放两个步骤，对应到Python程序的实现也可以分为两步：<br>1.监听鼠标键盘的事件和坐标，写入到文件中记录起来。<br>2.读取监听时写入的文件，执行文件中的坐标和事件操作。</p>
+<p>要实现这两个功能，得先从基础开始。</p>
+<p>Python操作键盘鼠标的库推荐<code>pynput</code>这个库、地址：<br><a href="https://pypi.org/project/pynput/" target="_blank" rel="noopener">https://pypi.org/project/pynput/</a></p>
+<h1 id="鼠标事件监听"><a href="#鼠标事件监听" class="headerlink" title="鼠标事件监听"></a>鼠标事件监听</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pynput <span class="keyword">import</span> mouse</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 鼠标移动事件</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_move</span><span class="params">(x, y)</span>:</span></span><br><span class="line">    print(<span class="string">'[Move]'</span>, (x, y))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 鼠标点击事件</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_click</span><span class="params">(x, y, button, pressed)</span>:</span></span><br><span class="line">    print(<span class="string">'[Click]'</span>, (x, y, button.name, pressed))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 鼠标滚动事件</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_scroll</span><span class="params">(x, y, x_axis, y_axis)</span>:</span></span><br><span class="line">    print(<span class="string">'[Scroll]'</span>, (x, y, x_axis, y_axis))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 监听事件绑定</span></span><br><span class="line"><span class="keyword">with</span> mouse.Listener(on_move=on_move, on_click=on_click, on_scroll=on_scroll) <span class="keyword">as</span> listener:</span><br><span class="line">    listener.join()</span><br></pre></td></tr></table></figure>
+<p><code>onMove(x,y)</code>函数接收鼠标当前的x轴和y轴坐标，启动程序并移动鼠标时，就会调用该方法。<br><code>on_click(x, y, button, pressed)</code>函数接收鼠标的点击事件，x和y为当前点击事件的鼠标坐标，<code>button</code>参数对象的<code>name</code>属性值为<code>left</code>或者<code>right</code>,通过该属性值可以判断是鼠标的左键还是右键产生的点击事件。<br><code>pressed</code>参数值为<code>True</code>时表示当前鼠标左或右键按压，<code>False</code>时表示鼠标左或右键抬起事件<br><code>on_scroll(x, y, x_axis, y_axis)</code>接收四个参数，前两个参数依旧是当前事件的鼠标坐标轴，<code>x_axis</code>的值&gt;0表示向上，&lt;0表示向下，同样的<code>y_axis</code>的负值和正值代表左滑和右滑状态。<br>当</p>
+<h1 id="鼠标事件执行"><a href="#鼠标事件执行" class="headerlink" title="鼠标事件执行"></a>鼠标事件执行</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pynput.mouse <span class="keyword">import</span> Button, Controller</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取鼠标对象</span></span><br><span class="line">mouse = Controller()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出鼠标当前的坐标</span></span><br><span class="line">print(mouse.position)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将新的坐标赋值给鼠标对象</span></span><br><span class="line">mouse.position = (<span class="number">100</span>, <span class="number">500</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> index <span class="keyword">in</span> range(<span class="number">0</span>, <span class="number">30</span>):</span><br><span class="line">    <span class="comment"># 鼠标移动到指定坐标轴</span></span><br><span class="line">    mouse.move(index, -index)</span><br><span class="line">    print(mouse.position)</span><br><span class="line">    time.sleep(<span class="number">0.01</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 鼠标右键按下</span></span><br><span class="line">mouse.press(Button.right)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 鼠标右键抬起</span></span><br><span class="line">mouse.release(Button.right)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 鼠标左键点击</span></span><br><span class="line">mouse.click(Button.left, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 鼠标滚轮滚动距离500</span></span><br><span class="line">mouse.scroll(<span class="number">0</span>, <span class="number">500</span>)</span><br></pre></td></tr></table></figure>
+<p>和鼠标事件监听一样，对应的我们可以操作鼠标的各种事件：移动、左/右按压、左/右抬起、左/右点击、上下左右滚动<br>上面代码中的<code>mouse.move(x,y)</code>函数，表示从当前鼠标位置进行位移的距离，x和y的值是以当前位置为0点开始算的。<br>而且不能简单的用坐标轴去相减得到位移距离，所以后续的程序我会使用<code>mouse.position = (x, y)</code>这个函数来操作鼠标的移动，<br>这个函数可以将鼠标设置到指定位置，只要我们记录之前的鼠标移动轨迹，就可以通过读取之前的记录文件按顺序重新对鼠标进行赋值操作。达到回放的效果。</p>
+<h1 id="鼠标事件监听和执行"><a href="#鼠标事件监听和执行" class="headerlink" title="鼠标事件监听和执行"></a>鼠标事件监听和执行</h1><p>结合鼠标事件的监听和执行，再加上Python自带的GUI，就可以写出一个简单的按键精灵了。<br>实现思路：</p>
+<ol>
+<li>定义一个json格式的对象来统一不同鼠标事件的内容格式<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"name"</span>:<span class="string">"mouse"</span>,</span><br><span class="line">    <span class="attr">"event"</span>:<span class="string">"click"</span>,</span><br><span class="line">    <span class="attr">"target"</span>:<span class="string">"left"</span>,</span><br><span class="line">    <span class="attr">"action"</span>:<span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"location"</span>:&#123;</span><br><span class="line">        <span class="attr">"x"</span>:<span class="number">1229.90625</span>,</span><br><span class="line">        <span class="attr">"y"</span>:<span class="number">18.578125</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>鼠标事件的<code>name</code>值为<code>mouse</code>,考虑到后续还有可能会有其他设备的事件，比如键盘事件。<br>鼠标的事件为点击事件，将<code>event</code>赋值为<code>click</code>。<br><code>target</code>表示目标，点击了鼠标左键,所以目标值为<code>left</code><br><code>action</code>表示动作，鼠标点击分为按压和抬起，<code>true</code>表示抬起。<br><code>location</code>的值包含一个json对象，里面为当前事件鼠标的x和y坐标。<br>鼠标的移动和滑动事件以此类推，用同样的模板格式进行记录。</p>
+<ol start="2">
+<li>将记录的数据写入到文件中</li>
+<li>执行回放时通过逐行读取文件，解析文件中的json数据通过<code>name</code>、<code>event</code>、<code>location</code>等值进行事件执行。</li>
+</ol>
+<p>之所以选择json时因为解析起来比较方便。当然你也可以使用数据库，比如SQLite等，或者自己定义一套自己的格式。<br>json的存储方式有太多的冗余字符了，空间占用目前不是考虑的首要因素，这里先用最快的方式实现它。</p>
+<p>GUI用了Python自带的<code>tkinter</code>库，为了防止UI阻塞，所以使用了多线程，同样是Python自带库<code>threading</code>。<br>整个实现其实只用了一个三方库 <code>pynput</code></p>
+<p>完整代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> threading</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> tkinter</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pynput <span class="keyword">import</span> mouse</span><br><span class="line"><span class="keyword">from</span> pynput.mouse <span class="keyword">import</span> Button, Controller</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 鼠标动作模板</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">mouse_action_template</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="string">"name"</span>: <span class="string">"mouse"</span>,</span><br><span class="line">        <span class="string">"event"</span>: <span class="string">"default"</span>,</span><br><span class="line">        <span class="string">"target"</span>: <span class="string">"default"</span>,</span><br><span class="line">        <span class="string">"action"</span>: <span class="string">"default"</span>,</span><br><span class="line">        <span class="string">"location"</span>: &#123;</span><br><span class="line">            <span class="string">"x"</span>: <span class="string">"0"</span>,</span><br><span class="line">            <span class="string">"y"</span>: <span class="string">"0"</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 鼠标动作监听</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MouseActionListener</span><span class="params">(threading.Thread)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, file_name)</span>:</span></span><br><span class="line">        super().__init__()</span><br><span class="line">        self.file_name = file_name</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">with</span> open(<span class="string">'mouse.action'</span>, <span class="string">'w'</span>, encoding=<span class="string">'utf-8'</span>) <span class="keyword">as</span> file:</span><br><span class="line">            <span class="comment"># 鼠标移动事件</span></span><br><span class="line">            <span class="function"><span class="keyword">def</span> <span class="title">on_move</span><span class="params">(x, y)</span>:</span></span><br><span class="line">                template = mouse_action_template()</span><br><span class="line">                template[<span class="string">'event'</span>] = <span class="string">'move'</span></span><br><span class="line">                template[<span class="string">'location'</span>][<span class="string">'x'</span>] = x</span><br><span class="line">                template[<span class="string">'location'</span>][<span class="string">'y'</span>] = y</span><br><span class="line">                file.writelines(json.dumps(template) + <span class="string">"\n"</span>)</span><br><span class="line">                file.flush()</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 鼠标点击事件</span></span><br><span class="line">            <span class="function"><span class="keyword">def</span> <span class="title">on_click</span><span class="params">(x, y, button, pressed)</span>:</span></span><br><span class="line">                template = mouse_action_template()</span><br><span class="line">                template[<span class="string">'event'</span>] = <span class="string">'click'</span></span><br><span class="line">                template[<span class="string">'target'</span>] = button.name</span><br><span class="line">                template[<span class="string">'action'</span>] = pressed</span><br><span class="line">                template[<span class="string">'location'</span>][<span class="string">'x'</span>] = x</span><br><span class="line">                template[<span class="string">'location'</span>][<span class="string">'y'</span>] = y</span><br><span class="line">                file.writelines(json.dumps(template) + <span class="string">"\n"</span>)</span><br><span class="line">                file.flush()</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 鼠标滚动事件</span></span><br><span class="line">            <span class="function"><span class="keyword">def</span> <span class="title">on_scroll</span><span class="params">(x, y, x_axis, y_axis)</span>:</span></span><br><span class="line">                template = mouse_action_template()</span><br><span class="line">                template[<span class="string">'event'</span>] = <span class="string">'scroll'</span></span><br><span class="line">                template[<span class="string">'location'</span>][<span class="string">'x'</span>] = x_axis</span><br><span class="line">                template[<span class="string">'location'</span>][<span class="string">'y'</span>] = y_axis</span><br><span class="line">                file.writelines(json.dumps(template) + <span class="string">"\n"</span>)</span><br><span class="line">                file.flush()</span><br><span class="line"></span><br><span class="line">            <span class="keyword">with</span> mouse.Listener(on_move=on_move, on_click=on_click, on_scroll=on_scroll) <span class="keyword">as</span> listener:</span><br><span class="line">                listener.join()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 鼠标动作执行</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MouseActionExecute</span><span class="params">(threading.Thread)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, file_name)</span>:</span></span><br><span class="line">        super().__init__()</span><br><span class="line">        self.file_name = file_name</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">with</span> open(<span class="string">'mouse.action'</span>, <span class="string">'r'</span>, encoding=<span class="string">'utf-8'</span>) <span class="keyword">as</span> file:</span><br><span class="line">            mouse_exec = Controller()</span><br><span class="line">            line = file.readline()</span><br><span class="line">            time.sleep(<span class="number">0.01</span>)</span><br><span class="line">            <span class="keyword">while</span> line:</span><br><span class="line">                obj = json.loads(line)</span><br><span class="line">                <span class="keyword">if</span> obj[<span class="string">'name'</span>] == <span class="string">'mouse'</span>:</span><br><span class="line">                    <span class="keyword">if</span> obj[<span class="string">'event'</span>] == <span class="string">'move'</span>:</span><br><span class="line">                        mouse_exec.position = (obj[<span class="string">'location'</span>][<span class="string">'x'</span>], obj[<span class="string">'location'</span>][<span class="string">'y'</span>])</span><br><span class="line">                        time.sleep(<span class="number">0.01</span>)</span><br><span class="line">                    <span class="keyword">if</span> obj[<span class="string">'event'</span>] == <span class="string">'click'</span>:</span><br><span class="line">                        <span class="keyword">if</span> obj[<span class="string">'action'</span>]:</span><br><span class="line">                            <span class="keyword">if</span> obj[<span class="string">'target'</span>] == <span class="string">'left'</span>:</span><br><span class="line">                                mouse_exec.press(Button.left)</span><br><span class="line">                            <span class="keyword">else</span>:</span><br><span class="line">                                mouse_exec.press(Button.right)</span><br><span class="line">                        <span class="keyword">else</span>:</span><br><span class="line">                            <span class="keyword">if</span> obj[<span class="string">'target'</span>] == <span class="string">'left'</span>:</span><br><span class="line">                                mouse_exec.release(Button.left)</span><br><span class="line">                            <span class="keyword">else</span>:</span><br><span class="line">                                mouse_exec.release(Button.right)</span><br><span class="line">                        time.sleep(<span class="number">0.01</span>)</span><br><span class="line">                    <span class="keyword">if</span> obj[<span class="string">'event'</span>] == <span class="string">'scroll'</span>:</span><br><span class="line">                        mouse_exec.scroll(obj[<span class="string">'location'</span>][<span class="string">'x'</span>], obj[<span class="string">'location'</span>][<span class="string">'y'</span>])</span><br><span class="line">                        time.sleep(<span class="number">0.01</span>)</span><br><span class="line">                line = file.readline()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">button_onClick</span><span class="params">(action)</span>:</span></span><br><span class="line">    m1 = MouseActionListener(file_name=<span class="string">'mouse.action'</span>)</span><br><span class="line">    m2 = MouseActionExecute(file_name=<span class="string">'mouse.action'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> action == <span class="string">'listener'</span>:</span><br><span class="line">        <span class="keyword">if</span> startListenerBtn[<span class="string">'text'</span>] == <span class="string">'录制'</span>:</span><br><span class="line">            m1.start()</span><br><span class="line">            startListenerBtn[<span class="string">'text'</span>] = <span class="string">'录制中...关闭程序停止录制'</span></span><br><span class="line">            startListenerBtn[<span class="string">'state'</span>] = <span class="string">'disabled'</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">elif</span> action == <span class="string">'execute'</span>:</span><br><span class="line">        <span class="keyword">if</span> startExecuteBtn[<span class="string">'text'</span>] == <span class="string">'回放'</span>:</span><br><span class="line">            m2.start()</span><br><span class="line">            startExecuteBtn[<span class="string">'text'</span>] = <span class="string">'回放中...关闭程序停止回放'</span></span><br><span class="line">            startExecuteBtn[<span class="string">'state'</span>] = <span class="string">'disabled'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    root = tkinter.Tk()</span><br><span class="line">    root.title(<span class="string">'按键精灵-蓝士钦'</span>)</span><br><span class="line">    root.geometry(<span class="string">'200x200+400+100'</span>)</span><br><span class="line"></span><br><span class="line">    startListenerBtn = tkinter.Button(root, text=<span class="string">"录制"</span>, command=<span class="keyword">lambda</span>: button_onClick(<span class="string">'listener'</span>))</span><br><span class="line">    startListenerBtn.place(x=<span class="number">10</span>, y=<span class="number">10</span>, width=<span class="number">180</span>, height=<span class="number">80</span>)</span><br><span class="line"></span><br><span class="line">    startExecuteBtn = tkinter.Button(root, text=<span class="string">"回放"</span>, command=<span class="keyword">lambda</span>: button_onClick(<span class="string">'execute'</span>))</span><br><span class="line">    startExecuteBtn.place(x=<span class="number">10</span>, y=<span class="number">110</span>, width=<span class="number">180</span>, height=<span class="number">80</span>)</span><br><span class="line">    root.mainloop()</span><br></pre></td></tr></table></figure>
+<p>按键精灵的鼠标部分到这里就基本完成了。<br>运行程序，点击<code>录制</code>，然后就可以用你的鼠标在屏幕上一顿操作。然后关闭本程序。<br>接着重新打开程序，点击<code>回放</code>，就会发现鼠标可以按照之前录制的动作进行自动工作了。<br>记住千万不要在<code>录制</code>时，还没关闭程序的时候就点击<code>回放</code>，这样会陷入无限循环里面，会导致不停的录制不停的回放。<br>还有键盘的程序后续补上，程序待完善中，未完待续。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag"><i class="fa fa-tag"></i> Python</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/204682e6/" rel="next" title="使用Python提高工作效率之SQLite">
+                <i class="fa fa-chevron-left"></i> 使用Python提高工作效率之SQLite
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div id="gitalk-container"></div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="蓝士钦" />
+            
+              <p class="site-author-name" itemprop="name">蓝士钦</p>
+              <p class="site-description motion-element" itemprop="description">编程是一种信仰</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">36</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">22</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/lanshiqin" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://weibo.com/l18120788756" target="_blank" title="Weibo"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.jianshu.com/u/082f73dac819" target="_blank" title="JianShu"><i class="fa fa-fw fa-heartbeat"></i>JianShu</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:lanshiqin@outlook.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#鼠标事件监听"><span class="nav-number">1.</span> <span class="nav-text">鼠标事件监听</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#鼠标事件执行"><span class="nav-number">2.</span> <span class="nav-text">鼠标事件执行</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#鼠标事件监听和执行"><span class="nav-number">3.</span> <span class="nav-text">鼠标事件监听和执行</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">蓝士钦</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+  <div class="footer-custom">闽ICP备15027850号</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv" title="总访客量">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="site-pv" title="总访问量">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.4.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+        var gitalk = new Gitalk({
+          clientID: 'dbbb41b4b5cb67b7abc7',
+          clientSecret: 'bc34f9315b09e4f330043a8a0eea6e664fc2d197',
+          repo: 'lanshiqin-blog',
+          owner: 'lanshiqin',
+          admin: ['lanshiqin'],
+          id: location.pathname,
+          distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')           
+       </script>
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 --> 
+<script type="text/javascript" src="/js/src/love.js"></script>
+<!--崩溃欺骗-->
+<script type="text/javascript" src="/js/src/crash_cheat.js"></script>
