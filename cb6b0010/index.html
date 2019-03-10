@@ -130,7 +130,7 @@
 <meta property="og:image" content="https://www.lanshiqin.com/cb6b0010/mq02.png">
 <meta property="og:image" content="https://www.lanshiqin.com/cb6b0010/mq03.png">
 <meta property="og:image" content="https://www.lanshiqin.com/cb6b0010/mq04.png">
-<meta property="og:updated_time" content="2019-03-03T13:51:09.056Z">
+<meta property="og:updated_time" content="2019-03-05T12:51:38.459Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="消息队列知识点梳理">
 <meta name="twitter:description" content="消息队列（Message Queue）简称MQ，用于应用程序之间的消息传递，在消息中间件领域有着广泛的应用。高级消息队列协议（Advenced Message Queuing Protocol）简称（AMQP），是应用层协议的一个开放标准。AMQP协议可以使用任何编程语言实现，基于AMQP协议实现的中间件有：RabbitMQ、ActiveMQ、RocketMQ等。">
@@ -409,12 +409,24 @@
                 
               
 
-              <time title="创建时间：2019-03-03 11:19:57 / 修改时间：21:51:09" itemprop="dateCreated datePublished" datetime="2019-03-03T11:19:57+08:00">2019-03-03</time>
+              <time title="创建时间：2019-03-03 11:19:57" itemprop="dateCreated datePublished" datetime="2019-03-03T11:19:57+08:00">2019-03-03</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-03-05 20:51:38" itemprop="dateModified" datetime="2019-03-05T20:51:38+08:00">2019-03-05</time>
               
             
           </span>
@@ -455,7 +467,7 @@
       
 
       
-        <p>消息队列（Message Queue）简称MQ，用于应用程序之间的消息传递，在消息中间件领域有着广泛的应用。<br>高级消息队列协议（Advenced Message Queuing Protocol）简称（AMQP），是应用层协议的一个开放标准。<br>AMQP协议可以使用任何编程语言实现，基于AMQP协议实现的中间件有：RabbitMQ、ActiveMQ、RocketMQ等。<br><a id="more"></a></p>
+        <p>消息队列（Message Queue）简称MQ，用于应用程序之间的消息传递，在消息中间件领域有着广泛的应用。高级消息队列协议（Advenced Message Queuing Protocol）简称（AMQP），是应用层协议的一个开放标准。AMQP协议可以使用任何编程语言实现，基于AMQP协议实现的中间件有：RabbitMQ、ActiveMQ、RocketMQ等。<br><a id="more"></a></p>
 <h1 id="基础部分"><a href="#基础部分" class="headerlink" title="基础部分"></a>基础部分</h1><h2 id="使用消息队列的优点"><a href="#使用消息队列的优点" class="headerlink" title="使用消息队列的优点"></a>使用消息队列的优点</h2><p>使用消息队列之前，可以先看看消息队列有什么优点，能够解决什么样的问题，也就是为什么要使用消息队列的原因</p>
 <h3 id="解耦"><a href="#解耦" class="headerlink" title="解耦"></a>解耦</h3><p><code>使用消息队列前</code><br><img src="/cb6b0010/mq01.png" title="mq"><br>系统A直接调用系统B、系统C，调用代码是硬编码的，系统之间存在依赖耦合的关系。<br>如果后续有新的系统需要接入到A系统中，那么就需要通过不断的修改A系统的代码来实现，不利于系统扩展。</p>
 <p><code>使用消息队列后</code><br><img src="/cb6b0010/mq02.png" title="mq"><br>系统A不直接调用其他系统，而是将消息发送给消息队列，系统A不必关心有多少个系统会消费该消息。后续有新系统需要接入时，只需要订阅消息队列即可。</p>
@@ -511,6 +523,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/f9e910b8/" rel="prev" title="RabbitMQ知识点梳理">
+                RabbitMQ知识点梳理 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -587,7 +603,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-count">38</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

@@ -118,23 +118,23 @@
 
 
 
-  <meta name="description" content="最近有这样一需求，需要获取12123交管查询网站上的全国每个城市对应的城市id和车牌代码。最初的想法是直接用Python写个爬虫，遍历每个城市，然后用Xpath提取DOM节点数据就好了。然而在实际操作中发现城市id的DOM节点如果用简单的获取网页数据的爬虫是取不到id值的，这个城市id值必须用浏览器打开的方式去访问，然后网站的js脚本再动态的将城市id插入DOM节点。于是乎想到了用自动化测试工">
-<meta name="keywords" content="Python">
+  <meta name="description" content="RabbitMQ是一个开源的消息代理程序，实现了高级消息队列协议（AMQP）并且可以通过插件的方式进行扩展，使其支持STOMP和MQTT等协议，是目前应用最为广泛的面向消息的中间件之一。RabbitMQ支持各种主流的编程语言，比如Python、Java、C#、Go、Swift等，并且可以在各种操作系统平台上运行，通过扩展的MQTT协议可以很轻量的在移动设备上实现消息推送，早期的Android推送服">
+<meta name="keywords" content="蓝士钦">
 <meta property="og:type" content="article">
-<meta property="og:title" content="使用Python自动化获取全国每个城市的车牌代码">
-<meta property="og:url" content="https://www.lanshiqin.com/675a168f/index.html">
+<meta property="og:title" content="RabbitMQ知识点梳理">
+<meta property="og:url" content="https://www.lanshiqin.com/f9e910b8/index.html">
 <meta property="og:site_name" content="蓝士钦">
-<meta property="og:description" content="最近有这样一需求，需要获取12123交管查询网站上的全国每个城市对应的城市id和车牌代码。最初的想法是直接用Python写个爬虫，遍历每个城市，然后用Xpath提取DOM节点数据就好了。然而在实际操作中发现城市id的DOM节点如果用简单的获取网页数据的爬虫是取不到id值的，这个城市id值必须用浏览器打开的方式去访问，然后网站的js脚本再动态的将城市id插入DOM节点。于是乎想到了用自动化测试工">
+<meta property="og:description" content="RabbitMQ是一个开源的消息代理程序，实现了高级消息队列协议（AMQP）并且可以通过插件的方式进行扩展，使其支持STOMP和MQTT等协议，是目前应用最为广泛的面向消息的中间件之一。RabbitMQ支持各种主流的编程语言，比如Python、Java、C#、Go、Swift等，并且可以在各种操作系统平台上运行，通过扩展的MQTT协议可以很轻量的在移动设备上实现消息推送，早期的Android推送服">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://www.lanshiqin.com/675a168f/car.svg">
-<meta property="og:image" content="https://www.lanshiqin.com/675a168f/01.png">
-<meta property="og:image" content="https://www.lanshiqin.com/675a168f/console.png">
-<meta property="og:image" content="https://www.lanshiqin.com/675a168f/02.png">
-<meta property="og:updated_time" content="2019-01-30T11:41:32.808Z">
+<meta property="og:image" content="https://www.lanshiqin.com/f9e910b8/producer.png">
+<meta property="og:image" content="https://www.lanshiqin.com/f9e910b8/queue.png">
+<meta property="og:image" content="https://www.lanshiqin.com/f9e910b8/consumer.png">
+<meta property="og:image" content="https://www.lanshiqin.com/f9e910b8/python-one.png">
+<meta property="og:updated_time" content="2019-03-08T13:11:32.360Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="使用Python自动化获取全国每个城市的车牌代码">
-<meta name="twitter:description" content="最近有这样一需求，需要获取12123交管查询网站上的全国每个城市对应的城市id和车牌代码。最初的想法是直接用Python写个爬虫，遍历每个城市，然后用Xpath提取DOM节点数据就好了。然而在实际操作中发现城市id的DOM节点如果用简单的获取网页数据的爬虫是取不到id值的，这个城市id值必须用浏览器打开的方式去访问，然后网站的js脚本再动态的将城市id插入DOM节点。于是乎想到了用自动化测试工">
-<meta name="twitter:image" content="https://www.lanshiqin.com/675a168f/car.svg">
+<meta name="twitter:title" content="RabbitMQ知识点梳理">
+<meta name="twitter:description" content="RabbitMQ是一个开源的消息代理程序，实现了高级消息队列协议（AMQP）并且可以通过插件的方式进行扩展，使其支持STOMP和MQTT等协议，是目前应用最为广泛的面向消息的中间件之一。RabbitMQ支持各种主流的编程语言，比如Python、Java、C#、Go、Swift等，并且可以在各种操作系统平台上运行，通过扩展的MQTT协议可以很轻量的在移动设备上实现消息推送，早期的Android推送服">
+<meta name="twitter:image" content="https://www.lanshiqin.com/f9e910b8/producer.png">
 
 
 
@@ -143,7 +143,7 @@
 
 
 
-  <link rel="canonical" href="https://www.lanshiqin.com/675a168f/"/>
+  <link rel="canonical" href="https://www.lanshiqin.com/f9e910b8/"/>
 
 
 
@@ -153,7 +153,7 @@
   };
 </script>
 
-  <title>使用Python自动化获取全国每个城市的车牌代码 | 蓝士钦</title>
+  <title>RabbitMQ知识点梳理 | 蓝士钦</title>
   
 
 
@@ -367,7 +367,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.lanshiqin.com/675a168f/">
+    <link itemprop="mainEntityOfPage" href="https://www.lanshiqin.com/f9e910b8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="蓝士钦">
@@ -384,7 +384,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">使用Python自动化获取全国每个城市的车牌代码
+          <h1 class="post-title" itemprop="name headline">RabbitMQ知识点梳理
               
             
           </h1>
@@ -409,7 +409,7 @@
                 
               
 
-              <time title="创建时间：2018-06-10 20:56:05" itemprop="dateCreated datePublished" datetime="2018-06-10T20:56:05+08:00">2018-06-10</time>
+              <time title="创建时间：2019-03-05 21:50:54" itemprop="dateCreated datePublished" datetime="2019-03-05T21:50:54+08:00">2019-03-05</time>
             
 
             
@@ -426,29 +426,11 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-01-30 19:41:32" itemprop="dateModified" datetime="2019-01-30T19:41:32+08:00">2019-01-30</time>
+                <time title="修改时间：2019-03-08 21:11:32" itemprop="dateModified" datetime="2019-03-08T21:11:32+08:00">2019-03-08</time>
               
             
           </span>
 
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a></span>
-
-                
-                
-              
-            </span>
           
 
           
@@ -485,25 +467,19 @@
       
 
       
-        <img src="/675a168f/car.svg" title="car">
-<blockquote>
-<p>最近有这样一需求，需要获取12123交管查询网站上的全国每个城市对应的城市id和车牌代码。最初的想法是直接用Python写个爬虫，遍历每个城市，然后用Xpath提取DOM节点数据就好了。然而在实际操作中发现城市id的DOM节点如果用简单的获取网页数据的爬虫是取不到id值的，这个城市id值必须用浏览器打开的方式去访问，然后网站的js脚本再动态的将城市id插入DOM节点。于是乎想到了用自动化测试工具来做，使用selenium库来操作webdriver，驱动Chrome浏览器进行自动化操作。</p>
-</blockquote>
+        <p>RabbitMQ是一个开源的消息代理程序，实现了高级消息队列协议（AMQP）并且可以通过插件的方式进行扩展，使其支持STOMP和MQTT等协议，是目前应用最为广泛的面向消息的中间件之一。RabbitMQ支持各种主流的编程语言，比如Python、Java、C#、Go、Swift等，并且可以在各种操作系统平台上运行，通过扩展的MQTT协议可以很轻量的在移动设备上实现消息推送，早期的Android推送服务就是采用MQTT的方式进行消息订阅和推送的。</p>
 <a id="more"></a>
-<p>由于这个网站有一点特殊，并没有在同一个页面中有全部城市的id和车牌代码，每个城市都是一个单独的二级域名链接。并且城市id使用js动态加载，所以这里就用蠢一点的方法，自动获取到每个城市的链接,然后用浏览器自动化模式去逐个访问再Xpath提取出内容。</p>
-<p>当然，这里的重复劳动力交给计算机就好，我们只需要把程序写好。</p>
-<p>使用Chrome浏览器打开12123的城市列表选择页面 <a href="http://m.12123.com/city.html" target="_blank" rel="noopener">http://m.12123.com/city.html</a><br><img src="/675a168f/01.png" title="car"><br>右键，审查元素，发现所有的城市都在ul 的 li标签下。<br>只需要把li的元素Xpath拷贝出来，提取到城市列表后遍历每个列表的链接，再用浏览器自动化去访问每个城市的链接，最后用相同的方法提取出数据即可。<br>拷贝出来的Xpath如下<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/html/body/div[2]/div[3]/ul/li</span><br></pre></td></tr></table></figure></p>
-<p>用Xpath的方式有个好处就是不需要写复杂的正则表达式就可以快速提取到DOM元素的数据。</p>
-<p>我要实现的功能：</p>
-<ol>
-<li>自动获取全国所有的城市对应的id和车牌代码</li>
-<li>将获取到的数据写入到文件，输出为SQL的insert语句</li>
-</ol>
-<p>全部代码如下：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">12123.com 交管查询助手</span></span><br><span class="line"><span class="string">获取所有的 城市名称+城市车牌代码+城市id</span></span><br><span class="line"><span class="string">生成SQL insert语句</span></span><br><span class="line"><span class="string">create by 蓝士钦 2018-06-10</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">import</span> datetime</span><br><span class="line"></span><br><span class="line"><span class="comment"># 12123.com 交管查询网站移动版网址</span></span><br><span class="line">HOST_URL = <span class="string">'http://m.12123.com'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_city_info</span><span class="params">(file_name)</span>:</span></span><br><span class="line">    <span class="comment"># 请求城市列表页面，并用xpath提取所有的城市列表集合</span></span><br><span class="line">    html = requests.get(HOST_URL + <span class="string">'/city.html'</span>)</span><br><span class="line">    select = etree.HTML(html.text)</span><br><span class="line">    content = select.xpath(<span class="string">'/html/body/div[2]/div[3]/ul/li'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 打开指定文件，准备将请求到的数据写入到文件中</span></span><br><span class="line">    file = open(file_name, <span class="string">'w'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 遍历所有的城市列表集合</span></span><br><span class="line">    <span class="keyword">for</span> index, value <span class="keyword">in</span> enumerate(content):</span><br><span class="line">        <span class="comment"># 提取当前城市列表中的a标签的城市链接</span></span><br><span class="line">        item = value.xpath(<span class="string">'/html/body/div[2]/div[3]/ul/li['</span> + str(index) + <span class="string">']/a/@href'</span>)</span><br><span class="line">        <span class="keyword">for</span> city_path <span class="keyword">in</span> item:</span><br><span class="line">            city_url = HOST_URL + city_path</span><br><span class="line">            print(<span class="string">'当前城市链接：'</span> + city_url)</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                <span class="comment"># 打开Chrome浏览器，自动化访问城市链接</span></span><br><span class="line">                browser = webdriver.Chrome()</span><br><span class="line">                browser.get(url=city_url)</span><br><span class="line">                <span class="comment"># 提取城市名称、城市车牌代码、城市id</span></span><br><span class="line">                city_name = browser.find_element_by_xpath(<span class="string">'/html/body/div[4]/div[1]/a/span'</span>).text</span><br><span class="line">                car_num_pre = browser.find_element_by_xpath(<span class="string">'//*[@id="txtAbbr"]'</span>).text + browser.find_element_by_xpath(</span><br><span class="line">                    <span class="string">'//*[@id="txtInitial"]'</span>).text</span><br><span class="line">                city_id = browser.find_element_by_xpath(<span class="string">'//*[@id="cityId"]'</span>).get_attribute(<span class="string">'value'</span>)</span><br><span class="line">                print(<span class="string">'城市名称:'</span> + city_name + <span class="string">' 车牌代码:'</span> + car_num_pre + <span class="string">' 城市id:'</span> + city_id)</span><br><span class="line">                <span class="comment"># 写入文件</span></span><br><span class="line">                file.writelines(<span class="string">"insert into city_info ('city_name','car_num_pre','city_id') "</span></span><br><span class="line">                                + <span class="string">"values ('"</span> + city_name + <span class="string">"','"</span> + car_num_pre + <span class="string">"','"</span> + city_id + <span class="string">"');\n"</span>)</span><br><span class="line">                <span class="comment"># 刷新缓冲区，将缓冲区数据写入文件，防止缓冲区有大量待写入数据时突然断电造成数据丢失</span></span><br><span class="line">                file.flush()</span><br><span class="line">                <span class="comment"># 关闭浏览器</span></span><br><span class="line">                browser.close()</span><br><span class="line">            <span class="keyword">except</span>:</span><br><span class="line">                print(<span class="string">'获取城市信息时发生异常'</span>)</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 关闭文件流</span></span><br><span class="line">    file.close()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    start_time = datetime.datetime.now()</span><br><span class="line">    <span class="comment"># 获取城市名称、车牌代码、城市id，并写入指定的sql文件中</span></span><br><span class="line">    get_city_info(<span class="string">"city_info.sql"</span>)</span><br><span class="line">    end_time = datetime.datetime.now()</span><br><span class="line">    print(<span class="string">'总用时:'</span> + str((end_time - start_time).seconds) + <span class="string">'秒'</span>)</span><br></pre></td></tr></table></figure>
-<p>点击运行之后就可以放心的出去玩了😋<br><img src="/675a168f/console.png" title="car"><br>控制台这边对每个链接的访问情况做了输出，如果有异常（网络超时）可以等全部结束后单独把异常的城市再跑一边即可。<br>最后输出的SQL文件如下图：<br><img src="/675a168f/02.png" title="car"></p>
-<p>注： 使用WebDriver前，需要将对应平台的webdriver驱动复制到系统环境变量中。</p>
-
+<p>在知识点梳理之前，先对消息队列（MQ）的各个名词和定义等基本概念进行一下基本的介绍。</p>
+<h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><h2 id="producer"><a href="#producer" class="headerlink" title="producer"></a>producer</h2><p>producer（生产者），发送消息的程序代表生产者，生产者只进行消息的发送，可以用首字母P来表示。<br><img src="/f9e910b8/producer.png" title="producer"></p>
+<h2 id="queue"><a href="#queue" class="headerlink" title="queue"></a>queue</h2><p>queue（队列），这里的队列指的是消息队列，消息队列的本质是一个消息缓冲区，消息队列把消息存储在主机的内存和磁盘上。<br>许多生产者可以往一个队列发送数据，许多消费者可以从一个队列接收数据，消息队列有时也称为消息代理。<br><img src="/f9e910b8/queue.png" title="queue"></p>
+<h2 id="consumer"><a href="#consumer" class="headerlink" title="consumer"></a>consumer</h2><p>consumer（消费者），是一个等待接收消息的程序，从消息队列接收数据的程序代表消费者，可以用首字母C来表示。<br><img src="/f9e910b8/consumer.png" title="consumer"></p>
+<blockquote>
+<p>生产者、消费者和代理不必运行在同一个主机上，可以分布在不同的主机上，并且一个程序可以同时既是生产者又是消费者。</p>
+</blockquote>
+<h2 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h2><p>本实例会创建一个<code>生产者</code>项目用来向消息队列发送数据，创建一个<code>消费者</code>项目用来从消息队列里接收数据，消费者需要注册到指定到MQ队列中，如下图所示：<br><img src="/f9e910b8/python-one.png" title="queue"><br>在开始之前，需要先从RabbitMQ到官网下载RabbitMQ服务进行安装并启动服务，并且根据自己所用到开发语言下载操作RabbitMQ所需要的驱动程序，由于我使用Gradle构建项目，所以不必自己下载和管理jar包，只需要引入以下依赖即可：<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">compile</span> <span class="keyword">group</span>: <span class="string">'com.rabbitmq'</span>, name: <span class="string">'amqp-client'</span>, version: <span class="string">'5.6.0'</span></span><br></pre></td></tr></table></figure></p>
+<p>生产者：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Connection;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Channel;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.TimeoutException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProducerSample</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String QUEUE_NAME = <span class="string">"hello"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, TimeoutException </span>&#123;</span><br><span class="line">        ConnectionFactory connectionFactory = <span class="keyword">new</span> ConnectionFactory();</span><br><span class="line">        connectionFactory.setHost(<span class="string">"114.215.130.234"</span>);</span><br><span class="line">        connectionFactory.setPort(<span class="number">5672</span>);</span><br><span class="line">        connectionFactory.setUsername(<span class="string">"lanshiqin"</span>);</span><br><span class="line">        connectionFactory.setPassword(<span class="string">"BvcxzgfD142536*#"</span>);</span><br><span class="line">        <span class="keyword">try</span>(Connection connection = connectionFactory.newConnection())&#123;</span><br><span class="line">            Channel channel = connection.createChannel();</span><br><span class="line">            channel.queueDeclare(QUEUE_NAME,<span class="keyword">false</span>,<span class="keyword">false</span>,<span class="keyword">false</span>,<span class="keyword">null</span>);</span><br><span class="line">            String message = <span class="string">"Hello,World!"</span>;</span><br><span class="line">            channel.basicPublish(<span class="string">""</span>,QUEUE_NAME,<span class="keyword">null</span>,message.getBytes());</span><br><span class="line">            System.out.println(<span class="string">" [x] Send '"</span> + message + <span class="string">"'"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>消费者：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Connection;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Channel;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.DeliverCallback;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.nio.charset.StandardCharsets;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.TimeoutException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConsumerSample</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String QUEUE_NAME = <span class="string">"hello"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, TimeoutException </span>&#123;</span><br><span class="line">        ConnectionFactory connectionFactory = <span class="keyword">new</span> ConnectionFactory();</span><br><span class="line">        connectionFactory.setHost(<span class="string">"114.215.130.234"</span>);</span><br><span class="line">        connectionFactory.setPort(<span class="number">5672</span>);</span><br><span class="line">        connectionFactory.setUsername(<span class="string">"lanshiqin"</span>);</span><br><span class="line">        connectionFactory.setPassword(<span class="string">"BvcxzgfD142536*#"</span>);</span><br><span class="line">        <span class="keyword">try</span>(Connection connection = connectionFactory.newConnection())&#123;</span><br><span class="line">            Channel channel = connection.createChannel();</span><br><span class="line">            channel.queueDeclare(QUEUE_NAME,<span class="keyword">false</span>,<span class="keyword">false</span>,<span class="keyword">false</span>,<span class="keyword">null</span>);</span><br><span class="line">            System.out.println(<span class="string">" [*] Waiting for messages. To exit press CTRL+C"</span>);</span><br><span class="line">            DeliverCallback deliverCallback = (consumerTag, delivery) -&gt; &#123;</span><br><span class="line">                String message = <span class="keyword">new</span> String(delivery.getBody(), StandardCharsets.UTF_8);</span><br><span class="line">                System.out.println(<span class="string">" [x] Received '"</span> + message + <span class="string">"'"</span>);</span><br><span class="line">            &#125;;</span><br><span class="line">            channel.basicConsume(QUEUE_NAME,<span class="keyword">true</span>,deliverCallback,consumerTag -&gt; &#123;&#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="ConnectionFactory"><a href="#ConnectionFactory" class="headerlink" title="ConnectionFactory"></a>ConnectionFactory</h3><h3 id="Connection"><a href="#Connection" class="headerlink" title="Connection"></a>Connection</h3><h3 id="Channel"><a href="#Channel" class="headerlink" title="Channel"></a>Channel</h3><h1 id="生产者"><a href="#生产者" class="headerlink" title="生产者"></a>生产者</h1><h1 id="消费者"><a href="#消费者" class="headerlink" title="消费者"></a>消费者</h1><h1 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h1><h1 id="快速开始"><a href="#快速开始" class="headerlink" title="快速开始"></a>快速开始</h1><h1 id="工作队列"><a href="#工作队列" class="headerlink" title="工作队列"></a>工作队列</h1><h1 id="发布订阅模式"><a href="#发布订阅模式" class="headerlink" title="发布订阅模式"></a>发布订阅模式</h1>
       
     </div>
 
@@ -521,12 +497,6 @@
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/Python/" rel="tag"><i class="fa fa-tag"></i> Python</a>
-          
-        </div>
-      
 
       
       
@@ -536,8 +506,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/63d56522/" rel="next" title="使用Golang造轮子">
-                <i class="fa fa-chevron-left"></i> 使用Golang造轮子
+              <a href="/cb6b0010/" rel="next" title="消息队列知识点梳理">
+                <i class="fa fa-chevron-left"></i> 消息队列知识点梳理
               </a>
             
           </div>
@@ -545,10 +515,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/a8b16990/" rel="prev" title="使用Kotlin提高开发效率">
-                使用Kotlin提高开发效率 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -596,8 +562,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -735,6 +710,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基本概念"><span class="nav-number">1.</span> <span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#producer"><span class="nav-number">1.1.</span> <span class="nav-text">producer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#queue"><span class="nav-number">1.2.</span> <span class="nav-text">queue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#consumer"><span class="nav-number">1.3.</span> <span class="nav-text">consumer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用示例"><span class="nav-number">1.4.</span> <span class="nav-text">使用示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ConnectionFactory"><span class="nav-number">1.4.1.</span> <span class="nav-text">ConnectionFactory</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Connection"><span class="nav-number">1.4.2.</span> <span class="nav-text">Connection</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Channel"><span class="nav-number">1.4.3.</span> <span class="nav-text">Channel</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#生产者"><span class="nav-number">2.</span> <span class="nav-text">生产者</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#消费者"><span class="nav-number">3.</span> <span class="nav-text">消费者</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#消息队列"><span class="nav-number">4.</span> <span class="nav-text">消息队列</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#快速开始"><span class="nav-number">5.</span> <span class="nav-text">快速开始</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#工作队列"><span class="nav-number">6.</span> <span class="nav-text">工作队列</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#发布订阅模式"><span class="nav-number">7.</span> <span class="nav-text">发布订阅模式</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
