@@ -126,17 +126,16 @@
 <meta property="og:site_name" content="蓝士钦">
 <meta property="og:description" content="缓冲区溢出是指向程序缓冲区写入超出预分配固定长度数据的情况。这一漏洞可以被攻击者利用来改变程序的流程控制，甚至执行代码的任意片段。缓冲区溢出攻击成为远程攻击的主要手段，攻击者利用缓冲区溢出漏洞可以植入并且执行任意的攻击代码，缓冲区溢出漏洞给予了攻击者想要的一切，甚至得到被攻击计算机的控制权。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://www.lanshiqin.com/e2f22ec7/overflow.png">
 <meta property="og:image" content="https://www.lanshiqin.com/e2f22ec7/1.png">
 <meta property="og:image" content="https://www.lanshiqin.com/e2f22ec7/2.png">
 <meta property="og:image" content="https://www.lanshiqin.com/e2f22ec7/3.png">
 <meta property="og:image" content="https://www.lanshiqin.com/e2f22ec7/4.png">
 <meta property="og:image" content="https://www.lanshiqin.com/e2f22ec7/5.png">
-<meta property="og:updated_time" content="2019-01-30T11:39:05.219Z">
+<meta property="og:updated_time" content="2019-03-10T02:26:47.651Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="缓冲区溢出攻击实验">
 <meta name="twitter:description" content="缓冲区溢出是指向程序缓冲区写入超出预分配固定长度数据的情况。这一漏洞可以被攻击者利用来改变程序的流程控制，甚至执行代码的任意片段。缓冲区溢出攻击成为远程攻击的主要手段，攻击者利用缓冲区溢出漏洞可以植入并且执行任意的攻击代码，缓冲区溢出漏洞给予了攻击者想要的一切，甚至得到被攻击计算机的控制权。">
-<meta name="twitter:image" content="https://www.lanshiqin.com/e2f22ec7/overflow.png">
+<meta name="twitter:image" content="https://www.lanshiqin.com/e2f22ec7/1.png">
 
 
 
@@ -428,7 +427,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-01-30 19:39:05" itemprop="dateModified" datetime="2019-01-30T19:39:05+08:00">2019-01-30</time>
+                <time title="修改时间：2019-03-10 10:26:47" itemprop="dateModified" datetime="2019-03-10T10:26:47+08:00">2019-03-10</time>
               
             
           </span>
@@ -487,10 +486,7 @@
       
 
       
-        <img src="/e2f22ec7/overflow.png" title="overflow">
-<blockquote>
-<p>缓冲区溢出是指向程序缓冲区写入超出预分配固定长度数据的情况。这一漏洞可以被攻击者利用来改变程序的流程控制，甚至执行代码的任意片段。缓冲区溢出攻击成为远程攻击的主要手段，攻击者利用缓冲区溢出漏洞可以植入并且执行任意的攻击代码，缓冲区溢出漏洞给予了攻击者想要的一切，甚至得到被攻击计算机的控制权。</p>
-</blockquote>
+        <p>缓冲区溢出是指向程序缓冲区写入超出预分配固定长度数据的情况。这一漏洞可以被攻击者利用来改变程序的流程控制，甚至执行代码的任意片段。缓冲区溢出攻击成为远程攻击的主要手段，攻击者利用缓冲区溢出漏洞可以植入并且执行任意的攻击代码，缓冲区溢出漏洞给予了攻击者想要的一切，甚至得到被攻击计算机的控制权。</p>
 <a id="more"></a>
 <p>缓冲区溢出漏洞能够被利用的主要原因是计算机采用了“<code>冯·诺依曼体系结构</code>”，该体系结构把程序指令也当做数据来对待，指令和数据不加区分混合存储在同一个存储器中，数据和程序在内存中是没有区别的,它们都是内存中的数据,当EIP指针指向哪 CPU就加载那段内存中的数据。这就造成数据存在覆盖指令的情况，<font color="red" face="黑体">如果数据指向一个内存地址并且覆盖了EIP指针所指向的地址，那么程序就会跳转到攻击者指定的代码段执行。</font></p>
 <h2 id="概念部分："><a href="#概念部分：" class="headerlink" title="概念部分："></a>概念部分：</h2><p>计算机程序被CPU执行前需要先被载入内存，程序所在的内存由操作系统进行分配，程序内部使用的变量或者接收用户输入的数据都需要分配内存，这块内存区域也叫做缓冲区，程序被载入到内存后的结构如下图绿色区域所示：<br><img src="/e2f22ec7/1.png" title="overflow"><br>一个程序占用着一块内存区域，这块区域包含了程序函数的调用栈，数据，缓冲区等。如果向缓冲区写入超出长度的数据，那么数据将会覆盖到程序的其他内存区域，如果函数调用栈里某个函数地址被覆盖成其他函数地址，那么这个程序执行流程将会被改变，将会执行覆盖数据指定地址的函数。更为严重的是如果被植入精心构造的恶意代码并执行，攻击者将会得到运行该程序的用户权限，如果该程序以root角色执行，那么攻击者就可以得到目标计算机的完全控制权。</p>
@@ -663,7 +659,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-count">29</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

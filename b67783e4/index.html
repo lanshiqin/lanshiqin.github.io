@@ -118,23 +118,22 @@
 
 
 
-  <meta name="description" content="将程序打包成jar包提测，然后测试小姐姐过来跟你说程序有bug的时候就不得不改完然后重新打一个jar包部署到测试服重新运行。有时候甚至只是改了一个类中的某一行代码，就要将整个工程重新打包上传提测，这样不仅非常麻烦而且还浪费了很多时间。既然只是改了一小部分的代码，那我们试想一下能不能动态替换JVM中的的某个类的字节码，达到每次只要更新修改的代码就可以自动进行动态替换，不需要做打包和重启的工作。经">
+  <meta name="description" content="将程序打包提测，然后测试小姐姐过来跟你说程序有bug的时候就不得不改完bug然后重新替换部署到测试服重新运行。这样不仅非常麻烦而且还浪费了很多时间。既然只是改了一小部分的代码，那我们试想一下能不能动态替换JVM中的的某个类的字节码，达到每次只要更新修改的代码就可以自动进行动态替换，不需要做打包和重启的工作。经过验证发现这种方案是可行的。">
 <meta name="keywords" content="JVM">
 <meta property="og:type" content="article">
 <meta property="og:title" content="动态替换JVM中的Class字节码">
 <meta property="og:url" content="https://www.lanshiqin.com/b67783e4/index.html">
 <meta property="og:site_name" content="蓝士钦">
-<meta property="og:description" content="将程序打包成jar包提测，然后测试小姐姐过来跟你说程序有bug的时候就不得不改完然后重新打一个jar包部署到测试服重新运行。有时候甚至只是改了一个类中的某一行代码，就要将整个工程重新打包上传提测，这样不仅非常麻烦而且还浪费了很多时间。既然只是改了一小部分的代码，那我们试想一下能不能动态替换JVM中的的某个类的字节码，达到每次只要更新修改的代码就可以自动进行动态替换，不需要做打包和重启的工作。经">
+<meta property="og:description" content="将程序打包提测，然后测试小姐姐过来跟你说程序有bug的时候就不得不改完bug然后重新替换部署到测试服重新运行。这样不仅非常麻烦而且还浪费了很多时间。既然只是改了一小部分的代码，那我们试想一下能不能动态替换JVM中的的某个类的字节码，达到每次只要更新修改的代码就可以自动进行动态替换，不需要做打包和重启的工作。经过验证发现这种方案是可行的。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://www.lanshiqin.com/b67783e4/java.svg">
 <meta property="og:image" content="https://www.lanshiqin.com/b67783e4/idea_agent.svg">
 <meta property="og:image" content="https://www.lanshiqin.com/b67783e4/main.png">
 <meta property="og:image" content="https://www.lanshiqin.com/b67783e4/agent.png">
-<meta property="og:updated_time" content="2018-09-23T13:11:38.651Z">
+<meta property="og:updated_time" content="2019-03-10T02:36:55.080Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="动态替换JVM中的Class字节码">
-<meta name="twitter:description" content="将程序打包成jar包提测，然后测试小姐姐过来跟你说程序有bug的时候就不得不改完然后重新打一个jar包部署到测试服重新运行。有时候甚至只是改了一个类中的某一行代码，就要将整个工程重新打包上传提测，这样不仅非常麻烦而且还浪费了很多时间。既然只是改了一小部分的代码，那我们试想一下能不能动态替换JVM中的的某个类的字节码，达到每次只要更新修改的代码就可以自动进行动态替换，不需要做打包和重启的工作。经">
-<meta name="twitter:image" content="https://www.lanshiqin.com/b67783e4/java.svg">
+<meta name="twitter:description" content="将程序打包提测，然后测试小姐姐过来跟你说程序有bug的时候就不得不改完bug然后重新替换部署到测试服重新运行。这样不仅非常麻烦而且还浪费了很多时间。既然只是改了一小部分的代码，那我们试想一下能不能动态替换JVM中的的某个类的字节码，达到每次只要更新修改的代码就可以自动进行动态替换，不需要做打包和重启的工作。经过验证发现这种方案是可行的。">
+<meta name="twitter:image" content="https://www.lanshiqin.com/b67783e4/idea_agent.svg">
 
 
 
@@ -426,7 +425,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-09-23 21:11:38" itemprop="dateModified" datetime="2018-09-23T21:11:38+08:00">2018-09-23</time>
+                <time title="修改时间：2019-03-10 10:36:55" itemprop="dateModified" datetime="2019-03-10T10:36:55+08:00">2019-03-10</time>
               
             
           </span>
@@ -485,10 +484,7 @@
       
 
       
-        <img src="/b67783e4/java.svg" title="java">
-<blockquote>
-<p>将程序打包成jar包提测，然后测试小姐姐过来跟你说程序有bug的时候就不得不改完然后重新打一个jar包部署到测试服重新运行。有时候甚至只是改了一个类中的某一行代码，就要将整个工程重新打包上传提测，这样不仅非常麻烦而且还浪费了很多时间。既然只是改了一小部分的代码，那我们试想一下能不能动态替换JVM中的的某个类的字节码，达到每次只要更新修改的代码就可以自动进行动态替换，不需要做打包和重启的工作。经过验证发现这种方案是可行的。</p>
-</blockquote>
+        <p>将程序打包提测，然后测试小姐姐过来跟你说程序有bug的时候就不得不改完bug然后重新替换部署到测试服重新运行。这样不仅非常麻烦而且还浪费了很多时间。既然只是改了一小部分的代码，那我们试想一下能不能动态替换JVM中的的某个类的字节码，达到每次只要更新修改的代码就可以自动进行动态替换，不需要做打包和重启的工作。经过验证发现这种方案是可行的。</p>
 <a id="more"></a>
 <p>我们在本地开发环境编写代码的时候，只要IDE设置了自动刷新，就可以达到不需要重启项目就直接加载修改后的代码的效果。不需要重启项目可以继续调试，一直好奇是如何实现的，经过研究发现，这个功能其实是IDE使用了代理机制去替我们实现的。<br><img src="/b67783e4/idea_agent.svg" title="java"><br>无论是运行在Tomcat中的项目，还是像Spring Boot这样可以打成jar包运行的项目（内置了Tomcat），在本地开发环境编写的时候都会将class输出到指定目录，IDE实质上是通过检测代码的变化然后编译修改的代码到指定目录的class文件，代理检测到class变化，就把变化的class重新加载到JVM中，实现动态的更新程序。</p>
 <font color="red" size="4" face="黑体">只要自己编写一个实现网络传输的代理工具，就可以实现不打包不重启项目，直接远程热更新。</font>
@@ -521,7 +517,8 @@
 <!-- 在JVM层无论是Java、Kotlin、Gradle、还是其他基于JVM的语言，已经不仅仅是语言本身，而是可以通过本质的去看待问题。 -->
 <!-- 这里多说一句，之前看到学PHP的同学对Java的同学有偏见，说Java已经快被淘汰了，当时听到还会去掺和讲几句，现在已经无感了。
 语言只是工具，被淘汰的不是语言本身，而是一颗不学习的心，不学习的人终将被淘汰。 -->
-<p><font color="red" size="4" face="黑体">结合版本控制，通过代理动态的替换JVM中的Class，实现项目提测的零打包零部署。</font><br>我会持续完善我的“雷神之锤”这个项目 <a href="https://github.com/lanshiqin/Mjolnir" target="_blank" rel="noopener">https://github.com/lanshiqin/Mjolnir</a> 欢迎Start Fork</p>
+<!-- <font color=red size=4 face="黑体">结合版本控制，通过代理动态的替换JVM中的Class，实现项目提测的零打包零部署。</font>
+我会持续完善我的“雷神之锤”这个项目 https://github.com/lanshiqin/Mjolnir 欢迎Start Fork -->
 
       
     </div>
@@ -635,7 +632,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-count">29</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

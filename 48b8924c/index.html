@@ -118,25 +118,24 @@
 
 
 
-  <meta name="description" content="最近上线的一个项目，Android客户端采用原生和非原生混合开发，后端API采用Session机制认证，出现部分Android机型无法使用WebView中加载的核心业务，通过抓包发现，某些客户端在使用WebView发起请求时没有带上登录时得到的SESSIONID,Android开发人员通过日志输出证实有把登录的SESSIONID同步设置给WebView的Cookie，并且通过cookieMan">
+  <meta name="description" content="日常玄学记录。目前我从事Java后端开发的工作，与移动App开发者对接API接口，App上线后发现有些机型无法正常登陆，为了排查问题使用了不同的模拟器安装App并且进行抓包分析，最终找到了问题所在，在此记录。">
 <meta name="keywords" content="问题解决">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android低版本WebView引起的BUG">
 <meta property="og:url" content="https://www.lanshiqin.com/48b8924c/index.html">
 <meta property="og:site_name" content="蓝士钦">
-<meta property="og:description" content="最近上线的一个项目，Android客户端采用原生和非原生混合开发，后端API采用Session机制认证，出现部分Android机型无法使用WebView中加载的核心业务，通过抓包发现，某些客户端在使用WebView发起请求时没有带上登录时得到的SESSIONID,Android开发人员通过日志输出证实有把登录的SESSIONID同步设置给WebView的Cookie，并且通过cookieMan">
+<meta property="og:description" content="日常玄学记录。目前我从事Java后端开发的工作，与移动App开发者对接API接口，App上线后发现有些机型无法正常登陆，为了排查问题使用了不同的模拟器安装App并且进行抓包分析，最终找到了问题所在，在此记录。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://www.lanshiqin.com/48b8924c/android.svg">
 <meta property="og:image" content="https://www.lanshiqin.com/48b8924c/4a3.png">
 <meta property="og:image" content="https://www.lanshiqin.com/48b8924c/5a0.png">
 <meta property="og:image" content="https://www.lanshiqin.com/48b8924c/web1.svg">
 <meta property="og:image" content="https://www.lanshiqin.com/48b8924c/web2.svg">
 <meta property="og:image" content="https://www.lanshiqin.com/48b8924c/web3.png">
-<meta property="og:updated_time" content="2019-01-30T11:42:35.846Z">
+<meta property="og:updated_time" content="2019-03-10T02:48:29.660Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android低版本WebView引起的BUG">
-<meta name="twitter:description" content="最近上线的一个项目，Android客户端采用原生和非原生混合开发，后端API采用Session机制认证，出现部分Android机型无法使用WebView中加载的核心业务，通过抓包发现，某些客户端在使用WebView发起请求时没有带上登录时得到的SESSIONID,Android开发人员通过日志输出证实有把登录的SESSIONID同步设置给WebView的Cookie，并且通过cookieMan">
-<meta name="twitter:image" content="https://www.lanshiqin.com/48b8924c/android.svg">
+<meta name="twitter:description" content="日常玄学记录。目前我从事Java后端开发的工作，与移动App开发者对接API接口，App上线后发现有些机型无法正常登陆，为了排查问题使用了不同的模拟器安装App并且进行抓包分析，最终找到了问题所在，在此记录。">
+<meta name="twitter:image" content="https://www.lanshiqin.com/48b8924c/4a3.png">
 
 
 
@@ -428,7 +427,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-01-30 19:42:35" itemprop="dateModified" datetime="2019-01-30T19:42:35+08:00">2019-01-30</time>
+                <time title="修改时间：2019-03-10 10:48:29" itemprop="dateModified" datetime="2019-03-10T10:48:29+08:00">2019-03-10</time>
               
             
           </span>
@@ -487,24 +486,25 @@
       
 
       
-        <img src="/48b8924c/android.svg" title="android">
-<blockquote>
-<p>最近上线的一个项目，Android客户端采用原生和非原生混合开发，后端API采用Session机制认证，出现部分Android机型无法使用WebView中加载的核心业务，通过抓包发现，某些客户端在使用WebView发起请求时没有带上登录时得到的SESSIONID,Android开发人员通过日志输出证实有把登录的SESSIONID同步设置给WebView的Cookie，并且通过cookieManager.getCookie方法能够取到同步设置的Cookie。于是我只能自己再进一步验证一下，最终找到问题所在。<br><a id="more"></a></p>
-</blockquote>
-<h2 id="测试的主要问题如下："><a href="#测试的主要问题如下：" class="headerlink" title="测试的主要问题如下："></a>测试的主要问题如下：</h2><p>1.部分Android机型(部分厂商的7.x和8x的Android版本号)无法请求到Web页面，会被后端拦截<br>2.我用Android 5.x 到 9.x 的模拟器测试完全正常，抓包时请求头的Cookie中也正常携带SESSIONID，但是用户真实机型出现不携带Cookie的情况<br>3.Android开发人员确实把SESSIONID同步设置给WebView的Cookie了，客户端设置的Cookie也可以通过getCookie方法取出来，但是抓包发现在某些机型上WebView加载URL的时候并没有带上Cookie。</p>
-<p>回想了一下之前Android开发中曾经遇到的坑，于是用Android4.3版本的模拟测试了一下，发现请求头中国然也没带上Cookie<br>android4.3WebView加载接口地址时，请求头数据包如下图所示：<br><img src="/48b8924c/4a3.png" title="android"></p>
+        <p>日常玄学记录。目前我从事Java后端开发的工作，与移动App开发者对接API接口，App上线后发现有些机型无法正常登陆，为了排查问题使用了不同的模拟器安装App并且进行抓包分析，最终找到了问题所在，在此记录。<br><a id="more"></a></p>
+<h1 id="具体问题描述"><a href="#具体问题描述" class="headerlink" title="具体问题描述"></a>具体问题描述</h1><p>最近上线的一个项目，Android客户端采用原生和非原生混合开发，后端API采用Session机制认证，出现部分Android机型无法使用WebView中加载的核心业务，通过抓包发现，某些客户端在使用WebView发起请求时没有带上登录时得到的SESSIONID,Android开发人员通过日志输出证实有把登录的SESSIONID同步设置给WebView的Cookie，并且通过cookieManager.getCookie方法能够取到同步设置的Cookie。于是我只能自己再进一步验证一下，最终找到问题所在。</p>
+<h1 id="测试发现主要问题"><a href="#测试发现主要问题" class="headerlink" title="测试发现主要问题"></a>测试发现主要问题</h1><hr>
+<p>1.部分Android机型(部分厂商的7.x和8x的Android版本号)无法请求到Web页面，会被后端拦截<br>2.我用Android 5.x 到 9.x 的模拟器测试完全正常，抓包时请求头的Cookie中也正常携带SESSIONID，但是用户真实机型出现不携带Cookie的情况<br>3.Android开发人员确实把SESSIONID同步设置给WebView的Cookie了，客户端设置的Cookie也可以通过getCookie方法取出来，但是抓包发现在某些机型上WebView加载URL的时候请求头中并没有带上Cookie。</p>
+<h1 id="解决过程"><a href="#解决过程" class="headerlink" title="解决过程"></a>解决过程</h1><p>大学研究了3年Android，也遇到过各种坑，这次问题我的第一反应就是不同机型的差异性导致的。回想了一下之前Android开发中曾经遇到的坑，于是用Android4.3版本的模拟测试了一下，发现请求头中果然也没带上Cookie<br>android4.3WebView加载接口地址时，请求头数据包如下图所示：<br><img src="/48b8924c/4a3.png" title="android"></p>
 <font color="red" size="4" face="黑体">可以看到4.3版本的AndroidWebKit在请求头中存在不携带Cookie的情况</font><br>用android5.0版本的模拟器测试了一下，发现请求头中有携带Cookie<br><img src="/48b8924c/5a0.png" title="android"><br><br>所以，这些机型的产商可能要摸一下自己的良心了，为了减少ROM的开发成本，是不是把部分低版本的WebKit内核直接照搬编译到新系统里了？<br><br>在网上经常可以看到一堆相互抄袭的文章，WebView同步Cookie的方法如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 同步cookie</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">synCookies</span><span class="params">(Context context, String url)</span> </span>&#123;</span><br><span class="line">    CookieSyncManager.createInstance(context);</span><br><span class="line">    CookieManager cookieManager = CookieManager.getInstance();</span><br><span class="line">    cookieManager.setAcceptCookie(<span class="keyword">true</span>);</span><br><span class="line">    <span class="comment">// 删除Cookie（可选）</span></span><br><span class="line">    cookieManager.removeSessionCookie();</span><br><span class="line">    cookieManager.setCookie(url, <span class="string">"登录时得到的SESSIONID"</span>);</span><br><span class="line">    CookieSyncManager.getInstance().sync();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 可以日志输出再验证一下</span></span><br><span class="line">    String cookie = cookieManager.getCookie(url);</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><br>这段代码乍一看没什么问题，虽然getCookie可以取到设置进去的Cookie，但是请求时存在没带上Cookie的情况。<br>问题就出在同步方法上。如果刚好看过4.x的源码，会发现和现在的版本有比较大的不一样。<br><font color="red" size="4" face="黑体">这里最大的区别是:<br>4.3版本的removeSessionCookie方法删除Cookie是异步的<br>sync同步设置Cookie也是异步的。<br>也就是说他可能在你设置了Cookie之后才执行remove操作，或者在WebView请求后才设置Cookie，<br>WebView发起请求时要么Cookie还没被设置，要么就是已经被删除。<br>所以在WebView加载URL发起请求时根本没有把Cookie带上。</font>
 
 
 <h2 id="一、Android5-0及以上的WebView操作Cookie后的时序图"><a href="#一、Android5-0及以上的WebView操作Cookie后的时序图" class="headerlink" title="一、Android5.0及以上的WebView操作Cookie后的时序图"></a>一、Android5.0及以上的WebView操作Cookie后的时序图</h2><img src="/48b8924c/web1.svg" title="android">
 <h2 id="二、Android4-3版本）操作Cookie后的时序图"><a href="#二、Android4-3版本）操作Cookie后的时序图" class="headerlink" title="二、Android4.3版本）操作Cookie后的时序图"></a>二、Android4.3版本）操作Cookie后的时序图</h2><img src="/48b8924c/web2.svg" title="android">
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><ol>
+<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><hr>
+<ol>
 <li>WebView使用Post请求就可以在头部带上自定义参数，需要后端接口也跟着一起改</li>
 <li>Android客户端删除Cookie操作后面加上等待时间比如 Sleep 1000L。</li>
 <li><font color="red" size="4" face="黑体">上面这两种方案只是解决问题，但是并不是规范的，其实CookieSyncManager类和cookieManager的很多方法已经被标注为弃用</font><br><a href="https://developer.android.com/reference/android/webkit/CookieSyncManager" target="_blank" rel="noopener">https://developer.android.com/reference/android/webkit/CookieSyncManager</a><img src="/48b8924c/web3.png" title="android">
 通过android官方文档可知，这些都被标注了@Deprecated，所以开发者在开发的时候要考虑兼容性问题，针对大众的产品要足够的细心</li>
 </ol>
-<h2 id="出现这些BUG的主要原因"><a href="#出现这些BUG的主要原因" class="headerlink" title="出现这些BUG的主要原因"></a>出现这些BUG的主要原因</h2><p>在我写这篇文章时，Google官方虽然以及将Android更新到了9.0的版本，但是目前在中国市场还存在很多版本碎片化的问题，<br>网上有很多过时的API示例，国内的很多文章都相互抄袭，有的根本没有自己试验过就拷贝过来发表，这样的传播是非常不负责任的。</p>
+<h1 id="出现这些BUG的主要原因"><a href="#出现这些BUG的主要原因" class="headerlink" title="出现这些BUG的主要原因"></a>出现这些BUG的主要原因</h1><hr>
+<p>在我写这篇文章时，Google官方虽然以及将Android更新到了9.0的版本，但是目前在中国市场还存在很多版本碎片化的问题，<br>网上有很多过时的API示例，国内的很多文章都相互抄袭，有的根本没有自己试验过就拷贝过来发表，这样的传播是非常不负责任的。</p>
 <p>另外还有一个主要因素是很多厂商喜欢自己定制，曾经我还在开发Android应用时，就遇到某个厂商把摄像头拍照回调的API修改了，导致横竖屏切换的的问题，这种定制可以说是非常恶心来形容了，可能这也是我弃坑的原因之一吧。另外我真的非常喜欢写后台，所以现在能够写API接口感到很欣慰。</p>
 <p>曾几何时，依稀记得在学校工作室的时光，曾经的方老师跟我们说过这样一句话“遇到问题不要说我是学Android的，后端的我不管…,不要说什么从Android开发转后端开发这样的话，你曾经学到的知识就是你自己的，没有转行，都是开发，能在一个领域有所成就取决于你有多专注”。原话虽然记得不是很清楚，但是大体就是这个意思，这句话到现在一直铭记在我脑海里。所以遇到问题我不怕，我的想法只有一个：找出问题，并解决它。</p>
 
@@ -550,8 +550,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/a6a1e8bd/" rel="prev" title="logback日志系统配置">
-                logback日志系统配置 <i class="fa fa-chevron-right"></i>
+              <a href="/7545587/" rel="prev" title="全局异常处理机制">
+                全局异常处理机制 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -629,7 +629,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-count">29</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -758,7 +758,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#测试的主要问题如下："><span class="nav-number">1.</span> <span class="nav-text">测试的主要问题如下：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一、Android5-0及以上的WebView操作Cookie后的时序图"><span class="nav-number">2.</span> <span class="nav-text">一、Android5.0及以上的WebView操作Cookie后的时序图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、Android4-3版本）操作Cookie后的时序图"><span class="nav-number">3.</span> <span class="nav-text">二、Android4.3版本）操作Cookie后的时序图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决方案"><span class="nav-number">4.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#出现这些BUG的主要原因"><span class="nav-number">5.</span> <span class="nav-text">出现这些BUG的主要原因</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#具体问题描述"><span class="nav-number">1.</span> <span class="nav-text">具体问题描述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#测试发现主要问题"><span class="nav-number">2.</span> <span class="nav-text">测试发现主要问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解决过程"><span class="nav-number">3.</span> <span class="nav-text">解决过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、Android5-0及以上的WebView操作Cookie后的时序图"><span class="nav-number">3.1.</span> <span class="nav-text">一、Android5.0及以上的WebView操作Cookie后的时序图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、Android4-3版本）操作Cookie后的时序图"><span class="nav-number">3.2.</span> <span class="nav-text">二、Android4.3版本）操作Cookie后的时序图</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解决方案"><span class="nav-number">4.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#出现这些BUG的主要原因"><span class="nav-number">5.</span> <span class="nav-text">出现这些BUG的主要原因</span></a></li></ol></div>
             
 
           </div>

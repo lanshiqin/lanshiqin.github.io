@@ -118,15 +118,14 @@
 
 
 
-  <meta name="description" content="sql注入在互联网应用早期很常见，大多数是因为程序员没有考虑到sql注入的问题对sql语句进行过滤，直接使用字符串拼接的方式来传值着就给sql注入造成了可能。">
+  <meta name="description" content="SQL注入在早期的互联网系统中很常见，大多数是因为程序员没有考虑到sql注入的问题，没有对sql语句的参数进行过滤而直接使用字符串拼接的方式来传值，这就给SQL注入造成了可能。">
 <meta name="keywords" content="随笔">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SQL注入攻击">
+<meta property="og:title" content="什么是SQL注入">
 <meta property="og:url" content="https://www.lanshiqin.com/d9130e7c/index.html">
 <meta property="og:site_name" content="蓝士钦">
-<meta property="og:description" content="sql注入在互联网应用早期很常见，大多数是因为程序员没有考虑到sql注入的问题对sql语句进行过滤，直接使用字符串拼接的方式来传值着就给sql注入造成了可能。">
+<meta property="og:description" content="SQL注入在早期的互联网系统中很常见，大多数是因为程序员没有考虑到sql注入的问题，没有对sql语句的参数进行过滤而直接使用字符串拼接的方式来传值，这就给SQL注入造成了可能。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://www.lanshiqin.com/d9130e7c/sql执行脚本.png">
 <meta property="og:image" content="https://www.lanshiqin.com/d9130e7c/login.png">
 <meta property="og:image" content="https://www.lanshiqin.com/d9130e7c/dologin.png">
 <meta property="og:image" content="https://www.lanshiqin.com/d9130e7c/student_db.png">
@@ -134,11 +133,11 @@
 <meta property="og:image" content="https://www.lanshiqin.com/d9130e7c/fail_page.png">
 <meta property="og:image" content="https://www.lanshiqin.com/d9130e7c/login_page_2.png">
 <meta property="og:image" content="https://www.lanshiqin.com/d9130e7c/success_page.png">
-<meta property="og:updated_time" content="2019-01-30T11:37:48.920Z">
+<meta property="og:updated_time" content="2019-03-10T02:13:03.424Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SQL注入攻击">
-<meta name="twitter:description" content="sql注入在互联网应用早期很常见，大多数是因为程序员没有考虑到sql注入的问题对sql语句进行过滤，直接使用字符串拼接的方式来传值着就给sql注入造成了可能。">
-<meta name="twitter:image" content="https://www.lanshiqin.com/d9130e7c/sql执行脚本.png">
+<meta name="twitter:title" content="什么是SQL注入">
+<meta name="twitter:description" content="SQL注入在早期的互联网系统中很常见，大多数是因为程序员没有考虑到sql注入的问题，没有对sql语句的参数进行过滤而直接使用字符串拼接的方式来传值，这就给SQL注入造成了可能。">
+<meta name="twitter:image" content="https://www.lanshiqin.com/d9130e7c/login.png">
 
 
 
@@ -157,7 +156,7 @@
   };
 </script>
 
-  <title>SQL注入攻击 | 蓝士钦</title>
+  <title>什么是SQL注入 | 蓝士钦</title>
   
 
 
@@ -388,7 +387,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">SQL注入攻击
+          <h1 class="post-title" itemprop="name headline">什么是SQL注入
               
             
           </h1>
@@ -430,7 +429,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-01-30 19:37:48" itemprop="dateModified" datetime="2019-01-30T19:37:48+08:00">2019-01-30</time>
+                <time title="修改时间：2019-03-10 10:13:03" itemprop="dateModified" datetime="2019-03-10T10:13:03+08:00">2019-03-10</time>
               
             
           </span>
@@ -489,10 +488,10 @@
       
 
       
-        <img src="/d9130e7c/sql执行脚本.png" title="sql注入攻击">
+        <!-- <img src="/d9130e7c/sql执行脚本.png" title="sql注入攻击"> –&gt;
 <!-- 最近和一家第三方公司一起做了个外包项目，发现他们非常抵触用框架开发项目，通过多次接触发现他们公司的这个项目负责人曾经因为框架使用不当导致一些意想不到的BUG，从此对使用框架开发的人嗤之以鼻。
 这里我想说的是框架只是一个工具，框架能够挥多少威力关键在于使用它的人。 -->
-<p>sql注入在互联网应用早期很常见，大多数是因为程序员没有考虑到sql注入的问题对sql语句进行过滤，直接使用字符串拼接的方式来传值<br>着就给sql注入造成了可能。<br><a id="more"></a></p>
+<p>SQL注入在早期的互联网系统中很常见，大多数是因为程序员没有考虑到sql注入的问题，没有对sql语句的参数进行过滤而直接使用字符串拼接的方式来传值，这就给SQL注入造成了可能。<br><a id="more"></a></p>
 <!-- 像Spring、Hibernate这些框架经过这么多年的发展已经非常成熟了，开源社区也有很多大牛在支持，贡献自己的代码，我们可以从框架的源代码中学到很多设计模式和知识，甚至自己实现一套框架。
 
 这个外包项目有移动端，pc网页端，还有后台接口，我负责写后台接口，这家第三方公司负责写pc的web端。我用SpringBoot+Mybatis用了一周的时间把后台接口都写好了，他们web端由于不使用框架，还在缓慢的进行着。通过后来了解得知，他们的项目清一色全部用最传统最原始的方式开发，全部用jsp写，美其名曰这是底层，效率高。这我就不吐槽什么了，最关键的是我发现他们有大量复杂的json竟然是手动一个一个拼接上去的！这是最让我无语的地方，他们连一些基本的工具都不会使用，对象和json之前的转换用一个Gson库就好了呀，毕竟Google出品总比用手动拼接的开发效率高一百倍吧。这种开发方式就像大学刚学编程基础的人才会做的傻事，而这样的公司竟然能活到现在也是奇迹，换个角度说还蛮厉害的！
@@ -559,8 +558,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/4fa736d8/" rel="prev" title="XSS攻击">
-                XSS攻击 <i class="fa fa-chevron-right"></i>
+              <a href="/4fa736d8/" rel="prev" title="什么是XSS攻击">
+                什么是XSS攻击 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -629,7 +628,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-count">29</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

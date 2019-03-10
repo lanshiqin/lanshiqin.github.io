@@ -118,23 +118,22 @@
 
 
 
-  <meta name="description" content="在开发的时候难免会遇到一些特殊场景，比如需要在测试服务器上进行远程调试。为了方便我们将工程使用Debug模式部署在测试服务器上，然后本地可以进行远程断点调试。但是这样做还是不够方便，比如开发者本地新增或者修改了代码，就没法实时进行远程断点调试了。目前最优解决方案就是把开发者自己的电脑当做测试服务器，搭建一个属于自己的ngrok服务器，实现内网穿透，外网通过绑定的域名进行访问，开发者就可以直接在">
+  <meta name="description" content="在开发的时候难免会遇到一些特殊场景，比如需要在测试服务器上进行远程调试。为了方便我们将工程使用Debug模式部署在测试服务器上，然后本地可以进行远程断点调试。但是这样做还是不够方便，比如开发者本地新增或者修改了代码，就没法实时进行远程断点调试了。目前比较好的方案就是把开发者自己的电脑当做测试服务器，搭建一个属于自己的ngrok服务器，实现内网穿透，外网通过绑定的域名进行访问，开发者就可以直接在本机">
 <meta name="keywords" content="随笔">
 <meta property="og:type" content="article">
 <meta property="og:title" content="搭建ngrok服务器">
 <meta property="og:url" content="https://www.lanshiqin.com/38f11925/index.html">
 <meta property="og:site_name" content="蓝士钦">
-<meta property="og:description" content="在开发的时候难免会遇到一些特殊场景，比如需要在测试服务器上进行远程调试。为了方便我们将工程使用Debug模式部署在测试服务器上，然后本地可以进行远程断点调试。但是这样做还是不够方便，比如开发者本地新增或者修改了代码，就没法实时进行远程断点调试了。目前最优解决方案就是把开发者自己的电脑当做测试服务器，搭建一个属于自己的ngrok服务器，实现内网穿透，外网通过绑定的域名进行访问，开发者就可以直接在">
+<meta property="og:description" content="在开发的时候难免会遇到一些特殊场景，比如需要在测试服务器上进行远程调试。为了方便我们将工程使用Debug模式部署在测试服务器上，然后本地可以进行远程断点调试。但是这样做还是不够方便，比如开发者本地新增或者修改了代码，就没法实时进行远程断点调试了。目前比较好的方案就是把开发者自己的电脑当做测试服务器，搭建一个属于自己的ngrok服务器，实现内网穿透，外网通过绑定的域名进行访问，开发者就可以直接在本机">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://www.lanshiqin.com/38f11925/ngrok.png">
 <meta property="og:image" content="https://www.lanshiqin.com/38f11925/build_success.png">
 <meta property="og:image" content="https://www.lanshiqin.com/38f11925/mac_start.png">
 <meta property="og:image" content="https://www.lanshiqin.com/38f11925/ngrok_start.png">
-<meta property="og:updated_time" content="2019-01-30T11:39:17.286Z">
+<meta property="og:updated_time" content="2019-03-10T02:28:28.093Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="搭建ngrok服务器">
-<meta name="twitter:description" content="在开发的时候难免会遇到一些特殊场景，比如需要在测试服务器上进行远程调试。为了方便我们将工程使用Debug模式部署在测试服务器上，然后本地可以进行远程断点调试。但是这样做还是不够方便，比如开发者本地新增或者修改了代码，就没法实时进行远程断点调试了。目前最优解决方案就是把开发者自己的电脑当做测试服务器，搭建一个属于自己的ngrok服务器，实现内网穿透，外网通过绑定的域名进行访问，开发者就可以直接在">
-<meta name="twitter:image" content="https://www.lanshiqin.com/38f11925/ngrok.png">
+<meta name="twitter:description" content="在开发的时候难免会遇到一些特殊场景，比如需要在测试服务器上进行远程调试。为了方便我们将工程使用Debug模式部署在测试服务器上，然后本地可以进行远程断点调试。但是这样做还是不够方便，比如开发者本地新增或者修改了代码，就没法实时进行远程断点调试了。目前比较好的方案就是把开发者自己的电脑当做测试服务器，搭建一个属于自己的ngrok服务器，实现内网穿透，外网通过绑定的域名进行访问，开发者就可以直接在本机">
+<meta name="twitter:image" content="https://www.lanshiqin.com/38f11925/build_success.png">
 
 
 
@@ -426,7 +425,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-01-30 19:39:17" itemprop="dateModified" datetime="2019-01-30T19:39:17+08:00">2019-01-30</time>
+                <time title="修改时间：2019-03-10 10:28:28" itemprop="dateModified" datetime="2019-03-10T10:28:28+08:00">2019-03-10</time>
               
             
           </span>
@@ -485,10 +484,7 @@
       
 
       
-        <img src="/38f11925/ngrok.png" title="ngrok">
-<blockquote>
-<p>在开发的时候难免会遇到一些特殊场景，比如需要在测试服务器上进行远程调试。为了方便我们将工程使用Debug模式部署在测试服务器上，然后本地可以进行远程断点调试。但是这样做还是不够方便，比如开发者本地新增或者修改了代码，就没法实时进行远程断点调试了。<br>目前最优解决方案就是把开发者自己的电脑当做测试服务器，搭建一个属于自己的ngrok服务器，实现内网穿透，外网通过绑定的域名进行访问，开发者就可以直接在本地进行微信开发。</p>
-</blockquote>
+        <p>在开发的时候难免会遇到一些特殊场景，比如需要在测试服务器上进行远程调试。为了方便我们将工程使用Debug模式部署在测试服务器上，然后本地可以进行远程断点调试。但是这样做还是不够方便，比如开发者本地新增或者修改了代码，就没法实时进行远程断点调试了。<br>目前比较好的方案就是把开发者自己的电脑当做测试服务器，搭建一个属于自己的ngrok服务器，实现内网穿透，外网通过绑定的域名进行访问，开发者就可以直接在本机进行需要域名才能调试的开发任务，比如微信开发。</p>
 <a id="more"></a>
 <p>很早之前在做微信开发的时候，我就已经在自己的Linux服务器上搭建好了ngrok，由于我自己使用的是苹果笔记本，所以ngrok编译的版本也是针对MacOS系统的，以前以为不会用到Windows系统，就没有编译，结果在工作中使用的是Windows系统。<br>由于习惯了MacOS的开发环境和强大的触控板，在Windows上的我各种不适应。原本几分钟搞定的事搞了大半天。</p>
 <p>为了后续开发方便，接下来我通过编译ngrok源码生成Windows版本的可执行程序。</p>
@@ -653,7 +649,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-count">29</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
