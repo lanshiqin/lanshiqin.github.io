@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "6d134c3b"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="RabbitMQ是一个开源的消息代理程序，实现了高级消息队列协议（AMQP）并且可以通过插件的方式进行扩展，使其支持STOMP和MQTT等协议，是目前应用最为广泛的面向消息的中间件之一。RabbitMQ支持各种主流的编程语言，比如Python、Java、C#、Go、Swift等，并且可以在各种操作系统平台上运行，通过扩展的MQTT协议可以很轻量的在移动设备上实现消息推送，早期的Android推送服">
+<meta name="keywords" content="蓝士钦">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RabbitMQ知识点梳理">
+<meta property="og:url" content="https://www.lanshiqin.com/f9e910b8/index.html">
+<meta property="og:site_name" content="蓝士钦">
+<meta property="og:description" content="RabbitMQ是一个开源的消息代理程序，实现了高级消息队列协议（AMQP）并且可以通过插件的方式进行扩展，使其支持STOMP和MQTT等协议，是目前应用最为广泛的面向消息的中间件之一。RabbitMQ支持各种主流的编程语言，比如Python、Java、C#、Go、Swift等，并且可以在各种操作系统平台上运行，通过扩展的MQTT协议可以很轻量的在移动设备上实现消息推送，早期的Android推送服">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.lanshiqin.com/f9e910b8/producer.png">
+<meta property="og:image" content="https://www.lanshiqin.com/f9e910b8/queue.png">
+<meta property="og:image" content="https://www.lanshiqin.com/f9e910b8/consumer.png">
+<meta property="og:image" content="https://www.lanshiqin.com/f9e910b8/python-one.png">
+<meta property="og:image" content="https://www.lanshiqin.com/f9e910b8/exchanges.png">
+<meta property="og:image" content="https://www.lanshiqin.com/f9e910b8/overall.png">
+<meta property="og:image" content="https://www.lanshiqin.com/f9e910b8/four.png">
+<meta property="og:image" content="https://www.lanshiqin.com/f9e910b8/topic.png">
+<meta property="og:updated_time" content="2019-03-24T03:47:45.593Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RabbitMQ知识点梳理">
+<meta name="twitter:description" content="RabbitMQ是一个开源的消息代理程序，实现了高级消息队列协议（AMQP）并且可以通过插件的方式进行扩展，使其支持STOMP和MQTT等协议，是目前应用最为广泛的面向消息的中间件之一。RabbitMQ支持各种主流的编程语言，比如Python、Java、C#、Go、Swift等，并且可以在各种操作系统平台上运行，通过扩展的MQTT协议可以很轻量的在移动设备上实现消息推送，早期的Android推送服">
+<meta name="twitter:image" content="https://www.lanshiqin.com/f9e910b8/producer.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="蓝士钦" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="https://www.lanshiqin.com/f9e910b8/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>RabbitMQ知识点梳理 | 蓝士钦</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+  <script src="/js/src/photoswipe.js?v="></script>
+  <script src="/js/src/photoswipe-ui-default.js?v="></script>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">蓝士钦</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">编程是一种信仰</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-相册">
+    <a href="/photos/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-photo"></i> <br />相册</a>
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.lanshiqin.com/f9e910b8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蓝士钦">
+      <meta itemprop="description" content="编程是一种信仰">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蓝士钦">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RabbitMQ知识点梳理
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-05 21:50:54" itemprop="dateCreated datePublished" datetime="2019-03-05T21:50:54+08:00">2019-03-05</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-03-24 11:47:45" itemprop="dateModified" datetime="2019-03-24T11:47:45+08:00">2019-03-24</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon"
+            >
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>RabbitMQ是一个开源的消息代理程序，实现了高级消息队列协议（AMQP）并且可以通过插件的方式进行扩展，使其支持STOMP和MQTT等协议，是目前应用最为广泛的面向消息的中间件之一。RabbitMQ支持各种主流的编程语言，比如Python、Java、C#、Go、Swift等，并且可以在各种操作系统平台上运行，通过扩展的MQTT协议可以很轻量的在移动设备上实现消息推送，早期的Android推送服务就是采用MQTT的方式进行消息订阅和推送的。</p>
+<a id="more"></a>
+<p>在开始之前，先对消息队列（MQ）的各个名词和定义等基本概念进行一下基本的认识。</p>
+<h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><h2 id="producer"><a href="#producer" class="headerlink" title="producer"></a>producer</h2><blockquote>
+<p>producer（生产者），发送消息的程序代表生产者，生产者只进行消息的发送，可以用首字母P来表示。</p>
+</blockquote>
+<img src="/f9e910b8/producer.png" title="producer">
+<h2 id="queue"><a href="#queue" class="headerlink" title="queue"></a>queue</h2><blockquote>
+<p>queue（队列），这里的队列指的是消息队列，消息队列的本质是一个消息缓冲区，消息队列把消息存储在主机的内存和磁盘上。多个生产者可以往一个队列发送数据，多个消费者可以从一个队列接收数据，每个队列都有一个名称。</p>
+</blockquote>
+<img src="/f9e910b8/queue.png" title="queue">
+<h2 id="consumer"><a href="#consumer" class="headerlink" title="consumer"></a>consumer</h2><blockquote>
+<p>consumer（消费者），是一个等待接收消息的程序，从消息队列接收数据的程序代表消费者，用首字母C来表示。</p>
+</blockquote>
+<img src="/f9e910b8/consumer.png" title="consumer">
+<p>生产者、消费者与MQ不必运行在同一个主机上，可以分布在不同的主机上。由于RabbitMQ支持各种编程语言，所以生产者和消费者可以使用不同的编程语言进行实现，消息中间件使异构系统的实现变得更加简化，并且一个程序可以同时既是生产者又是消费者。</p>
+<h1 id="简单使用"><a href="#简单使用" class="headerlink" title="简单使用"></a>简单使用</h1><p>创建一个<code>生产者</code>项目用来向消息队列发送数据，创建一个<code>消费者</code>项目用来从消息队列里接收数据，消费者需要注册到指定到MQ队列中，如下图所示：<br><img src="/f9e910b8/python-one.png" title="queue"><br>在开始之前，需要先从RabbitMQ到官网下载RabbitMQ服务进行安装并启动服务，并且根据自己所用到开发语言下载操作RabbitMQ所需要的驱动程序，由于我使用Gradle构建项目，所以不必自己下载和管理jar包，只需要引入以下依赖即可：<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">compile</span> <span class="keyword">group</span>: <span class="string">'com.rabbitmq'</span>, name: <span class="string">'amqp-client'</span>, version: <span class="string">'5.6.0'</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="生产者"><a href="#生产者" class="headerlink" title="生产者"></a>生产者</h2><h3 id="导入需要用到的类："><a href="#导入需要用到的类：" class="headerlink" title="导入需要用到的类："></a>导入需要用到的类：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Connection;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Channel;</span><br></pre></td></tr></table></figure>
+<ol>
+<li><code>ConnectionFactory</code> 连接工厂类，提供了各种属性用来设置连接到MQ的参数，从工厂类获取连接对象。</li>
+<li><code>Connection</code> 连接对象接口类，通过<code>connectionFactory.newConnection()</code>获取到一个连接对象。</li>
+<li><code>Channel</code> 通道，通过<code>connection.createChannel()</code>创建通道对象，<code>Channel</code>提供了操作MQ的各种API。</li>
+</ol>
+<h3 id="定义队列名称"><a href="#定义队列名称" class="headerlink" title="定义队列名称"></a>定义队列名称</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String QUEUE_NAME = <span class="string">"hello"</span>;</span><br></pre></td></tr></table></figure>
+<p>要将消息发送到具体的队列上，需要为每个队列指定名称用来区分。</p>
+<h3 id="创建连接发送数据"><a href="#创建连接发送数据" class="headerlink" title="创建连接发送数据"></a>创建连接发送数据</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">ConnectionFactory connectionFactory = <span class="keyword">new</span> ConnectionFactory();</span><br><span class="line">connectionFactory.setHost(<span class="string">"localhost"</span>);</span><br><span class="line"><span class="keyword">try</span>(Connection connection = connectionFactory.newConnection())&#123;</span><br><span class="line">    Channel channel = connection.createChannel();</span><br><span class="line">    <span class="comment">// 声明队列（队列名称，非持久化，非独占，不自动删除队列，空参数）</span></span><br><span class="line">    channel.queueDeclare(QUEUE_NAME,<span class="keyword">false</span>,<span class="keyword">false</span>,<span class="keyword">false</span>,<span class="keyword">null</span>);</span><br><span class="line">    <span class="comment">// 定义消息</span></span><br><span class="line">    String message = <span class="string">"Hello,World!"</span>;</span><br><span class="line">    <span class="comment">// 发送消息（exchange，routingKey，其他属性，消息正文）</span></span><br><span class="line">    channel.basicPublish(<span class="string">""</span>,QUEUE_NAME,<span class="keyword">null</span>,message.getBytes());</span><br><span class="line">    System.out.println(<span class="string">" [x] Send '"</span> + message + <span class="string">"'"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由于RabbitMQ服务安装在本机，所以代码里只需要设置<code>connectionFactory.setHost(&quot;localhost&quot;);</code>,其他属性会使用默认值，RabbitMQ默认通信端口<code>5672</code>,用户<code>guest</code>，密码<code>guest</code>，如果安装了RabbitMQ管理插件，可通过<code>15672</code>端口进入后台管理页面。<br>如果修改了RabbitMQ服务的配置参数值，就需要在程序中设置对应的属性值，比如：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">connectionFactory.setPort(<span class="number">56723</span>);</span><br><span class="line">connectionFactory.setUsername(<span class="string">"admin"</span>);</span><br><span class="line">connectionFactory.setPassword(<span class="string">"********"</span>);</span><br><span class="line">connectionFactory.setVirtualHost(<span class="string">"app_message"</span>);</span><br><span class="line"><span class="comment">// ...</span></span><br></pre></td></tr></table></figure></p>
+<p>在使用<code>Channel</code>发送数据前，需要通过<code>channel.queueDeclare()</code>方法为该<code>Channel</code>定义队列声明。<code>queueDeclare()</code>方法定义如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 声明队列</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> queue 队列名称</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> durable true表示持久队列，队列将会在MQ服务重启后继续存在</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> exclusive true表示队列独占（仅限于该链接）</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> autoDelete true表示自动删除队列（服务器不再使用时删除该队列)</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> arguments 队列的其他属性</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 队列成功声明返回 Queue.DeclareOk</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> java.io.IOException 如果有错误抛出IOException</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">Queue.<span class="function">DeclareOk <span class="title">queueDeclare</span><span class="params">(String queue, <span class="keyword">boolean</span> durable, <span class="keyword">boolean</span> exclusive, <span class="keyword">boolean</span> autoDelete,</span></span></span><br><span class="line"><span class="function"><span class="params">                                 Map&lt;String, Object&gt; arguments)</span> <span class="keyword">throws</span> IOException</span>;</span><br></pre></td></tr></table></figure></p>
+<p><font color="red" size="5" face="黑体">注意：队列不允许重复定义</font><br>一个队列用队列名称进行标识，一旦队列初始化声明后就不允许定义成其他属性值，比如：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 程序A：声明队列（队列名称，非持久化，非独占，不自动删除队列，空参数）</span></span><br><span class="line">channel.queueDeclare(QUEUE_NAME,<span class="keyword">false</span>,<span class="keyword">false</span>,<span class="keyword">false</span>,<span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 程序B：声明队列（队列名称，持久化，独占，自动删除队列，空参数）</span></span><br><span class="line">channel.queueDeclare(QUEUE_NAME,<span class="keyword">true</span>,<span class="keyword">true</span>,<span class="keyword">true</span>,<span class="keyword">null</span>);</span><br></pre></td></tr></table></figure></p>
+<p>由于程序A已经定义并且初始化了队列，程序B重新初始化不一样的属性值会导致异常。</p>
+<p><font color="red" face="黑体">如果要重新声明队列属性，需要将已经声明的队列删除，</font>可以进入管理后台进行删除操作。</p>
+<p>在使用<code>Channel</code>发送数据时，通过<code>channel.basicPublish()</code>方法发送数据。根据队列的不同性质，传入的参数也不同。<code>basicPublish()</code>方法定义如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 发布消息</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> exchange 消息要发送到哪个exchange上</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> routingKey 路由key</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> props 其他属性</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> body 消息正文</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> java.io.IOException 如果有错误抛出IOException</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">basicPublish</span><span class="params">(String exchange, String routingKey, BasicProperties props, <span class="keyword">byte</span>[] body)</span> <span class="keyword">throws</span> IOException</span>;</span><br></pre></td></tr></table></figure></p>
+<h2 id="消费者"><a href="#消费者" class="headerlink" title="消费者"></a>消费者</h2><h3 id="导入需要用到的类：-1"><a href="#导入需要用到的类：-1" class="headerlink" title="导入需要用到的类："></a>导入需要用到的类：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Connection;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Channel;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.DeliverCallback;</span><br></pre></td></tr></table></figure>
+<h3 id="定义队列名称-1"><a href="#定义队列名称-1" class="headerlink" title="定义队列名称"></a>定义队列名称</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String QUEUE_NAME = <span class="string">"hello"</span>;</span><br></pre></td></tr></table></figure>
+<p>队列名称要实际存在，要和对应的生产者发布数据的队列名称一致，否则无法接受生产者所发送的数据。</p>
+<h3 id="创建连接接收数据"><a href="#创建连接接收数据" class="headerlink" title="创建连接接收数据"></a>创建连接接收数据</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">ConnectionFactory connectionFactory = <span class="keyword">new</span> ConnectionFactory();</span><br><span class="line">connectionFactory.setHost(<span class="string">"localhost"</span>);</span><br><span class="line"><span class="keyword">try</span>(Connection connection = connectionFactory.newConnection())&#123;</span><br><span class="line">    Channel channel = connection.createChannel();</span><br><span class="line">    <span class="comment">// 声明队列（队列名称，非持久化，非独占，不自动删除队列，空参数）</span></span><br><span class="line">    channel.queueDeclare(QUEUE_NAME,<span class="keyword">false</span>,<span class="keyword">false</span>,<span class="keyword">false</span>,<span class="keyword">null</span>);</span><br><span class="line">    System.out.println(<span class="string">" [*] Waiting for messages. To exit press CTRL+C"</span>);</span><br><span class="line">    <span class="comment">// 消费者接收到队列投递的回调（consumerTag 服务端生成的消费者标识，delivery投递）</span></span><br><span class="line">    DeliverCallback deliverCallback = (consumerTag, delivery) -&gt; &#123;</span><br><span class="line">        <span class="comment">// 获取消息内容并输出</span></span><br><span class="line">        String message = <span class="keyword">new</span> String(delivery.getBody(), StandardCharsets.UTF_8);</span><br><span class="line">        System.out.println(<span class="string">" [x] Received '"</span> + message + <span class="string">"'"</span>);</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="comment">// 开启消费者监听</span></span><br><span class="line">    channel.basicConsume(QUEUE_NAME,<span class="keyword">true</span>,deliverCallback,consumerTag -&gt; &#123;&#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>消费者和生产者一样，需要声明队列。因为消费者程序的启动可能早于生产者，声明队列可以初始化队列信息，确保队列存在。消费者通过监听指定队列进行数据消费。通过<code>basicConsume()</code>方法开启一个消费者监听，监听回调使用DeliverCallback进行处理。<br><code>DeliverCallback()</code>方法定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 服务端生成的消费者标识，启动非本地、非独占的消费者</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> queue 队列名称</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> autoAck 设置为true消费者接收消息后会自动发送一个ACK消息给服务器确认，false不会自动发送确认消息给服务器</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> deliverCallback 消息传递时回调</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> cancelCallback 取消消费者时的回调</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 服务端生成的消费者标识</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> IOException 如果有错误抛出IOException</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"> <span class="function">String <span class="title">basicConsume</span><span class="params">(String queue, <span class="keyword">boolean</span> autoAck, DeliverCallback deliverCallback, CancelCallback cancelCallback)</span> <span class="keyword">throws</span> IOException</span>;</span><br></pre></td></tr></table></figure>
+<p>无论是生产者还是消费者，使用完消息队列后，都需要先关闭通道<code>channel.close()</code>，然后再关闭连接对象<code>connection.close()</code>。上面的代码示例使用了<code>try(){}</code>代码块对资源进行自动回收。</p>
+<h1 id="Work-queues"><a href="#Work-queues" class="headerlink" title="Work queues"></a>Work queues</h1><blockquote>
+<p>Work queues 工作队列也称为任务队列，主要思想是避免立即执行资源密集型的任务。将需要执行的任务放到消息队列中，等待资源空闲时消费者从消息队列中取出消息并逐个执行。</p>
+</blockquote>
+<p>工作队列适用于很多场景，一般的使用方式也都是采用任务队列。<br>一个生产者对应多个消费者，并且消费者要处理耗时的任务，所以这里的消息机制需要做一些修改</p>
+<h2 id="自动确认消息改为手动确认"><a href="#自动确认消息改为手动确认" class="headerlink" title="自动确认消息改为手动确认"></a>自动确认消息改为手动确认</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">boolean</span> autoAck = <span class="keyword">false</span>;</span><br><span class="line">channel.basicConsume(QUEUE_NAME,autoAck,deliverCallback,consumerTag -&gt; &#123;&#125;);</span><br></pre></td></tr></table></figure>
+<p>一个生产者对多个消费者，生产者必须公平的保证一条消息发送给每一个消费者，所以要把消费者接收自动确认 autoAck改成false。</p>
+<p>手动确认消息可以防止某个生产者发送Ack导致MQ中的消息被删除，但是不能保证MQ不丢消息，比如突然断电MQ重启,<br>为了让MQ能够持久化消息，在初始化队列的时候需要指定队列durable属性值为true,开启消息持久化。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">boolean</span> durable = <span class="keyword">true</span>;</span><br><span class="line">channel.queueDeclare(QUEUE_NAME,durable,<span class="keyword">false</span>,<span class="keyword">false</span>,<span class="keyword">null</span>);</span><br></pre></td></tr></table></figure></p>
+<p>队列开启持久化后仍然不一定能够保证在极端情况下不丢失数据，整个MQ从消息的发送，中转，再到接收都需要严格把控。所以如果要彻底防止丢失消息，需要在生产者发送消息时做发布确认。</p>
+<h1 id="Publish-Subscribe"><a href="#Publish-Subscribe" class="headerlink" title="Publish/Subscribe"></a>Publish/Subscribe</h1><blockquote>
+<p>Publish/Subscribe 发布订阅模式，将消息广播发送给所有消费者。<br>这里以日志系统为例，假设生产者程序将消息发送给两个消费者，其中一个消费者负责将日志输出到控制台，另外一个消费者负责将日志写入到磁盘。在发布订阅模式中有个很重要的概念 <code>Exchanges</code></p>
+</blockquote>
+<h2 id="Exchanges"><a href="#Exchanges" class="headerlink" title="Exchanges"></a>Exchanges</h2><img src="/f9e910b8/exchanges.png" title="exchanges">
+<p>生产者时发生消息的用户应用程序。<br>消息队列是存储消息的缓存区。<br>消费者是接收消息的用户应用程序。<br>在RabbitMQ的消息传递模型中，<font color="red" face="黑体">他的核心思想是生产者永远不会将任何消息直接发送到队列上</font>，甚至不知道消息是否被传递到任何队列。</p>
+<p><font color="red" face="黑体">生产者向<code>Exchanges</code>发送消息。</font> <code>Exchanges</code>负责生产者消息的接收，将消息推送到队列。<br><code>Exchanges</code> 通过<code>exchange type</code>指定的类型明确要如何处理消息，比如附加到特定队列或者所有队列，或者将消息丢弃。</p>
+<p>命令行执行如下命令，查看目前RabbitMQ中的<code>Exchanges</code><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctl list_exchanges</span><br></pre></td></tr></table></figure></p>
+<p>也可以通过访问RabbitMQ的网页管理后台,默认地址<code>http://localhost:15672/#/exchanges</code>进行查看</p>
+<p>消息发布者通过 exchange发送消息示例：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PublishSample</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 自定义 exchange</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String EXCHANGE_NAME = <span class="string">"logs"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        ConnectionFactory connectionFactory = <span class="keyword">new</span> ConnectionFactory();</span><br><span class="line">        connectionFactory.setHost(<span class="string">"localhost"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span>(Connection connection = connectionFactory.newConnection())&#123;</span><br><span class="line"></span><br><span class="line">            Channel channel = connection.createChannel();</span><br><span class="line"></span><br><span class="line">            String message = <span class="string">"Hello,World!"</span>;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 指定exchange的类型为fanout</span></span><br><span class="line">            channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.FANOUT);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 向指定exchange发送消息</span></span><br><span class="line">            channel.basicPublish(EXCHANGE_NAME,<span class="string">""</span>,<span class="keyword">null</span>,message.getBytes(StandardCharsets.UTF_8));</span><br><span class="line"></span><br><span class="line">            System.out.println(<span class="string">" [x] Send '"</span> + message + <span class="string">"'"</span>);</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (TimeoutException | IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过对比简单使用MQ的代码发现，生成者不直接发送消息到队列，所以不需要声明队列语句:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 声明队列（队列名称，非持久化，非独占，不自动删除队列，空参数）</span></span><br><span class="line">channel.queueDeclare(QUEUE_NAME,<span class="keyword">false</span>,<span class="keyword">false</span>,<span class="keyword">false</span>,<span class="keyword">null</span>);</span><br></pre></td></tr></table></figure></p>
+<p>使用<code>exchange</code>的方式发送消息到消息队列，需要指定<code>exchange</code>和对应的类型<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 指定exchange的类型为fanout</span></span><br><span class="line">channel.exchangeDeclare(EXCHANGE, BuiltinExchangeType.FANOUT);</span><br></pre></td></tr></table></figure></p>
+<p>通过查看枚举类可知，exchange可指定的类型有:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DIRECT(<span class="string">"direct"</span>), FANOUT(<span class="string">"fanout"</span>), TOPIC(<span class="string">"topic"</span>), HEADERS(<span class="string">"headers"</span>);</span><br></pre></td></tr></table></figure></p>
+<p><font color="red" face="黑体">当类型为<code>fanout</code>时，将忽略routingKey参数</font><br>向exchange发送消息：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 向指定exchange发送消息，由于是fanout类型，所以自动忽略第二个参数 routingKey的值</span></span><br><span class="line">channel.basicPublish(EXCHANGE,<span class="string">""</span>,<span class="keyword">null</span>,message.getBytes());</span><br></pre></td></tr></table></figure></p>
+<p>对比本章的基础使用部分:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 发送消息（exchange，路由key，路由其他属性，消息正文）</span></span><br><span class="line">channel.basicPublish(<span class="string">""</span>,QUEUE_NAME,<span class="keyword">null</span>,message.getBytes());</span><br></pre></td></tr></table></figure></p>
+<p>基础使用部分的代码示例中，直接向MQ队列名称发送消息，<font color="red" face="黑体">其中exchange的参数为一个空字符串<code>&quot;&quot;</code>表示默认或者匿名交换，消息将通过第二个参数routingKey指定的队列名称路由到队列（如果队列存在的话）。<font color="red" face="黑体"></font></font></p>
+<p>订阅者代码示例：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SubscribeSample</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 自定义 exchange</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String EXCHANGE_NAME = <span class="string">"logs"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        ConnectionFactory connectionFactory = <span class="keyword">new</span> ConnectionFactory();</span><br><span class="line">        connectionFactory.setHost(<span class="string">"localhost"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span>(Connection connection = connectionFactory.newConnection())&#123;</span><br><span class="line"></span><br><span class="line">            Channel channel = connection.createChannel();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 指定exchange的类型为fanout</span></span><br><span class="line">            channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.FANOUT);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 获取队列，得到一个随机名称（非持久化的自动删除队列）</span></span><br><span class="line">            String queueName = channel.queueDeclare().getQueue();</span><br><span class="line">            System.out.println(queueName);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 绑定消息队列和exchange</span></span><br><span class="line">            channel.queueBind(queueName,EXCHANGE_NAME,<span class="string">""</span>);</span><br><span class="line"></span><br><span class="line">            System.out.println(<span class="string">" [*] Waiting for messages. To exit press CTRL+C"</span>);</span><br><span class="line"></span><br><span class="line">            DeliverCallback deliverCallback = (consumerTag, message) -&gt; &#123;</span><br><span class="line">                String messages  = <span class="keyword">new</span> String(message.getBody(), StandardCharsets.UTF_8);</span><br><span class="line">                System.out.println(<span class="string">" [x] Received '"</span> + messages +<span class="string">"'"</span>);</span><br><span class="line">            &#125;;</span><br><span class="line"></span><br><span class="line">            channel.basicConsume(queueName,<span class="keyword">true</span>,deliverCallback, consumerTag -&gt; &#123;&#125;);</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (TimeoutException | IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>生产者通过发送消息到交换机<code>exchange</code>，<br>消费者从channel中获取一个随机的非持久化自动删除队列:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取队列，得到一个随机名称（非持久化的自动删除队列）</span></span><br><span class="line">String queueName = channel.queueDeclare().getQueue();</span><br></pre></td></tr></table></figure></p>
+<p>并且将该队列绑定到指定的<code>exchange</code>上<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 绑定消息队列和exchange</span></span><br><span class="line">channel.queueBind(queueName,EXCHANGE_NAME,<span class="string">""</span>);</span><br></pre></td></tr></table></figure></p>
+<p>关系图如下：<br><img src="/f9e910b8/overall.png" title="overall"></p>
+<p><font color="red" face="黑体">注意：消费者必须先绑定到exchange上，然后生产者再发送消息，否则exchange无法将消息路由到任何队列。</font><br>消费者接收消息后自动确认消息并且自动删除队列。</p>
+<h1 id="Routing"><a href="#Routing" class="headerlink" title="Routing"></a>Routing</h1><blockquote>
+<p>Routing 路由，进行有选择的接收消息，可以订阅某个消息队列的子集。</p>
+</blockquote>
+<p>生产者代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 指定exchange的类型为direct</span></span><br><span class="line">channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 向指定exchange发送消息，路由key为 info</span></span><br><span class="line">channel.basicPublish(EXCHANGE_NAME,<span class="string">"info"</span>,<span class="keyword">null</span>,<span class="string">"info message"</span>.getBytes(StandardCharsets.UTF_8));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 向指定exchange发送消息，路由key为 warning</span></span><br><span class="line">channel.basicPublish(EXCHANGE_NAME,<span class="string">"warning"</span>,<span class="keyword">null</span>,<span class="string">"warning message"</span>.getBytes(StandardCharsets.UTF_8));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 向指定exchange发送消息，路由key为 error</span></span><br><span class="line">channel.basicPublish(EXCHANGE_NAME,<span class="string">"info"</span>,<span class="keyword">null</span>,<span class="string">"error message"</span>.getBytes(StandardCharsets.UTF_8));</span><br></pre></td></tr></table></figure></p>
+<p>消费者代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 指定exchange的类型为direct</span></span><br><span class="line">channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取队列，得到一个随机名称（非持久化的自动删除队列）</span></span><br><span class="line">String queueName = channel.queueDeclare().getQueue();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 绑定消息队列、exchange、路由key为error</span></span><br><span class="line">channel.queueBind(queueName,EXCHANGE_NAME,<span class="string">"error"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 绑定消息队列、exchange、路由key为info</span></span><br><span class="line"><span class="comment">// channel.queueBind(queueName,EXCHANGE_NAME,"info");</span></span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 接收指定exchange中routingKey为error的消息并处理</span></span><br></pre></td></tr></table></figure></p>
+<p>生产者可以绑定多个routingKey，发送到类型为direct的exchange<br>消费者可以为一个队列绑定多个routingKey，关系图如下所示：<br><img src="/f9e910b8/four.png" title="four"></p>
+<h1 id="Topics"><a href="#Topics" class="headerlink" title="Topics"></a>Topics</h1><blockquote>
+<p>Topics 主题，基于主题交换的策略接收消息。</p>
+</blockquote>
+<p>基于Topics的方式可以让消息队列的使用更加灵活，为消息的发送和订阅提供更加细粒度的控制<br>首先需要指定exchange的类型为topic，在生产者发送消息时设置 routingKey为一个符号表达式。<br>routingKey的格式必须是由点<code>.</code>分割的单词列表，单词可以是任何内容，通常用与消息相关的单词来表示<br>比如：<code>sys.info.log</code>、<code>*.info.log</code>、<code>lazy.#</code>、<code>*.*.info.#</code>等<br><code>*</code> 一个字符占位符<br><code>#</code> 0个或者多个字符的占位符<br>生产者代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 指定exchange的类型为topic</span></span><br><span class="line">channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.TOPIC);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 向指定exchange发送消息, routingKey 为 s.info.l， 订阅的消费者需要指定主题routingKey为 *.info.* 或者 #.info.#</span></span><br><span class="line">channel.basicPublish(EXCHANGE_NAME,<span class="string">"s.info.l"</span>,<span class="keyword">null</span>,<span class="string">"info message"</span>.getBytes(StandardCharsets.UTF_8));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 向指定exchange发送消息, routingKey 为 lazy.test.one, 订阅的消费者需要指定主题routingKey为 lazy.#</span></span><br><span class="line">channel.basicPublish(EXCHANGE_NAME,<span class="string">"lazy.test.one"</span>,<span class="keyword">null</span>,<span class="string">"lazy message"</span>.getBytes(StandardCharsets.UTF_8));</span><br></pre></td></tr></table></figure></p>
+<p>消费者代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 指定exchange的类型为topic</span></span><br><span class="line">channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.TOPIC);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取队列，得到一个随机名称（非持久化的自动删除队列）</span></span><br><span class="line">String queueName = channel.queueDeclare().getQueue();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 绑定消息队列和exchange</span></span><br><span class="line">channel.queueBind(queueName,EXCHANGE_NAME,<span class="string">"*.info.*"</span>);</span><br><span class="line"><span class="comment">// 消费者将会收到生产者发送的 info message 消息内容</span></span><br></pre></td></tr></table></figure></p>
+<img src="/f9e910b8/topic.png" title="topic">
+<h1 id="RPC"><a href="#RPC" class="headerlink" title="RPC"></a>RPC</h1><blockquote>
+<p>RPC 远程过程调用，RabbitMQ也支持这种同步调用的特性，调用之后等待调用结果返回。</p>
+</blockquote>
+<p>客户端通过RabbitMQ的RPC调用服务端，等待服务端返回结果，示例程序如下：</p>
+<h2 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RPCClient</span> <span class="keyword">implements</span> <span class="title">AutoCloseable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Connection connection;</span><br><span class="line">    <span class="keyword">private</span> Channel channel;</span><br><span class="line">    <span class="keyword">private</span> String requestQueueName = <span class="string">"rpc_queue"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">RPCClient</span><span class="params">()</span> <span class="keyword">throws</span> IOException, TimeoutException </span>&#123;</span><br><span class="line">        ConnectionFactory connectionFactory = <span class="keyword">new</span> ConnectionFactory();</span><br><span class="line">        connectionFactory.setHost(<span class="string">"localhost"</span>);</span><br><span class="line">        connection = connectionFactory.newConnection();</span><br><span class="line">        channel = connection.createChannel();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span>(RPCClient fibonacciRpc = <span class="keyword">new</span> RPCClient())&#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">32</span>; i++)&#123;</span><br><span class="line">                String i_str = Integer.toString(i);</span><br><span class="line">                System.out.println(<span class="string">" [x] Requesting fib("</span> + i_str +<span class="string">")"</span>);</span><br><span class="line">                String response = fibonacciRpc.call(i_str);</span><br><span class="line">                System.out.println(<span class="string">" [.] Got '"</span> + response + <span class="string">"'"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">call</span><span class="params">(String message)</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> String corrId = UUID.randomUUID().toString();</span><br><span class="line"></span><br><span class="line">        String replayQueueName = channel.queueDeclare().getQueue();</span><br><span class="line">        AMQP.BasicProperties basicProperties = <span class="keyword">new</span> AMQP.BasicProperties</span><br><span class="line">                .Builder()</span><br><span class="line">                .correlationId(corrId)</span><br><span class="line">                .replyTo(replayQueueName)</span><br><span class="line">                .build();</span><br><span class="line">        channel.basicPublish(<span class="string">""</span>,requestQueueName,basicProperties,message.getBytes(StandardCharsets.UTF_8));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> BlockingQueue&lt;String&gt; response = <span class="keyword">new</span> ArrayBlockingQueue&lt;&gt;(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">        String cTag = channel.basicConsume(replayQueueName,<span class="keyword">true</span>,(consumeTag, delivery)-&gt;&#123;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (delivery.getProperties().getCorrelationId().equals(corrId))&#123;</span><br><span class="line">                response.offer(<span class="keyword">new</span> String(delivery.getBody(),StandardCharsets.UTF_8));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,consumerTag -&gt; &#123;</span><br><span class="line"></span><br><span class="line">        &#125;);</span><br><span class="line">        String result = response.take();</span><br><span class="line">        channel.basicCancel(cTag);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        connection.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RPCServer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String RPC_QUEUE_NAME = <span class="string">"rpc_queue"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">fib</span><span class="params">(<span class="keyword">int</span> n)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (n == <span class="number">0</span>) <span class="keyword">return</span> n;</span><br><span class="line">        <span class="keyword">if</span> (n == <span class="number">1</span>) <span class="keyword">return</span> n;</span><br><span class="line">        <span class="keyword">return</span> fib(n-<span class="number">1</span>) + fib(n-<span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        ConnectionFactory connectionFactory = <span class="keyword">new</span> ConnectionFactory();</span><br><span class="line">        connectionFactory.setHost(<span class="string">"localhost"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span>(Connection connection = connectionFactory.newConnection())&#123;</span><br><span class="line">            Channel channel = connection.createChannel();</span><br><span class="line">            channel.queueDeclare(RPC_QUEUE_NAME,<span class="keyword">false</span>,<span class="keyword">false</span>,<span class="keyword">false</span>,<span class="keyword">null</span>);</span><br><span class="line">            channel.queuePurge(RPC_QUEUE_NAME);</span><br><span class="line"></span><br><span class="line">            channel.basicQos(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">            System.out.println(<span class="string">" [x] Awaiting PRC request"</span>);</span><br><span class="line"></span><br><span class="line">            Object monitor = <span class="keyword">new</span> Object();</span><br><span class="line">            DeliverCallback deliverCallback = (consumerTag, message) -&gt; &#123;</span><br><span class="line">                AMQP.BasicProperties replyProperties =<span class="keyword">new</span> AMQP.BasicProperties</span><br><span class="line">                        .Builder()</span><br><span class="line">                        .correlationId(message.getProperties().getCorrelationId())</span><br><span class="line">                        .build();</span><br><span class="line"></span><br><span class="line">                String response = <span class="string">""</span>;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">try</span>&#123;</span><br><span class="line">                    String theMessage = <span class="keyword">new</span> String(message.getBody(), StandardCharsets.UTF_8);</span><br><span class="line">                    <span class="keyword">int</span> n = Integer.parseInt(theMessage);</span><br><span class="line">                    System.out.println(<span class="string">" [.] fib("</span> + n + <span class="string">")"</span>);</span><br><span class="line">                    response += fib(n);</span><br><span class="line">                &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">                    System.out.println(<span class="string">" [.] "</span> + e.toString());</span><br><span class="line">                &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">                    channel.basicPublish(<span class="string">""</span>,message.getProperties().getReplyTo(),replyProperties,response.getBytes(StandardCharsets.UTF_8));</span><br><span class="line">                    channel.basicAck(message.getEnvelope().getDeliveryTag(),<span class="keyword">false</span>);</span><br><span class="line">                    <span class="keyword">synchronized</span> (monitor)&#123;</span><br><span class="line">                        monitor.notify();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;;</span><br><span class="line">            channel.basicConsume(RPC_QUEUE_NAME,<span class="keyword">false</span>,deliverCallback,(consumeTag-&gt;&#123; &#125;));</span><br><span class="line">            <span class="keyword">while</span> (<span class="keyword">true</span>)&#123;</span><br><span class="line">                <span class="keyword">synchronized</span> (monitor)&#123;</span><br><span class="line">                    <span class="keyword">try</span> &#123;</span><br><span class="line">                        monitor.wait();</span><br><span class="line">                    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                        e.printStackTrace();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (TimeoutException | IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注：本文章为RabbitMQ的学习笔记，文章中的图片和部分代码都来自RabbitMQ官网，官方文档地址：<br><a href="https://www.rabbitmq.com/getstarted.html" target="_blank" rel="noopener">https://www.rabbitmq.com/getstarted.html</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/cb6b0010/" rel="next" title="消息队列知识点梳理">
+                <i class="fa fa-chevron-left"></i> 消息队列知识点梳理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div id="gitalk-container"></div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="蓝士钦" />
+            
+              <p class="site-author-name" itemprop="name">蓝士钦</p>
+              <p class="site-description motion-element" itemprop="description">编程是一种信仰</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">30</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/lanshiqin" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://weibo.com/l18120788756" target="_blank" title="Weibo"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.jianshu.com/u/082f73dac819" target="_blank" title="JianShu"><i class="fa fa-fw fa-heartbeat"></i>JianShu</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:lanshiqin@outlook.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基本概念"><span class="nav-number">1.</span> <span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#producer"><span class="nav-number">1.1.</span> <span class="nav-text">producer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#queue"><span class="nav-number">1.2.</span> <span class="nav-text">queue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#consumer"><span class="nav-number">1.3.</span> <span class="nav-text">consumer</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#简单使用"><span class="nav-number">2.</span> <span class="nav-text">简单使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#生产者"><span class="nav-number">2.1.</span> <span class="nav-text">生产者</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#导入需要用到的类："><span class="nav-number">2.1.1.</span> <span class="nav-text">导入需要用到的类：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定义队列名称"><span class="nav-number">2.1.2.</span> <span class="nav-text">定义队列名称</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建连接发送数据"><span class="nav-number">2.1.3.</span> <span class="nav-text">创建连接发送数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消费者"><span class="nav-number">2.2.</span> <span class="nav-text">消费者</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#导入需要用到的类：-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">导入需要用到的类：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定义队列名称-1"><span class="nav-number">2.2.2.</span> <span class="nav-text">定义队列名称</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建连接接收数据"><span class="nav-number">2.2.3.</span> <span class="nav-text">创建连接接收数据</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Work-queues"><span class="nav-number">3.</span> <span class="nav-text">Work queues</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#自动确认消息改为手动确认"><span class="nav-number">3.1.</span> <span class="nav-text">自动确认消息改为手动确认</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Publish-Subscribe"><span class="nav-number">4.</span> <span class="nav-text">Publish/Subscribe</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Exchanges"><span class="nav-number">4.1.</span> <span class="nav-text">Exchanges</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Routing"><span class="nav-number">5.</span> <span class="nav-text">Routing</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Topics"><span class="nav-number">6.</span> <span class="nav-text">Topics</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RPC"><span class="nav-number">7.</span> <span class="nav-text">RPC</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#客户端"><span class="nav-number">7.1.</span> <span class="nav-text">客户端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务端"><span class="nav-number">7.2.</span> <span class="nav-text">服务端</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">蓝士钦</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+  <div class="footer-custom">闽ICP备15027850号</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv" title="总访客量">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="site-pv" title="总访问量">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.4.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+<script src="/js/src/photoswipe.js?v="></script>
+<script src="/js/src/photoswipe-ui-default.js?v="></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+        var gitalk = new Gitalk({
+          clientID: 'dbbb41b4b5cb67b7abc7',
+          clientSecret: 'bc34f9315b09e4f330043a8a0eea6e664fc2d197',
+          repo: 'lanshiqin-blog',
+          owner: 'lanshiqin',
+          admin: ['lanshiqin'],
+          id: location.pathname,
+          distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')           
+       </script>
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 --> 
+<script type="text/javascript" src="/js/src/love.js"></script>
+<!--崩溃欺骗-->
+<script type="text/javascript" src="/js/src/crash_cheat.js"></script>
