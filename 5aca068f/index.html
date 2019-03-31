@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "6d134c3b"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="单元测试指的是对软件系统中的最小可测单元进行测试和验证。在面向对象的程序设计中，一个类中最小可执行单元通常是作为一个函数或者方法，单元测试要尽可能的对所有的方法覆盖，对预期结果和实际结果进行验证。在这里首先要感谢我现在所在公司给与的培训，感谢同事的分享让我更加明白单元测试的必要性。">
+<meta name="keywords" content="蓝士钦">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用TestNG进行单元测试">
+<meta property="og:url" content="https://www.lanshiqin.com/5aca068f/index.html">
+<meta property="og:site_name" content="蓝士钦">
+<meta property="og:description" content="单元测试指的是对软件系统中的最小可测单元进行测试和验证。在面向对象的程序设计中，一个类中最小可执行单元通常是作为一个函数或者方法，单元测试要尽可能的对所有的方法覆盖，对预期结果和实际结果进行验证。在这里首先要感谢我现在所在公司给与的培训，感谢同事的分享让我更加明白单元测试的必要性。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.lanshiqin.com/5aca068f/userLoginData.png">
+<meta property="og:image" content="https://www.lanshiqin.com/5aca068f/testResult.png">
+<meta property="og:updated_time" content="2019-03-31T13:33:58.533Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用TestNG进行单元测试">
+<meta name="twitter:description" content="单元测试指的是对软件系统中的最小可测单元进行测试和验证。在面向对象的程序设计中，一个类中最小可执行单元通常是作为一个函数或者方法，单元测试要尽可能的对所有的方法覆盖，对预期结果和实际结果进行验证。在这里首先要感谢我现在所在公司给与的培训，感谢同事的分享让我更加明白单元测试的必要性。">
+<meta name="twitter:image" content="https://www.lanshiqin.com/5aca068f/userLoginData.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="蓝士钦" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="https://www.lanshiqin.com/5aca068f/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>使用TestNG进行单元测试 | 蓝士钦</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+  <script src="/js/src/photoswipe.js?v="></script>
+  <script src="/js/src/photoswipe-ui-default.js?v="></script>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">蓝士钦</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">编程是一种信仰</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-相册">
+    <a href="/photos/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-photo"></i> <br />相册</a>
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.lanshiqin.com/5aca068f/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蓝士钦">
+      <meta itemprop="description" content="编程是一种信仰">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蓝士钦">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">使用TestNG进行单元测试
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-31 12:39:50 / 修改时间：21:33:58" itemprop="dateCreated datePublished" datetime="2019-03-31T12:39:50+08:00">2019-03-31</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon"
+            >
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>单元测试指的是对软件系统中的最小可测单元进行测试和验证。在面向对象的程序设计中，一个类中最小可执行单元通常是作为一个函数或者方法，单元测试要尽可能的对所有的方法覆盖，对预期结果和实际结果进行验证。在这里首先要感谢我现在所在公司给与的培训，感谢同事的分享让我更加明白单元测试的必要性。<br><a id="more"></a></p>
+<h1 id="非单元测试"><a href="#非单元测试" class="headerlink" title="非单元测试"></a>非单元测试</h1><blockquote>
+<p>在开始单元测试前，我们先来看看不属于单元测试的内容</p>
+</blockquote>
+<p>新建一个SpringBoot模板工程，可以看到在工程结构中src源代码目录下有两个模块，一个是main模块用来编写和存放业务代码，另一个是test模块，用来对业务功能进行测试，在test模块的文件层级下可以看到SpringBoot已经默认为我们初始化了一个测试模板:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RunWith</span>(SpringRunner::<span class="class"><span class="keyword">class</span>)</span></span><br><span class="line"><span class="class">@<span class="title">SpringBootTest</span></span></span><br><span class="line"><span class="class"><span class="title">class</span> <span class="title">BootApplicationTests</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function">fun <span class="title">contextLoads</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>@RunWith(SpringRunner::class)</code>和<code>@SpringBootTest</code>注解将会在测试运行时加载和启动Spring的上下文测试环境。</p>
+<font color="red">网上很多文章写的单元测试都是用这个注解，在了解单元测试之前我看过很多篇文章的单元测试都是这么写的，使我对单元测试造成了一定的误解，其实这个是集成测试的部分，是对整个系统的测试，不是单元测试！</font>
+
+<h1 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h1><blockquote>
+<p>下面开始进行单元测试的内容，我使用Kotlin+Gradle的方式创建了一个Spring Boot的项目</p>
+</blockquote>
+<p>在Java开发中单元测试的工具有很多比如Junit，这里我使用的是TestNG，他继承了Junit的特性并且简洁对代码无污染，且功能强大。</p>
+<h2 id="引入TestNG相关的依赖包"><a href="#引入TestNG相关的依赖包" class="headerlink" title="引入TestNG相关的依赖包"></a>引入TestNG相关的依赖包</h2><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// testng依赖</span></span><br><span class="line">testCompile <span class="keyword">group</span>: <span class="string">'org.testng'</span>, name: <span class="string">'testng'</span>, version: <span class="string">'6.14.3'</span></span><br><span class="line"><span class="comment">// 引入kotlin的mock相关依赖，才能在kotlin的工程代码中使用mock()方法进行对象mock()</span></span><br><span class="line">testCompile <span class="keyword">group</span>: <span class="string">'com.nhaarman'</span>, name: <span class="string">'mockito-kotlin'</span>, version: <span class="string">'1.6.0'</span></span><br></pre></td></tr></table></figure>
+<p>比如在UserController中有个用户登录的login方法：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(<span class="meta-string">"/user"</span>)</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> logger = LoggerFactory.getLogger(UserController::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>)!!</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">lateinit</span> <span class="keyword">var</span> i18NService: I18NService</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">lateinit</span> <span class="keyword">var</span> userService: MerUserService</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PostMapping(<span class="meta-string">"login"</span>)</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">login</span><span class="params">(<span class="meta">@RequestBody</span> userLoginRequest: <span class="type">UserLoginRequest</span>)</span></span>: ApiResponse&lt;CoMerUserResponse&gt; &#123;</span><br><span class="line"></span><br><span class="line">        logger.info(<span class="string">"登录信息"</span> + JSON.toJSONString(userLoginRequest))</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">val</span> md5Pwd = CryptoUtil.getMD5String(userLoginRequest.password)</span><br><span class="line">            <span class="keyword">val</span> user = userService.getUser(userLoginRequest.username, md5Pwd)</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (user != <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="comment">// 用户被删除或禁用 || 用户所属的商户被删除或禁用</span></span><br><span class="line">                <span class="keyword">if</span> (user.userDelete == <span class="number">1</span> || user.userAvalible == <span class="number">0</span> || user.merDeleted == <span class="number">1</span> || user.merAvalible == <span class="number">0</span>) &#123;</span><br><span class="line">                    logger.info(<span class="string">"账号异常:"</span> + JSON.toJSONString(user))</span><br><span class="line">                    <span class="keyword">return</span> ApiResponse.fail(ERROR_CODE, i18NService.getI18N(<span class="string">"mer.coupon.accountError"</span>))</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> ApiResponse.succ(user)</span><br><span class="line"></span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> ApiResponse.fail(ERROR_CODE, i18NService.getI18N(<span class="string">"mer.coupon.userError"</span>))</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (e: Exception) &#123;</span><br><span class="line">            logger.error(e.printStackTrace().toString())</span><br><span class="line">            <span class="keyword">return</span> ApiResponse.fail(ERROR_CODE, i18NService.getI18N(<span class="string">"mer.coupon.loginError"</span>))</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="生成单元测试代码"><a href="#生成单元测试代码" class="headerlink" title="生成单元测试代码"></a>生成单元测试代码</h2><p>我们要对UserController的login方法进行单元测试，我使用的开发工具是IDEA，在Mac上<code>command+shift+t</code>,  如果是Windows则按<code>controller+shift+t</code>，选择Create New Test，选择要创建单元测试的方法进行快速生成。<br>勾选 <code>SetUp/@Before</code> 和 <code>tearDown/@After</code>，生成如下单元测试代码</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.testng.annotations.Test</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.testng.Assert.*</span><br><span class="line"><span class="keyword">import</span> org.testng.annotations.AfterMethod</span><br><span class="line"><span class="keyword">import</span> org.testng.annotations.BeforeMethod</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserControllerTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@BeforeMethod</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">setUp</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="comment">// 测试前</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">testLogin</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="comment">// 测试中，测试的对应方法</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@AfterMethod</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">tearDown</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="comment">// 测试后</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由于我们只对UserController类的login方法进行单元测试，该方法所依赖的Service等对象的方法和行为我们都需要进行Mock。这里暂且不讨论代码写的如何，也不必关心login方法中所调用的Service层的具体实现，login只需要关系自己的逻辑即可。</p>
+<p>在login方法中调用了<code>userService.getUser</code>来获取一个用户对象，通过判断用户是否存在进行下一步的逻辑验证，如果出现错误需要调用<code>i18NService.getI18N</code>这个方法用来向用户返回对应的提示信息。这两处调用属于外部依赖的，无论实际业务代码是否实现这个功能，我们都不必关心，只需要<code>Mock</code>模拟这写对象的调用行为即可。login只对自身方法的逻辑进行验证。</p>
+<p>需要Mock的数据有：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">userService.getUser(userLoginRequest.username, md5Pwd)</span><br><span class="line">i18NService.getI18N(<span class="string">"mer.coupon.accountError"</span>)</span><br><span class="line">i18NService.getI18N(<span class="string">"mer.coupon.userError"</span>)</span><br><span class="line">i18NService.getI18N(<span class="string">"mer.coupon.loginError"</span>)</span><br></pre></td></tr></table></figure></p>
+<h2 id="使用when-进行Mock数据"><a href="#使用when-进行Mock数据" class="headerlink" title="使用when()进行Mock数据"></a>使用<code>when()</code>进行Mock数据</h2><p>比如<code>userService.getUser()</code>这个方法将会根据传入的参数去查询用户是否存在，如果存在则返回对象。这里不必关心具体的用户数据，只需要关心<code>login()</code>自身的逻辑，所以我们对这个方法进行Mock即可，比如:<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">`<span class="keyword">when</span>`(userService.getUser(username, password)).thenReturn(response)</span><br></pre></td></tr></table></figure></p>
+<p><code>thenReturn(response)</code>中的response是我们自己构造的对象，<code>when().thenReturn()</code>在实际单元测试时，将会模拟<code>when()</code>中的代码行为，并且通过<code>thenReturn()</code>返回调用该方法的返回值。这个返回值可以在单元测试中进行模拟。</p>
+<p>单元测试一般要覆盖各种边界值，比如这里的<code>login()</code>业务示例代码中，需要根据用户当前的启用和删除状态，以及所属商家的启用和删除状态进行登录限制。我们要模拟这些不同的数据进行输入，并且将输出的结果和预期的结果进行对比验证。</p>
+<h2 id="测试数据"><a href="#测试数据" class="headerlink" title="测试数据"></a>测试数据</h2><p>测试数据这里用了一个Excel文件进行存放。对用户和所属商户的启用禁用的各种情况进行模拟不同的用户数据，第一行表头部分作为后续单元测试读取的键名称，<code>expected</code>为这条数据登录后应该返回的期望状态，单元测试程序需要对比期望状态和实际调用login方法所返回的状态，如果相同则表明测试通过，如果不同则表明<code>login()</code>方法有逻辑问题。<br><img src="/5aca068f/userLoginData.png" title="userLoginData"><br>测试数据中包含了实际的业务场景，用户和所关联的商户必须都为未删除状态，且都必须是启用状态用户才能成功登陆。</p>
+<h2 id="编写单元测试"><a href="#编写单元测试" class="headerlink" title="编写单元测试"></a>编写单元测试</h2><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.lanshiqin.boot</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.nhaarman.mockito_kotlin.mock</span><br><span class="line"><span class="keyword">import</span> org.mockito.Mockito.`<span class="keyword">when</span>`</span><br><span class="line"><span class="keyword">import</span> org.springframework.core.io.ClassPathResource</span><br><span class="line"><span class="keyword">import</span> org.testng.Assert.assertEquals</span><br><span class="line"><span class="keyword">import</span> org.testng.annotations.BeforeMethod</span><br><span class="line"><span class="keyword">import</span> org.testng.annotations.DataProvider</span><br><span class="line"><span class="keyword">import</span> org.testng.annotations.Test</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserControllerTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> userController: UserController? = <span class="literal">null</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> userService: MerUserService? = <span class="literal">null</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> i18NService: I18NService? = <span class="literal">null</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@BeforeMethod</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">setUp</span><span class="params">()</span></span> &#123;</span><br><span class="line">        userController = UserController()</span><br><span class="line">        userService = mock()</span><br><span class="line">        i18NService = mock()</span><br><span class="line">        userController!!.userService = userService <span class="keyword">as</span> MerUserService</span><br><span class="line">        userController!!.i18NService = i18NService <span class="keyword">as</span> I18NService</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@DataProvider(name = <span class="meta-string">"loginDataInfo"</span>)</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">loginDataInfo</span><span class="params">()</span></span>: Array&lt;Array&lt;Any&gt;&gt; &#123;</span><br><span class="line">        <span class="comment">// 加载用户登录测试数据，包含各种边界值</span></span><br><span class="line">        <span class="keyword">return</span> ExcelUtil().testData(ClassPathResource(<span class="string">"loginDataInfo.xls"</span>).file.path)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 登录</span></span><br><span class="line">    <span class="meta">@Test(dataProvider = <span class="meta-string">"loginDataInfo"</span>)</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">testLogin</span><span class="params">(<span class="keyword">data</span>: <span class="type">HashMap</span>&lt;<span class="type">String</span>, String&gt;)</span></span> &#123;</span><br><span class="line">        <span class="comment">// 行为mock，当调用i18NService!!.getI18N("mer.coupon.accountError")方法时将会返回 “账号异常”</span></span><br><span class="line">        `<span class="keyword">when</span>`(i18NService!!.getI18N(<span class="string">"mer.coupon.accountError"</span>)).thenReturn(<span class="string">"账号异常"</span>)</span><br><span class="line">        `<span class="keyword">when</span>`(i18NService!!.getI18N(<span class="string">"mer.coupon.userError"</span>)).thenReturn(<span class="string">"用户名或密码错误"</span>)</span><br><span class="line">        `<span class="keyword">when</span>`(i18NService!!.getI18N(<span class="string">"mer.coupon.loginError"</span>)).thenReturn(<span class="string">"登录失败"</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 构造测试数据，用户登录信息</span></span><br><span class="line">        <span class="keyword">val</span> request = UserLoginRequest()</span><br><span class="line">        request.username = <span class="keyword">data</span>[<span class="string">"reqUserName"</span>].toString()</span><br><span class="line">        request.password = <span class="keyword">data</span>[<span class="string">"reqPassWord"</span>].toString()</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 构造测试数据</span></span><br><span class="line">        <span class="keyword">val</span> response = CoMerUserResponse()</span><br><span class="line">        response.userName = <span class="keyword">data</span>[<span class="string">"userName"</span>].toString()</span><br><span class="line">        <span class="keyword">val</span> password = <span class="keyword">data</span>[<span class="string">"password"</span>].toString()</span><br><span class="line">        response.userDelete = <span class="keyword">data</span>[<span class="string">"userDelete"</span>]!!.toInt()</span><br><span class="line">        response.merDeleted = <span class="keyword">data</span>[<span class="string">"merDeleted"</span>]!!.toInt()</span><br><span class="line">        response.userAvalible = <span class="keyword">data</span>[<span class="string">"userAvalible"</span>]!!.toInt()</span><br><span class="line">        response.merAvalible = <span class="keyword">data</span>[<span class="string">"merAvalible"</span>]!!.toInt()</span><br><span class="line">        <span class="comment">// Mock userService.getUser(），返回测试对象</span></span><br><span class="line">        `<span class="keyword">when</span>`(userService!!.getUser(request.username!!, password)).thenReturn(response)</span><br><span class="line">        <span class="comment">// 调用userController.login()方法</span></span><br><span class="line">        <span class="keyword">val</span> result = userController!!.login(request)</span><br><span class="line">        <span class="comment">// 验证预期返回值和实际返回值</span></span><br><span class="line">        assertEquals(<span class="keyword">data</span>[<span class="string">"expected"</span>].toString(),result.message)</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>@DataProvider(name=&quot;loginDataInfo&quot;)</code>所标注的方法表示该方法是一个数据提供者，指定名称为<code>loginDataInfo</code>。<code>@Test(dataProvider=&quot;loginDataInfo&quot;)</code>所标注的单元测试方法表示，该方法执行单元测试前将会先执行数据提供者<code>loginDataInfo</code>所标注的方法，将数据提供者方法返回的数据作为本单元测试的入参。</p>
+<font color="red">注：单元测试代码中的<code>when</code>使用引号引起来是因为单元测试的<code>when</code>方法和kotlin的关键字<code>when</code>冲突了，所以必须加上单引号</font>
+
+<h2 id="执行单元测试"><a href="#执行单元测试" class="headerlink" title="执行单元测试"></a>执行单元测试</h2><img src="/5aca068f/testResult.png" title="testResult">
+<p>根据测试数据中的边界值执行单元测试，每条数据所返回的结果与预期结果相同，测试通过！</p>
+<p>后续如果不小心修改了<code>UserController.login()</code>中的方法，比如不小心将业务代码中23行的的<code>user.userDelete == 1</code>改成了 <code>user.userDelete == 0</code>，这时候再运行一遍单元测试就会发现有一部分单元测试就无法通过了，通过预期值和实际值可以很容易的发现问题。</p>
+<font color="red">在实际业务场景中，一个方法可能调用了多个外部方法，并且根据外部方法不同的返回值执行不同的逻辑。每个方法应该只关注自身的逻辑，所调用的外部方法以及返回值我们要通过<code>Mock</code>进行构造，并且应该尽可能的覆盖所有的边界情况，在特别复杂的业务代码中，单元测试显得至关重要。写完测试后，即使后续动到了核心的业务代码，只需要运行一遍单元测试就能判断逻辑是否有问题，而不是通过一遍一遍的断点调试，做重复的工作。</font>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/f9e910b8/" rel="next" title="RabbitMQ知识点梳理">
+                <i class="fa fa-chevron-left"></i> RabbitMQ知识点梳理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div id="gitalk-container"></div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="蓝士钦" />
+            
+              <p class="site-author-name" itemprop="name">蓝士钦</p>
+              <p class="site-description motion-element" itemprop="description">编程是一种信仰</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">31</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/lanshiqin" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://weibo.com/l18120788756" target="_blank" title="Weibo"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.jianshu.com/u/082f73dac819" target="_blank" title="JianShu"><i class="fa fa-fw fa-heartbeat"></i>JianShu</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:lanshiqin@outlook.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#非单元测试"><span class="nav-number">1.</span> <span class="nav-text">非单元测试</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#单元测试"><span class="nav-number">2.</span> <span class="nav-text">单元测试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#引入TestNG相关的依赖包"><span class="nav-number">2.1.</span> <span class="nav-text">引入TestNG相关的依赖包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成单元测试代码"><span class="nav-number">2.2.</span> <span class="nav-text">生成单元测试代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用when-进行Mock数据"><span class="nav-number">2.3.</span> <span class="nav-text">使用when()进行Mock数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试数据"><span class="nav-number">2.4.</span> <span class="nav-text">测试数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编写单元测试"><span class="nav-number">2.5.</span> <span class="nav-text">编写单元测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#执行单元测试"><span class="nav-number">2.6.</span> <span class="nav-text">执行单元测试</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">蓝士钦</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+  <div class="footer-custom">闽ICP备15027850号</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv" title="总访客量">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="site-pv" title="总访问量">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.4.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+<script src="/js/src/photoswipe.js?v="></script>
+<script src="/js/src/photoswipe-ui-default.js?v="></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+        var gitalk = new Gitalk({
+          clientID: 'dbbb41b4b5cb67b7abc7',
+          clientSecret: 'bc34f9315b09e4f330043a8a0eea6e664fc2d197',
+          repo: 'lanshiqin-blog',
+          owner: 'lanshiqin',
+          admin: ['lanshiqin'],
+          id: location.pathname,
+          distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')           
+       </script>
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 --> 
+<script type="text/javascript" src="/js/src/love.js"></script>
+<!--崩溃欺骗-->
+<script type="text/javascript" src="/js/src/crash_cheat.js"></script>
