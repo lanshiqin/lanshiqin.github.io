@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "6d134c3b"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="2020年6月18日星期四，至今最晚的一次下班打卡时间，次日凌晨1点44分。因为项目上线不顺利，我和其他小伙伴们一起留下来渡过了一次难忘的上线经历。在这个项目中遇到了很多坑，也埋下了很多坑。后来在极客时间上学习了郑烨老师的《10X程序员工作法》之后很有感触，如果早点看到这篇工作法，也许就不会有这么多坑了，项目也不会这么曲折。在此做一下总结。">
+<meta name="keywords" content="工作总结">
+<meta property="og:type" content="article">
+<meta property="og:title" content="10x程序员工作法总结">
+<meta property="og:url" content="https://www.lanshiqin.com/8e86c433/index.html">
+<meta property="og:site_name" content="蓝士钦">
+<meta property="og:description" content="2020年6月18日星期四，至今最晚的一次下班打卡时间，次日凌晨1点44分。因为项目上线不顺利，我和其他小伙伴们一起留下来渡过了一次难忘的上线经历。在这个项目中遇到了很多坑，也埋下了很多坑。后来在极客时间上学习了郑烨老师的《10X程序员工作法》之后很有感触，如果早点看到这篇工作法，也许就不会有这么多坑了，项目也不会这么曲折。在此做一下总结。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.lanshiqin.com/8e86c433/1.png">
+<meta property="og:updated_time" content="2020-09-13T09:05:55.468Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="10x程序员工作法总结">
+<meta name="twitter:description" content="2020年6月18日星期四，至今最晚的一次下班打卡时间，次日凌晨1点44分。因为项目上线不顺利，我和其他小伙伴们一起留下来渡过了一次难忘的上线经历。在这个项目中遇到了很多坑，也埋下了很多坑。后来在极客时间上学习了郑烨老师的《10X程序员工作法》之后很有感触，如果早点看到这篇工作法，也许就不会有这么多坑了，项目也不会这么曲折。在此做一下总结。">
+<meta name="twitter:image" content="https://www.lanshiqin.com/8e86c433/1.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="蓝士钦" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="https://www.lanshiqin.com/8e86c433/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>10x程序员工作法总结 | 蓝士钦</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+  <script src="/js/src/photoswipe.js?v="></script>
+  <script src="/js/src/photoswipe-ui-default.js?v="></script>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">蓝士钦</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">编程是一种信仰</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-相册">
+    <a href="/photos/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-photo"></i> <br />相册</a>
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.lanshiqin.com/8e86c433/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蓝士钦">
+      <meta itemprop="description" content="编程是一种信仰">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蓝士钦">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">10x程序员工作法总结
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-09-07 20:30:47" itemprop="dateCreated datePublished" datetime="2020-09-07T20:30:47+08:00">2020-09-07</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-09-13 17:05:55" itemprop="dateModified" datetime="2020-09-13T17:05:55+08:00">2020-09-13</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon"
+            >
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>2020年6月18日星期四，至今最晚的一次下班打卡时间，次日凌晨1点44分。因为项目上线不顺利，我和其他小伙伴们一起留下来渡过了一次难忘的上线经历。<br>在这个项目中遇到了很多坑，也埋下了很多坑。后来在极客时间上学习了郑烨老师的《10X程序员工作法》之后很有感触，如果早点看到这篇工作法，也许就不会有这么多坑了，项目也不会这么曲折。在此做一下总结。<br><a id="more"></a></p>
+<h1 id="情景描述"><a href="#情景描述" class="headerlink" title="情景描述"></a>情景描述</h1><blockquote>
+<p>先来回顾一下这个项目，项目不便透露细节，所以进行简单描述</p>
+</blockquote>
+<ul>
+<li>一句话概括：这是一个动作很大且很复杂的工程，需要打通两个不同体系的系统，将系统进行整合。</li>
+<li>工作内容：将用户体系进行合并，统一登陆机制、鉴权机制。两个系统底下的子业务模块要能够无缝衔接。</li>
+</ul>
+<h1 id="复盘"><a href="#复盘" class="headerlink" title="复盘"></a>复盘</h1><blockquote>
+<p>为什么上线这么不顺利</p>
+</blockquote>
+<p>倒推到需求和开发阶段</p>
+<ol>
+<li>需求不够明确<blockquote>
+<p>需求粒度太大，看不到需求的终点，无法明确的定义怎样才算完成需求，缺少验收标准。</p>
+</blockquote>
+</li>
+</ol>
+<p>需求不仅来自产品经理，也来自一些其他技术需求，假设有“迁移角色权限”这个需求，在研发的思维里就是写个SQL或者自动化程序将角色的权限从旧库表迁移到新库表。但是很难界定完成的标准。<br>迁移完系统A的角色权限就算迁移完了吗？系统B的角色权限要迁移吗？<br>系统B是另外B部门负责的，所以他们负责迁移系统B的角色权限。<br>B部门知道迁移的规则吗，要不要告诉他规则和注意事项，新旧表的字段结构如何对应，需要协助B部门吗，如何协助B部门？<br>站在老板的角度看，“迁移角色权限”这个需求一定是A系统和B系统都迁移整合完才算完成，A系统迁移完只是阶段性的成果。<br>站在研发A的一亩三分地，自然认为这个需求完成了，把需求状态改为done，这时候又有新的需求分配过来，研发A就去做新需求了，过段时间研发A已经记不清到底任务完成没，只知道“迁移角色权限”他是done的状态，印象中也是完成的。<br>至于B部门的迁移任务在研发A里自动被忽略了。</p>
+<ol start="2">
+<li>任务分解不到位<blockquote>
+<p>接到需求后马上着手开始工作，在工作被中途打断后，很难继续上次被中断的地方，造成关键步骤的遗漏。</p>
+</blockquote>
+</li>
+</ol>
+<p>还是以“迁移角色权限”这个需求为例，研发A看到这个需求马上就想着开始干吧，然后马上就开始写代码了。因为没有做任务分解，常常会因为任务的中断而不知道自己做到哪一步了。在日常开发中经常会有优先级更高的需求或者排查其他问题导致任务被中断，等后面回过头来时往往记不清自己做到哪一步了。<br>如果研发A做了“任务分解”，在任务分解过程中发现这个任务还需要B部门协助，就应该把B部门任务也列出来，列出具体步骤，并且向上沟通反馈到产品经理，产品经理知道这个需求应该要拆分成两个需求，把B部门的任务分配给B部门。</p>
+<ol start="3">
+<li>沟通不到位<blockquote>
+<p>每个人所理解的世界是不一样的，在口头表述的消息传递过程中会出现信息丢失，理解偏差的问题。</p>
+</blockquote>
+</li>
+</ol>
+<p>在跨部门的项目中团队间沟通反馈不够及时。中途存在多个产品经理共同提需求的情况，需求需要跨部门的研发配合，存在沟通问题。其实有些需求应该是对应的产品给自己的研发团队提需求。在跨部门合作中资源协调时沟通反馈往往不够及时，是很大的一个问题。</p>
+<p>在大项目进行中还时不时的加进来一些其他需求，而这些需求往往会干扰正在做的最重要的事。有些需求其实是可以和产品沟通，甚至和老板沟通，而可以延后做甚至不做的需求。<br>在不同上下文沟通中容易出的问题，研发人员往往会把自己局限在“程序员”这个角色中，在上下级沟通的时候往往只看到自己的一亩三分地。很难从更高的视角甚至站在全局去考虑问题。</p>
+<ol start="4">
+<li>系统构建问题<blockquote>
+<p>没有做到每日构建，代码风格检查。构建失败问题拖延项目进度。</p>
+</blockquote>
+</li>
+</ol>
+<p>工程中统一用Gradle构建，但是工程的构建脚本中没有指定构建的gradle版本号，gradle的wrapper文件没有提交到git仓库。由于每个人的开发环境存在差异，下载代码后出现你构建成功我构建失败的情况。<br>旧项目早期就存在的构建规范和提交规范问题没有得到重视。新人接手时感觉就像在泥潭里构建系统。<br>系统构建问题，是研发的一个共识问题，应当保证系统每日正常构建，保证提交代码的质量，但是这些我们做的都不好。<br>在开发阶有人提交了一个无法编译通过的代码，合并后导致构建失败，前端小伙伴可能正在调试某个接口，突然就服务不可用了，容易影响对接进度。<br>还有一个很关键的问题是单元测试和集成测试的问题没有落实到位，有几个核心类库是另外一个部门提供的，我们的使用不当导致上线后出现了很严重的bug，先不说类库的设计问题，我们在使用这些核心方法的时候没有做集成测试，没有文档，凭感觉就去使用了，如果做了集成测试，这些都可以避免。</p>
+<h1 id="项目总结"><a href="#项目总结" class="headerlink" title="项目总结"></a>项目总结</h1><p>经过这次项目，再结合10X程序员工作法，可以总结出几个问题：</p>
+<ol>
+<li>需求不够明确，粒度太大看不到需求完成的标准，一个需求做的没完没了</li>
+<li>任务分解不到位，遗漏细节和步骤</li>
+<li>沟通反馈不够及时</li>
+<li>日常构建不够好，经常构建失败中断测试。<br>看过去大家都在忙碌的解决问题，但是解决的大多数都不是程序问题。</li>
+</ol>
+<h1 id="10X程序员工作法"><a href="#10X程序员工作法" class="headerlink" title="10X程序员工作法"></a>10X程序员工作法</h1><blockquote>
+<p>大部分程序员忙碌解决的问题，都不是程序问题，而是由偶然复杂度导致的问题。<br>如何减少偶然复杂度引发的问题，让软件开发工作有序、高效地进行是 10X工作法要阐述的核心内容。</p>
+</blockquote>
+<p>《10X程序员工作法》这门课程阐述的其实是互联网团队如何能更加高效率的协作，不仅适用于程序员，也很适合项目经理，产品经理等人员。</p>
+<p>《10X程序员工作法》主要原则有如下4个：</p>
+<ul>
+<li>以终为始</li>
+<li>任务分解</li>
+<li>沟通反馈</li>
+<li>自动化</li>
+</ul>
+<h2 id="以终为始"><a href="#以终为始" class="headerlink" title="以终为始"></a>以终为始</h2><blockquote>
+<p>在做任何事情之前，先定义完成的标准。</p>
+</blockquote>
+<p>这是一种向后工作法，遇到问题倒着想。<br>“迁移角色权限”这个需求，倒着想就是系统A和系统B的角色权限都要迁移完成才算完成。应该把这个需求拆分成“系统A迁移角色权限”和“系统B迁移角色权限”这两个父需求。再把这两个父需求分配到对应的研发团队。<br>研发团队A接收到“系统A迁移角色权限”这个需求后，第一步也是先确定完成的标准，要把角色A、B、C、D角色的权限都迁移完才算完成。</p>
+<p>关于完成的定义，每个团队都有自己的标准，可以列一个DoD（Definition of Done，完成的定义）清单，由一个个的检查项组成的，用来检查我们的工作完成情况。DoD 的检查项应该是实际可检查的。</p>
+<font color="red" face="黑体">你说代码写好了，代码在哪里；你说测试覆盖率达标了，怎么看到；你说你功能做好了，演示一下。</font>
+
+<p>当我们有了 DoD，做事只有两种状态，即“做完”和“没做完”。在团队协作中，我们经常会听到有人说“这个事做完了 80%”，对不起，那叫没做完，根本没有 80% 做完的说法。<br>DoD 是一个的思维模式，是一种尽可能消除不确定性，达成共识的方式。</p>
+<p>“以终为始”的方式，不仅仅可以帮我们规划工作，还可以帮我们发现工作中的问题。<br>在做事之前先想结果是什么样子的，对做软件的人来说，我们应该把“终”定位成做一个对用户有价值的软件。</p>
+<h2 id="任务分解"><a href="#任务分解" class="headerlink" title="任务分解"></a>任务分解</h2><blockquote>
+<p>在接到一个需求之后，先做任务分解。将一个原本毫无头绪的问题分解成若干个可以尝试回答的问题，写代码只是最后一步。</p>
+</blockquote>
+<p>如今软件行业都在提倡拥抱变化，而任务分解是我们拥抱变化的前提。<br>一个大问题，我们都很难给出答案，但回答小问题却是我们擅长的。<br>用这种思路解决问题的难点是给出一个可执行的分解。</p>
+<p>“系统A迁移角色权限”，任务分解<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1. 迁移模板角色A的数据</span><br><span class="line">2. 迁移模板角色A权限数据</span><br><span class="line">3. 迁移子角色A数据</span><br><span class="line">4. 初始化子角色A的权限数据，根据所属的模板角色A进行权限复制</span><br><span class="line">5. 迁移子角色B的权限数据...</span><br></pre></td></tr></table></figure></p>
+<p>可以看到一个角色权限迁移包含里很多步骤，这些步骤缺一不可，并且要按照前后顺序。比如第2步的模板A角色的权限如果没有先迁移，先做了第4步复制模板角色A权限值就会复制到空值，造成数据缺失。</p>
+<p>与很多实践相反，任务分解是一个知难行易的过程。<br>不同的可执行定义差别在于，你是否能清楚地知道这个问题该如何解决。</p>
+<p>按照完整实现一个需求的顺序去安排分解出来的任务，最好按照一个需求、一个需求的过程走，这样，任务是可以随时停下来的。<br>检验每个任务项是否拆分到位，就是看你是否知道它应该怎么做了。</p>
+<h2 id="沟通反馈"><a href="#沟通反馈" class="headerlink" title="沟通反馈"></a>沟通反馈</h2><blockquote>
+<p>站在更大的上下文中思考问题。</p>
+</blockquote>
+<p>日常开发中会经常的有人告诉你这个需求很着急，销售已经把话吹出去了客户今天就要。产品经理说这个是老板要的，很着急…</p>
+<p>“任何需求的最佳完成时间都是昨天”，在时间规模为1的时间里，要同时做两个规模分别为1的需求，显然是不合理的。<br>“这两个需求是领导要的，都很着急”，那就跳出自己的工作上下文，在一个更大的上下文中沟通，拉着产品经理一起去找老板，让领导决策那个需求更加重要。<br>相信一个精明的领导是不会提出多个需求要在不够的时间内同时进行的。也许其中一个需求只是领导为了验证某种结果而提的，不马上做其实也可以，通过更大的上下文沟通知道可以放弃一个需求，就避免了可能出现的主要进度拖延问题。<br>如果正的两个需求同等重要且紧急，在更大的上下文中和领导沟通，能够及时的反馈出自己项目人力有限，尽早的暴露出来给领导，让领导做决策是应该砍掉其中一个需求，还是由领导将其中一个需求分配给其他项目组来做，在更大的上下文中让领导协调资源是比较推荐的。</p>
+<p><font color="red" face="黑体">如果自己不能决策，就将问题尽早的暴露给更大的上下文，通过沟通反馈让领导决策。</font></p>
+<h2 id="自动化"><a href="#自动化" class="headerlink" title="自动化"></a>自动化</h2><blockquote>
+<p>软件产品解决了领域问题给用户带来了自动化，软件研发团队也应该用自动化的工具方便自己。</p>
+</blockquote>
+<p>关于单元测试很多小伙伴都不怎么写，现在我越来越意识到单元测试的重要性，我对自己的代码要求必须要写单元测试。<br>单元测试不仅是测试程序本身，还可以解决两个问题，一个是反向让自己面向接口编程写出可测试的代码，写需求之前要想着这个功能要如何验证，写出可测试的代码单元是很重要的，把方法解耦，规范自己的代码。另一个方面，提交前运行一下单元测试，可以验证是否有编译问题，最近的修改是否会影响已有代码的逻辑。如果单元测试不通过说明逻辑不通过，需要调整代码直到逻辑通过。再放心无脑的提交。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>我们走敏捷开发，但任务看板上的很多需求也就只有一个标题来描述需求，基本没写用户故事和需求说明。<br>虽然有原型图的链接，需求评审和需求会上也会描述产品原型，但是一个会议很难面面聚到，没有需求的描述补充，很容易遗漏细节，或者一个需求里包含了隐藏的子需求。导致研发在做这个需求的时候没有终点，看不到目标。</p>
+<ol>
+<li>接到需求的第一件事是确定为何要做这个需求，如果没有用户故事，至少要先补充完成的标准，知道如何验证。</li>
+<li>做需求前一定要先做任务分解，把需求分解成一个个可执行的任务，每做完一个任务，代码都是可以提交的。</li>
+<li>跳出自己的一亩三分地，站在更大的上下文中沟通和思考问题。</li>
+<li>在任务特别多的时候应该做一个优先级排序，把任务分解为“紧急”和“重要”两个维度。<img src="/8e86c433/1.png" title="car">
+重要且紧急的任务第一优先，重要不紧急的事情第二优先，紧急不重要的事情能不做就不做，或者与他人一起分担。不重要不紧急的事情不做</li>
+<li>编写可测试的代码，多写单元测试，多学习好的设计，少一点问题。</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/工作总结/" rel="tag"><i class="fa fa-tag"></i> 工作总结</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/66e5f5e/index.html" rel="next" title="要对自己写的代码负责">
+                <i class="fa fa-chevron-left"></i> 要对自己写的代码负责
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/4cb4c29a/index.html" rel="prev" title="Java虚拟机运行时数据区">
+                Java虚拟机运行时数据区 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div id="gitalk-container"></div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="蓝士钦" />
+            
+              <p class="site-author-name" itemprop="name">蓝士钦</p>
+              <p class="site-description motion-element" itemprop="description">编程是一种信仰</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">36</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/lanshiqin" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://weibo.com/l18120788756" target="_blank" title="Weibo"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.jianshu.com/u/082f73dac819" target="_blank" title="JianShu"><i class="fa fa-fw fa-heartbeat"></i>JianShu</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:lanshiqin@outlook.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#情景描述"><span class="nav-number">1.</span> <span class="nav-text">情景描述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#复盘"><span class="nav-number">2.</span> <span class="nav-text">复盘</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#项目总结"><span class="nav-number">3.</span> <span class="nav-text">项目总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#10X程序员工作法"><span class="nav-number">4.</span> <span class="nav-text">10X程序员工作法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#以终为始"><span class="nav-number">4.1.</span> <span class="nav-text">以终为始</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#任务分解"><span class="nav-number">4.2.</span> <span class="nav-text">任务分解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#沟通反馈"><span class="nav-number">4.3.</span> <span class="nav-text">沟通反馈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自动化"><span class="nav-number">4.4.</span> <span class="nav-text">自动化</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">蓝士钦</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+  <div class="footer-custom">闽ICP备15027850号</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv" title="总访客量">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="site-pv" title="总访问量">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.4.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+<script src="/js/src/photoswipe.js?v="></script>
+<script src="/js/src/photoswipe-ui-default.js?v="></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+        var gitalk = new Gitalk({
+          clientID: '08543e172f1359fce9c3',
+          clientSecret: 'a8dd355f95e5035e0266c695e489fa991c9d28e2',
+          repo: 'lanshiqin-blog',
+          owner: 'lanshiqin',
+          admin: ['lanshiqin'],
+          id: location.pathname,
+          distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')           
+       </script>
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 --> 
+<script type="text/javascript" src="/js/src/love.js"></script>
+<!--崩溃欺骗-->
+<script type="text/javascript" src="/js/src/crash_cheat.js"></script>
