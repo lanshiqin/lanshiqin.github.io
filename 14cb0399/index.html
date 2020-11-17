@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "6d134c3b"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Java内存模型是多线程开发必须掌握的一个知识点。如果不想出现“知识不够，玄学来凑”的情况，想要在程序出现诡异问题的时候能够根据知识和经验快速定位并处理问题，就需要彻底搞懂Java内存模型。要知道什么是内存模型，为什么需要内存模型，以及引入内存模型能解决什么问题，在Java中是如何定义内存模型的。">
+<meta name="keywords" content="蓝士钦">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java多线程内存模型">
+<meta property="og:url" content="https://www.lanshiqin.com/14cb0399/index.html">
+<meta property="og:site_name" content="蓝士钦">
+<meta property="og:description" content="Java内存模型是多线程开发必须掌握的一个知识点。如果不想出现“知识不够，玄学来凑”的情况，想要在程序出现诡异问题的时候能够根据知识和经验快速定位并处理问题，就需要彻底搞懂Java内存模型。要知道什么是内存模型，为什么需要内存模型，以及引入内存模型能解决什么问题，在Java中是如何定义内存模型的。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.lanshiqin.com/14cb0399/Intel_CPU_Cache_Framework.png">
+<meta property="og:image" content="https://www.lanshiqin.com/14cb0399/多线程内存模型.png">
+<meta property="og:image" content="https://www.lanshiqin.com/14cb0399/no_use_volatile.png">
+<meta property="og:image" content="https://www.lanshiqin.com/14cb0399/volatile可见性.png">
+<meta property="og:updated_time" content="2020-11-17T14:59:33.160Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java多线程内存模型">
+<meta name="twitter:description" content="Java内存模型是多线程开发必须掌握的一个知识点。如果不想出现“知识不够，玄学来凑”的情况，想要在程序出现诡异问题的时候能够根据知识和经验快速定位并处理问题，就需要彻底搞懂Java内存模型。要知道什么是内存模型，为什么需要内存模型，以及引入内存模型能解决什么问题，在Java中是如何定义内存模型的。">
+<meta name="twitter:image" content="https://www.lanshiqin.com/14cb0399/Intel_CPU_Cache_Framework.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="蓝士钦" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="https://www.lanshiqin.com/14cb0399/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Java多线程内存模型 | 蓝士钦</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+  <script src="/js/src/photoswipe.js?v="></script>
+  <script src="/js/src/photoswipe-ui-default.js?v="></script>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">蓝士钦</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">编程是一种信仰</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.lanshiqin.com/14cb0399/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蓝士钦">
+      <meta itemprop="description" content="编程是一种信仰">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蓝士钦">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java多线程内存模型
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-11-11 22:36:02" itemprop="dateCreated datePublished" datetime="2020-11-11T22:36:02+08:00">2020-11-11</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-11-17 22:59:33" itemprop="dateModified" datetime="2020-11-17T22:59:33+08:00">2020-11-17</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon"
+            >
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Java内存模型是多线程开发必须掌握的一个知识点。如果不想出现“知识不够，玄学来凑”的情况，想要在程序出现诡异问题的时候能够根据知识和经验快速定位并处理问题，就需要彻底搞懂Java内存模型。要知道什么是内存模型，为什么需要内存模型，以及引入内存模型能解决什么问题，在Java中是如何定义内存模型的。<br><a id="more"></a></p>
+<blockquote>
+<p>Java内存模型（Java Memory Model）简称JMM，在JSR-133规范中定义了<a href="https://download.oracle.com/otndocs/jcp/memory_model-1.0-pfd-spec-oth-JSpec/" target="_blank" rel="noopener">Java内存模型与线程的规范</a></p>
+</blockquote>
+<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><h2 id="什么是内存模型"><a href="#什么是内存模型" class="headerlink" title="什么是内存模型"></a>什么是内存模型</h2><blockquote>
+<p>内存模型是为了保证多核心处理器的各级缓存与主内存数据的一致性而引入的数据操作模型。</p>
+</blockquote>
+<p>在硬件层面：为了达到更高的性能引入了多核心处理器，每个处理器核心都有自己的高速缓存，并且每个核心都共享同一个主内存，从而引发了高速缓存与主内存的缓存一致性问题。</p>
+<img src="/14cb0399/Intel_CPU_Cache_Framework.png" title="Intel_CPU_Cache_Framework">
+<p>为了解决缓存一致性问题，需要各个处理器访问数据时都遵循“缓存一致性协议”。<br>处理器在读写数据时需要根据协议进行操作，常见的缓存一致性协议有：MSI、MESI、MOSI、Synapse等。<br>内存模型可以定义为：在特定的操作协议下，对特定的内存进行读写访问的抽象模型。<br>不同的硬件有不同的内存模型，为了屏蔽不同平台硬件的差异，Java虚拟机也定义了自己的内存模型。</p>
+<h2 id="Java内存模型的定义"><a href="#Java内存模型的定义" class="headerlink" title="Java内存模型的定义"></a>Java内存模型的定义</h2><blockquote>
+<p>Java内存模型屏蔽了不同平台硬件的差异，定义了变量的底层访问规则细节。</p>
+</blockquote>
+<p>为什么需要Java内存模型？<br>Java虚拟机提供了内存屏障实现缓存一致性，不同的CPU处理器有不同的内存屏障实现。<br>Java内存模型在语言层面屏蔽了底层硬件的差异，降低开发者多编写多线程程序的难度。<br>下图为Java多线程开发模型中的内存关系简化：<br><img src="/14cb0399/多线程内存模型.png" title="多线程内存模型"><br>由上图可知，每个线程共享同一个主内存，且每个线程都有自己的工作内存，此处的工作内存可以对应理解为CPU的高速缓存。</p>
+<h3 id="Java内存模型规定了如下5条规范："><a href="#Java内存模型规定了如下5条规范：" class="headerlink" title="Java内存模型规定了如下5条规范："></a>Java内存模型规定了如下5条规范：</h3><ol>
+<li>Java内存模型规定所有的变量都存储在主内存中。</li>
+<li>每条线程都有自己的工作内存</li>
+<li>线程的工作内存中保存了该线程中使用到的变量的主内存副本拷贝</li>
+<li>线程对变量的读写都必须在工作内存中进行，不能直接读写主内存。</li>
+<li>线程间的变量传递必须通过主内存，不能访问其他线程的工作内存。</li>
+</ol>
+<h3 id="主内存与工作内存的交互协议"><a href="#主内存与工作内存的交互协议" class="headerlink" title="主内存与工作内存的交互协议"></a>主内存与工作内存的交互协议</h3><p>Java内存模型定义了8种操作来完成。</p>
+<ol>
+<li><p>作用于主内存：<br>lock 锁定：把变量标识为锁定状态，锁定后线程独占，其他线程无法访问。<br>unlock 解锁：解锁变量的锁定状态，解锁后其他线程才能访问。<br>read 读取：把主内存的变量传输到一个线程的工作内存中，待load操作使用。<br>write 写入： 把store操作从工作内存中得到的变量存储到主内存中。</p>
+</li>
+<li><p>作用于工作内存：<br>load 加载：把read操作的变量加载到线程的工作内存的变量副本中。<br>use 使用： 把工作内存中的变量传递给执行引擎。<br>assign 赋值：把执行引擎的变量赋值给工作内存中的变量。<br>store 存储：把工作内存中的变量传递到主内存中，待wirete操作使用。</p>
+</li>
+</ol>
+<h3 id="8种操作规则"><a href="#8种操作规则" class="headerlink" title="8种操作规则"></a>8种操作规则</h3><ol>
+<li>read和load、 store和write 必须成对出现。不允许出现read完不load的情况，store完不write的情况</li>
+<li>assign完成必须同步会主内存，不允许丢弃</li>
+<li>不允许没有assign操作的数据从工作内存同步回主内存</li>
+<li>变量必须在主内存中诞生，在use和store之前必须经过assign和load操作。</li>
+<li>一个线程可以对一个变量执行多次lock，执行多次lock后需要执行相同次数unlock才能释放锁，在锁定期间其他线程不允许lock。</li>
+<li>如果一个变量被lock，将会清空工作内存中此变量副本的值，执行引擎执行前需要重新执行load或assign完成初始化变量值的操作。</li>
+<li>如果变量没有lock，不允许执行unlock操作。</li>
+<li>对变量执行lock之前，必须把此变量同步回主内存中，执行store和write操作。</li>
+</ol>
+<h1 id="多线程共享变量的不可见性"><a href="#多线程共享变量的不可见性" class="headerlink" title="多线程共享变量的不可见性"></a>多线程共享变量的不可见性</h1><p>不使用volatile修饰的多线程访问共享变量的情况<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 多线程共享变量测试</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> 蓝士钦</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MultiThreadSharedVarTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> initDataStatus = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line"></span><br><span class="line">        Thread readThread = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                System.out.println(<span class="string">"[readThread]: waiting data..."</span>);</span><br><span class="line">                <span class="keyword">while</span> (!initDataStatus)&#123;</span><br><span class="line">                    <span class="comment">// do something</span></span><br><span class="line">                &#125;</span><br><span class="line">                System.out.println(<span class="string">"[readThread]: data read success done."</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        readThread.start();</span><br><span class="line"></span><br><span class="line">        TimeUnit.SECONDS.sleep(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">        Thread initThread = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                System.out.println(<span class="string">"[initThread]: init data"</span>);</span><br><span class="line">                initData();</span><br><span class="line">                System.out.println(<span class="string">"[initThread]: init done."</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        initThread.start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">initData</span><span class="params">()</span></span>&#123;</span><br><span class="line">        initDataStatus = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>不使用volatile的执行结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[readThread]: waiting data...</span><br><span class="line">[initThread]: init data</span><br><span class="line">[initThread]: init done.</span><br></pre></td></tr></table></figure></p>
+<img src="/14cb0399/no_use_volatile.png" title="no_use_volatile">
+<p>针对共享变量，两个线程的工作流程简化如下：</p>
+<ol>
+<li>在主内存中定义了共享变量 initDataStatus = false</li>
+<li>在readThread线程中读取共享变量initDataStatus并拷贝到自己的工作内存中，得到initDataStatus变量副本, CPU读取副本变量进入while循环后空转。</li>
+<li>在initThread线程中读取共享变量initDataStatus并拷贝到自己的工作内存中，并将工作内存中的initDataStatus变量副本设置为true。<br>两个线程在各自的工作内存中读写initDataStatus变量副本。此时readThread永远不会读取到initThread对变量修改后的值。</li>
+</ol>
+<h1 id="volatile的变量可见性"><a href="#volatile的变量可见性" class="headerlink" title="volatile的变量可见性"></a>volatile的变量可见性</h1><blockquote>
+<p>java内存模型提供了volatile关键字来保证变量的可见性和有序性</p>
+</blockquote>
+<p>将第7行代码加上<code>volatile</code>关键字修饰<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ... </span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> initDataStatus = <span class="keyword">false</span>;</span><br><span class="line"><span class="comment">// 略...</span></span><br></pre></td></tr></table></figure></p>
+<p>使用volatile的执行结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[readThread]: waiting data...</span><br><span class="line">[initThread]: init data</span><br><span class="line">[initThread]: init done.</span><br><span class="line">[readThread]: data read success done.</span><br></pre></td></tr></table></figure></p>
+<p>使用volatile关键字可以开启CPU嗅探机制，实现缓存一致性协议的功能。<br>CPU核心会监听BUS总线上有关volatile修饰的变量的值变动。<br>执行过程如下：<br><img src="/14cb0399/volatile可见性.png" title="volatile可见性"></p>
+<ol>
+<li>通过<code>read</code>和<code>load</code>指令将主内存中的<code>initDataStatus = false</code>拷贝到readThread线程的工作内存中。</li>
+<li>readThread线程使用<code>use</code>指令，将工作内存中的<code>initDataStatus</code>变量副本交给执行引擎执行指令<code>!initDataStatus</code>,进入while空转。</li>
+<li>通过<code>read</code>和<code>load</code>指令将主内存中的<code>initDataStatus = false</code>拷贝到initThread线程的工作内存中。</li>
+<li>initThread线程使用<code>use</code>指令，将工作内存中的<code>initDataStatus</code>变量副本交给执行引擎执行指令<code>initDataStatus=true</code>,通过<code>assign</code>指令将<code>initDataStatus=true</code>赋值给工作内存。</li>
+<li>volatile变量变化后立即通过 <code>store</code>和<code>write</code>指令将工作内存中的<code>initDataStatus=true</code>写回主内存。</li>
+<li>第五步写回主内存时经过BUS总线，CPU为volatile修饰的变量开启了嗅探机制。initThread修改变量后经过总线时将会被Core 0核心监听到，Core 0核心中的readThread会将工作内存中的<code>initDataStatus</code>变量失效，重新从主内存中加载。<br>CPU嗅探机制会监听volatile修饰的变量变化，使工作内存中的变量失效，重新从主内存读取。<!-- 不同的CPU有不同实现，MESI只是其中一种，属于英特尔的实现。Modify E -->
+</li>
+</ol>
+<!-- 底层通过lock汇编前缀指令。
+
+内存屏障CPU有不同的实现 -->
+<!-- JVM虚拟机规范简化了内存屏障的实现， -->
+<p>未完待续…<br><!-- # volatile实现内存屏障有序性 --></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/4cb4c29a/index.html" rel="next" title="Java虚拟机运行时数据区">
+                <i class="fa fa-chevron-left"></i> Java虚拟机运行时数据区
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div id="gitalk-container"></div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="蓝士钦" />
+            
+              <p class="site-author-name" itemprop="name">蓝士钦</p>
+              <p class="site-description motion-element" itemprop="description">编程是一种信仰</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/lanshiqin" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://weibo.com/l18120788756" target="_blank" title="Weibo"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.jianshu.com/u/082f73dac819" target="_blank" title="JianShu"><i class="fa fa-fw fa-heartbeat"></i>JianShu</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:lanshiqin@outlook.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基础知识"><span class="nav-number">1.</span> <span class="nav-text">基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是内存模型"><span class="nav-number">1.1.</span> <span class="nav-text">什么是内存模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java内存模型的定义"><span class="nav-number">1.2.</span> <span class="nav-text">Java内存模型的定义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Java内存模型规定了如下5条规范："><span class="nav-number">1.2.1.</span> <span class="nav-text">Java内存模型规定了如下5条规范：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主内存与工作内存的交互协议"><span class="nav-number">1.2.2.</span> <span class="nav-text">主内存与工作内存的交互协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8种操作规则"><span class="nav-number">1.2.3.</span> <span class="nav-text">8种操作规则</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#多线程共享变量的不可见性"><span class="nav-number">2.</span> <span class="nav-text">多线程共享变量的不可见性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#volatile的变量可见性"><span class="nav-number">3.</span> <span class="nav-text">volatile的变量可见性</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">蓝士钦</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+  <div class="footer-custom">闽ICP备15027850号</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv" title="总访客量">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="site-pv" title="总访问量">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.4.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+<script src="/js/src/photoswipe.js?v="></script>
+<script src="/js/src/photoswipe-ui-default.js?v="></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+        var gitalk = new Gitalk({
+          clientID: '08543e172f1359fce9c3',
+          clientSecret: 'a8dd355f95e5035e0266c695e489fa991c9d28e2',
+          repo: 'lanshiqin-blog',
+          owner: 'lanshiqin',
+          admin: ['lanshiqin'],
+          id: location.pathname,
+          distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')           
+       </script>
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 --> 
+<script type="text/javascript" src="/js/src/love.js"></script>
+<!--崩溃欺骗-->
+<script type="text/javascript" src="/js/src/crash_cheat.js"></script>
