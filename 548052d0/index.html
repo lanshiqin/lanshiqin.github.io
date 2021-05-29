@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "6d134c3b"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Java对象在内存中到底长什么样？通过 new Object() 实例化的对象到底有多大？ 对象在内存中是如何布局的？">
+<meta name="keywords" content="蓝士钦">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java对象在内存中的布局">
+<meta property="og:url" content="https://www.lanshiqin.com/548052d0/index.html">
+<meta property="og:site_name" content="蓝士钦">
+<meta property="og:description" content="Java对象在内存中到底长什么样？通过 new Object() 实例化的对象到底有多大？ 对象在内存中是如何布局的？">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.lanshiqin.com/548052d0/对象内存结构.png">
+<meta property="og:image" content="https://www.lanshiqin.com/548052d0/markwork.png">
+<meta property="og:updated_time" content="2021-05-26T15:09:46.608Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java对象在内存中的布局">
+<meta name="twitter:description" content="Java对象在内存中到底长什么样？通过 new Object() 实例化的对象到底有多大？ 对象在内存中是如何布局的？">
+<meta name="twitter:image" content="https://www.lanshiqin.com/548052d0/对象内存结构.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="蓝士钦" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="https://www.lanshiqin.com/548052d0/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Java对象在内存中的布局 | 蓝士钦</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+  <script src="/js/src/photoswipe.js?v="></script>
+  <script src="/js/src/photoswipe-ui-default.js?v="></script>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">蓝士钦</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">编程是一种信仰</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.lanshiqin.com/548052d0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蓝士钦">
+      <meta itemprop="description" content="编程是一种信仰">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蓝士钦">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java对象在内存中的布局
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2021-05-25 22:21:50" itemprop="dateCreated datePublished" datetime="2021-05-25T22:21:50+08:00">2021-05-25</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2021-05-26 23:09:46" itemprop="dateModified" datetime="2021-05-26T23:09:46+08:00">2021-05-26</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon"
+            >
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Java对象在内存中到底长什么样？通过 <code>new Object()</code> 实例化的对象到底有多大？ 对象在内存中是如何布局的？<br><a id="more"></a></p>
+<h1 id="对象的创建"><a href="#对象的创建" class="headerlink" title="对象的创建"></a>对象的创建</h1><p>从源代码到被JVM装载执行，要经过一系列的步骤</p>
+<p>编译 -&gt; 加载 -&gt; 链接 -&gt; 初始化 -&gt; 创建对象</p>
+<p>每个部分都有很多细节和底层原理可以拆分成很多篇文章，本篇文章不进行细说，先挖个坑后面再来填。</p>
+<p>简单来说，创建一个对象，实际上就是为对象分配一块内存地址空间。<br>比如如下代码段：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Object obj = <span class="keyword">new</span> Object();</span><br></pre></td></tr></table></figure></p>
+<p> <code>new Object()</code> 在堆中开辟了一块内存空间，并且把内存地址返回给变量 <code>obj</code>。<br>对象创建后就可以通过变量 <code>obj</code>去使用对象了。</p>
+<h1 id="对象在内存中的布局结构"><a href="#对象在内存中的布局结构" class="headerlink" title="对象在内存中的布局结构"></a>对象在内存中的布局结构</h1><p>OpenJDK 提供了一个工具：<a href="http://openjdk.java.net/projects/code-tools/jol/" target="_blank" rel="noopener">JOL(Java Object Layout) </a><br>JOL通过JVMTI和SA来解码对象在内存中的实际布局信息。<br>引入依赖：<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">dependencies</span> &#123;</span><br><span class="line">    implementation <span class="string">'org.openjdk.jol:jol-core:0.10'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>使用JOL提供的API获取并输出对象实例信息：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.lanshiqin;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.openjdk.jol.info.ClassLayout;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ObjectLayoutSample</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Object obj = <span class="keyword">new</span> Object();</span><br><span class="line">        System.out.println(ClassLayout.parseInstance(obj).toPrintable());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>运行程序，输出Object对象实例的信息如下。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">java.lang.Object object internals:</span><br><span class="line"> OFFSET  SIZE   TYPE DESCRIPTION                               VALUE</span><br><span class="line">      0     4        (object header)                           01 00 00 00 (00000001 00000000 00000000 00000000) (1)</span><br><span class="line">      4     4        (object header)                           00 00 00 00 (00000000 00000000 00000000 00000000) (0)</span><br><span class="line">      8     4        (object header)                           e5 01 00 f8 (11100101 00000001 00000000 11111000) (-134217243)</span><br><span class="line">     12     4        (loss due to the next object alignment)</span><br><span class="line">Instance size: 16 bytes</span><br><span class="line">Space losses: 0 bytes internal + 4 bytes external = 4 bytes total</span><br></pre></td></tr></table></figure></p>
+<p>通过输出的信息可以看到，一个Object对象实例占用内存16个字节。<br><code>OFFSET</code> 内存偏移<br><code>SIZE</code> 占用大小（单位：字节 byte）<br><code>TYPE</code> 数据类型<br><code>DESCRIPTION</code> 描述<br><code>VALUE</code> 内存中的值<br>对象头（object header）中的信息包含了对象的hashcode，锁标志位，gc标记和分代年龄等信息。<br>一个完整的对象应该包含三个部分：对象头、实例数据、对齐填充。</p>
+<h1 id="对象的组成"><a href="#对象的组成" class="headerlink" title="对象的组成"></a>对象的组成</h1><p>对象在内存中可以分为三个部分，分别是对象头、实例数据、对齐填充。<br><img src="/548052d0/对象内存结构.png" title="对象内存结构"></p>
+<h2 id="对象头（Object-Header）"><a href="#对象头（Object-Header）" class="headerlink" title="对象头（Object Header）"></a>对象头（Object Header）</h2><p>对象头中包含<code>Mark Work</code> 和 <code>Class Pointer</code>。<br>如果对象是数组类型，在对象头中有一块用于记录数组长度的数据结构。<br>因为通过元数据无法确定数组大小。对象头中还会多存一个Length字段用来记录数组长度。</p>
+<h3 id="Mark-Work"><a href="#Mark-Work" class="headerlink" title="Mark Work"></a>Mark Work</h3><p>存储对象自身的运行时信息，包含：hashcode，gc分代年龄、锁状态标志，偏向锁的线程id。<br>为了节省内存空间，对象头中的不同信息没有采用结构化的数据结构字段进行存储，而是直接复用了二进制位。<br><img src="/548052d0/markwork.png" title="markwork"></p>
+<h3 id="Class-Pointer"><a href="#Class-Pointer" class="headerlink" title="Class Pointer"></a>Class Pointer</h3><p>存储当前对象对应的类信息，用来标识是由哪个类产生的对象。<br>开启指针压缩：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX:+UseCompressedClassPointers</span><br></pre></td></tr></table></figure></p>
+<p>JVM默认开启指针压缩的情况下，对象头只占用12个字节。</p>
+<p>关闭指针压缩：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX:-UseCompressedClassPointers</span><br></pre></td></tr></table></figure></p>
+<p>关闭指针压缩，对象头占用16个字节。<br>可以通过JOL工具查看对象内存布局。</p>
+<h2 id="实例数据"><a href="#实例数据" class="headerlink" title="实例数据"></a>实例数据</h2><p>存储对象实例的数据，比如对象的成员属性值。<br>自定义类<code>TypeSample</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.lanshiqin;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 数据类型</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TypeSample</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 基础类型</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">byte</span> aByte;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">char</span> aChar;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">short</span> aShort;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> anInt;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">float</span> aFloat;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">double</span> aDouble;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> aLong;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> aBoolean;</span><br><span class="line">    <span class="comment">// 包装类型</span></span><br><span class="line">    <span class="keyword">private</span> Byte theByte;</span><br><span class="line">    <span class="keyword">private</span> Character theCharacter;</span><br><span class="line">    <span class="keyword">private</span> Short theShort;</span><br><span class="line">    <span class="keyword">private</span> Integer theInteger;</span><br><span class="line">    <span class="keyword">private</span> Float theFloat;</span><br><span class="line">    <span class="keyword">private</span> Double theDouble;</span><br><span class="line">    <span class="keyword">private</span> Long theLong;</span><br><span class="line">    <span class="keyword">private</span> Boolean theBoolean;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>实例化对象并输出对象的内存布局：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(ClassLayout.parseInstance(<span class="keyword">new</span> TypeSample()).toPrintable());</span><br></pre></td></tr></table></figure></p>
+<p>默认开启指针压缩，每个引用类型的变量都固定占用4个字节。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">com.lanshiqin.TypeSample object internals:</span><br><span class="line"> OFFSET  SIZE                  TYPE DESCRIPTION                               VALUE</span><br><span class="line">      0     4                       (object header)                           01 00 00 00 (00000001 00000000 00000000 00000000) (1)</span><br><span class="line">      4     4                       (object header)                           00 00 00 00 (00000000 00000000 00000000 00000000) (0)</span><br><span class="line">      8     4                       (object header)                           43 c0 00 f8 (01000011 11000000 00000000 11111000) (-134168509)</span><br><span class="line">     12     4                   int TypeSample.anInt                          0</span><br><span class="line">     16     8                double TypeSample.aDouble                        0.0</span><br><span class="line">     24     8                  long TypeSample.aLong                          0</span><br><span class="line">     32     4                 float TypeSample.aFloat                         0.0</span><br><span class="line">     36     2                  char TypeSample.aChar                           </span><br><span class="line">     38     2                 short TypeSample.aShort                         0</span><br><span class="line">     40     1                  byte TypeSample.aByte                          0</span><br><span class="line">     41     1               boolean TypeSample.aBoolean                       false</span><br><span class="line">     42     2                       (alignment/padding gap)                  </span><br><span class="line">     44     4        java.lang.Byte TypeSample.theByte                        null</span><br><span class="line">     48     4   java.lang.Character TypeSample.theCharacter                   null</span><br><span class="line">     52     4       java.lang.Short TypeSample.theShort                       null</span><br><span class="line">     56     4     java.lang.Integer TypeSample.theInteger                     null</span><br><span class="line">     60     4       java.lang.Float TypeSample.theFloat                       null</span><br><span class="line">     64     4      java.lang.Double TypeSample.theDouble                      null</span><br><span class="line">     68     4        java.lang.Long TypeSample.theLong                        null</span><br><span class="line">     72     4     java.lang.Boolean TypeSample.theBoolean                     null</span><br><span class="line">     76     4                       (loss due to the next object alignment)</span><br><span class="line">Instance size: 80 bytes</span><br><span class="line">Space losses: 2 bytes internal + 4 bytes external = 6 bytes total</span><br></pre></td></tr></table></figure></p>
+<p>每个基础类型都占用了各自都内存空间。<br><code>int</code>类型32位，占用了4个字节。所以<code>SIZE</code>为4 byte。<br><code>long</code>类型64位，占用了8个字节。所以<code>SIZE</code>为8 byte。</p>
+<p>引用类型的变量，对应的对象都在堆内存中。（不考虑逃逸分析的情况下）<br>由于JVM默认开启了指针压缩，所以引用类型的空间统一都只占用4个字节。</p>
+<p>开启指针压缩：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX:+UseCompressedOops</span><br></pre></td></tr></table></figure></p>
+<p>关闭指针压缩：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX:-UseCompressedOops</span><br></pre></td></tr></table></figure></p>
+<p>关闭指针压缩后，引用类型的变量地址空间将会占用8个字节。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">com.lanshiqin.TypeSample object internals:</span><br><span class="line"> OFFSET  SIZE                  TYPE DESCRIPTION                               VALUE</span><br><span class="line">      0     4                       (object header)                           01 00 00 00 (00000001 00000000 00000000 00000000) (1)</span><br><span class="line">      4     4                       (object header)                           00 00 00 00 (00000000 00000000 00000000 00000000) (0)</span><br><span class="line">      8     4                       (object header)                           e8 36 80 9f (11101000 00110110 10000000 10011111) (-1618987288)</span><br><span class="line">     12     4                       (object header)                           01 00 00 00 (00000001 00000000 00000000 00000000) (1)</span><br><span class="line">     16     8                double TypeSample.aDouble                        0.0</span><br><span class="line">     24     8                  long TypeSample.aLong                          0</span><br><span class="line">     32     4                   int TypeSample.anInt                          0</span><br><span class="line">     36     4                 float TypeSample.aFloat                         0.0</span><br><span class="line">     40     2                  char TypeSample.aChar                           </span><br><span class="line">     42     2                 short TypeSample.aShort                         0</span><br><span class="line">     44     1                  byte TypeSample.aByte                          0</span><br><span class="line">     45     1               boolean TypeSample.aBoolean                       false</span><br><span class="line">     46     2                       (alignment/padding gap)                  </span><br><span class="line">     48     8        java.lang.Byte TypeSample.theByte                        null</span><br><span class="line">     56     8   java.lang.Character TypeSample.theCharacter                   null</span><br><span class="line">     64     8       java.lang.Short TypeSample.theShort                       null</span><br><span class="line">     72     8     java.lang.Integer TypeSample.theInteger                     null</span><br><span class="line">     80     8       java.lang.Float TypeSample.theFloat                       null</span><br><span class="line">     88     8      java.lang.Double TypeSample.theDouble                      null</span><br><span class="line">     96     8        java.lang.Long TypeSample.theLong                        null</span><br><span class="line">    104     8     java.lang.Boolean TypeSample.theBoolean                     null</span><br><span class="line">Instance size: 112 bytes</span><br><span class="line">Space losses: 2 bytes internal + 0 bytes external = 2 bytes total</span><br></pre></td></tr></table></figure></p>
+<h2 id="对齐填充"><a href="#对齐填充" class="headerlink" title="对齐填充"></a>对齐填充</h2><p>HotSpot虚拟机的自动内存管理机制要求，对象起始地址必须是8字节的整数倍。<br>如果对象实例数据部分没有对齐，就需要通过对齐填充来补全。<br>这么做是为了更好的GC，规避引发的安全问题提升GC性能的角度进行考虑的。<br>这部分需要深入JVM的C++源码实现，后续单独文章进行分析。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/14cb0399/index.html" rel="next" title="Java多线程内存模型">
+                <i class="fa fa-chevron-left"></i> Java多线程内存模型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div id="gitalk-container"></div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="蓝士钦" />
+            
+              <p class="site-author-name" itemprop="name">蓝士钦</p>
+              <p class="site-description motion-element" itemprop="description">编程是一种信仰</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">38</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/lanshiqin" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://weibo.com/l18120788756" target="_blank" title="Weibo"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.jianshu.com/u/082f73dac819" target="_blank" title="JianShu"><i class="fa fa-fw fa-heartbeat"></i>JianShu</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:lanshiqin@outlook.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#对象的创建"><span class="nav-number">1.</span> <span class="nav-text">对象的创建</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#对象在内存中的布局结构"><span class="nav-number">2.</span> <span class="nav-text">对象在内存中的布局结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#对象的组成"><span class="nav-number">3.</span> <span class="nav-text">对象的组成</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#对象头（Object-Header）"><span class="nav-number">3.1.</span> <span class="nav-text">对象头（Object Header）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Mark-Work"><span class="nav-number">3.1.1.</span> <span class="nav-text">Mark Work</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Class-Pointer"><span class="nav-number">3.1.2.</span> <span class="nav-text">Class Pointer</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例数据"><span class="nav-number">3.2.</span> <span class="nav-text">实例数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对齐填充"><span class="nav-number">3.3.</span> <span class="nav-text">对齐填充</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">蓝士钦</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+  <div class="footer-custom">闽ICP备15027850号</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv" title="总访客量">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="site-pv" title="总访问量">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.4.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+<script src="/js/src/photoswipe.js?v="></script>
+<script src="/js/src/photoswipe-ui-default.js?v="></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+        var gitalk = new Gitalk({
+          clientID: '08543e172f1359fce9c3',
+          clientSecret: 'a8dd355f95e5035e0266c695e489fa991c9d28e2',
+          repo: 'lanshiqin-blog',
+          owner: 'lanshiqin',
+          admin: ['lanshiqin'],
+          id: location.pathname,
+          distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')           
+       </script>
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 --> 
+<script type="text/javascript" src="/js/src/love.js"></script>
+<!--崩溃欺骗-->
+<script type="text/javascript" src="/js/src/crash_cheat.js"></script>
