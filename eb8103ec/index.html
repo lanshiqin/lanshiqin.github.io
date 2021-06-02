@@ -118,18 +118,22 @@
 
 
 
-  <meta name="description" content="编程是一种信仰">
+  <meta name="description" content="Write once,run anywhere是Java诞生之初的Slogan。Java是一个平台，除了Java语言本身的特性，还有Java类库，Java虚拟机，工具和庞大的生态。">
 <meta name="keywords" content="蓝士钦">
 <meta property="og:type" content="article">
 <meta property="og:title" content="谈谈我对Java平台的理解">
 <meta property="og:url" content="https://www.lanshiqin.com/eb8103ec/index.html">
 <meta property="og:site_name" content="蓝士钦">
-<meta property="og:description" content="编程是一种信仰">
+<meta property="og:description" content="Write once,run anywhere是Java诞生之初的Slogan。Java是一个平台，除了Java语言本身的特性，还有Java类库，Java虚拟机，工具和庞大的生态。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-05-29T04:57:12.869Z">
+<meta property="og:image" content="https://www.lanshiqin.com/eb8103ec/java平台.png">
+<meta property="og:image" content="https://www.lanshiqin.com/eb8103ec/编程语言深度.png">
+<meta property="og:image" content="https://www.lanshiqin.com/eb8103ec/future.png">
+<meta property="og:updated_time" content="2021-06-02T13:30:04.172Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="谈谈我对Java平台的理解">
-<meta name="twitter:description" content="编程是一种信仰">
+<meta name="twitter:description" content="Write once,run anywhere是Java诞生之初的Slogan。Java是一个平台，除了Java语言本身的特性，还有Java类库，Java虚拟机，工具和庞大的生态。">
+<meta name="twitter:image" content="https://www.lanshiqin.com/eb8103ec/java平台.png">
 
 
 
@@ -369,6 +373,22 @@
             
 
             
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2021-06-02 21:30:04" itemprop="dateModified" datetime="2021-06-02T21:30:04+08:00">2021-06-02</time>
+              
+            
           </span>
 
           
@@ -407,7 +427,36 @@
       
 
       
-        
+        <p><code>Write once,run anywhere</code>是Java诞生之初的Slogan。<br>Java是一个平台，除了Java语言本身的特性，还有Java类库，Java虚拟机，工具和庞大的生态。<br><a id="more"></a></p>
+<h1 id="Java平台的组成部分"><a href="#Java平台的组成部分" class="headerlink" title="Java平台的组成部分"></a>Java平台的组成部分</h1><img src="/eb8103ec/java平台.png" title="java平台">
+<p>Java号称”一次编写，到处运行”，这个特性主要依托的是各个平台的JVM虚拟机实现。<br>开发者编写源代码，通过编译器将源代码编译成平台无关的<code>.CLASS</code>字节码文件。<br>将字节码交给不同平台的JVM虚拟机执行，实现跨平台特性。</p>
+<h1 id="Java语言"><a href="#Java语言" class="headerlink" title="Java语言"></a>Java语言</h1><blockquote>
+<p>学一门语言，不仅仅是学习语言的语法，更重要的是学习这门语言的编程范式。</p>
+</blockquote>
+<p>面向对象是Java语言的编程范式。除了基本数据类型以外，其他所有的类都继承自Object类。<br>Java以类进行组织代码，以实例化对象的方式进行实例方法调用。<br>Java已经把面向对象玩到炉火纯青，在工程实践领域人们总结出了金典的23种设计模式。<br>设计模式并不是什么圣经，严格意义上来说，我认为设计模式是对语言本身缺陷的一种补充。<br>比如工厂模式，在Java中实现 <code>Duck Type</code>,需要通过类实现接口方法的方式进行实现：<br>Calculate.java<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.lanshiqin.duck;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Calculate</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">calculate</span><span class="params">(<span class="keyword">int</span> num)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>CalculateOneImpl.java<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.lanshiqin.duck;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CalculateOneImpl</span> <span class="keyword">implements</span> <span class="title">Calculate</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">calculate</span><span class="params">(<span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> num;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>CalculateTwoImpl.java<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.lanshiqin.duck;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CalculateTwoImpl</span> <span class="keyword">implements</span> <span class="title">Calculate</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">calculate</span><span class="params">(<span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> num*num;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>CalculateThreeImpl.java<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CalculateThreeImpl</span> <span class="keyword">implements</span> <span class="title">Calculate</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">calculate</span><span class="params">(<span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> num * num * num;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>CalculateSample.java<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.lanshiqin.duck;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CalculateSample</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Map&lt;Integer, Object&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        map.put(<span class="number">1</span>, <span class="keyword">new</span> CalculateOneImpl());</span><br><span class="line">        map.put(<span class="number">2</span>, <span class="keyword">new</span> CalculateTwoImpl());</span><br><span class="line">        map.put(<span class="number">3</span>, <span class="keyword">new</span> CalculateThreeImpl());</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 通过传给Map不同参数，调用不同对象的方法</span></span><br><span class="line">        System.out.println(((Calculate) map.get(<span class="number">1</span>)).calculate(<span class="number">2</span>));</span><br><span class="line">        System.out.println(((Calculate) map.get(<span class="number">2</span>)).calculate(<span class="number">2</span>));</span><br><span class="line">        System.out.println(((Calculate) map.get(<span class="number">3</span>)).calculate(<span class="number">2</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>而在Go语言中 Map 的value可以是一个方法<br>Go的<code>Duck Type</code>可以方便的实现单一方法对象的工厂模式。<br>map_ext_test.go<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> map_ext</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"testing"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestDuckTypeWithMap</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">	m := <span class="keyword">map</span>[<span class="keyword">int</span>]<span class="function"><span class="keyword">func</span><span class="params">(op <span class="keyword">int</span>)</span> <span class="title">int</span></span>&#123;&#125;</span><br><span class="line">	m[<span class="number">1</span>] = <span class="function"><span class="keyword">func</span><span class="params">(op <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123; <span class="keyword">return</span> op &#125;</span><br><span class="line">	m[<span class="number">2</span>] = <span class="function"><span class="keyword">func</span><span class="params">(op <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123; <span class="keyword">return</span> op * op &#125;</span><br><span class="line">	m[<span class="number">3</span>] = <span class="function"><span class="keyword">func</span><span class="params">(op <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123; <span class="keyword">return</span> op * op * op &#125;</span><br><span class="line">	<span class="comment">// 通过传给Map不同参数，调用不同的方法</span></span><br><span class="line">	t.Log(m[<span class="number">1</span>](<span class="number">2</span>), m[<span class="number">2</span>](<span class="number">2</span>), m[<span class="number">3</span>](<span class="number">2</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>Duck Type</code>并不是动态语言的专利，Go既可以支持动态语言的各种特性，比如类型推断，多返回值，也支持编译型语言的特性可以直接编译成可执行文件。<br>严格来说，Java并没有很好的支持<code>Duck Type</code>这种写法，Java语言的语法本身也是在不断的进化，比如JDK8引入类Lambda就是借鉴了函数式的编程范式，以及JDK9开始引入的自动类型推断等，越来越多的特性被引入到语法糖中，Java语言本身也是在不断的进化中。</p>
+<p>如果把学习一门编程语言简单的分为三个层次的话，第一层就是了解这个语言的语法规则，与语言提供的能力。第二层就是了解这个语言的适用范围和生态，与其他语言相比有哪些优劣。<br>第三层就是了解底层的运行机制，当程序出现罕见问题的时候能够在更底层的视角解决问题，进行相应的调优和故障排查。<br><img src="/eb8103ec/编程语言深度.png" title="编程语言深度"></p>
+<h1 id="Java的生态"><a href="#Java的生态" class="headerlink" title="Java的生态"></a>Java的生态</h1><p>JVM屏蔽了不同平台底层的硬件差异和操作系统的API差异，提供了统一的运行环境。<br>所以，只要符合JVM虚拟机字节码规范的字节码文件，都能运行在JVM虚拟机上。<br>除了Java语言本身以外，还有其他基于JVM的语言，比如Kotlin、Scala、Groovy等。<br>这些基于JVM的语言实现了自己的语法，最终通过编译器都编译成了JVM可以执行都字节码。<br>如果学过编译原理，你也可以重写编译器，实现一门自己的脚本语言，生成符合规范的字节码文件，就可以脱离Java语言本身的语法规则限制，依托于JVM的生态实现强大的功能。<br>在Java生态领域，已经不仅仅是Java语言本身了，比如知名的Elastic Search，就实现了DSL。<br>每当有个语言新秀想要取缔Java的霸主地位，并号称自己是”世界上最好的语言”的时候，最后却发现无法完全取代，因为Java的生态太庞大了，比如大数据的相关技术 Flink和Spark等。<br>每个语言都有自己的优劣，比如Java的JVM在云原生时代就显得不那么主流了，Java本身也在寻找变革和自己的方向，并且在多个方向做尝试。</p>
+<h1 id="Java到底是解释执行，还是编译执行？"><a href="#Java到底是解释执行，还是编译执行？" class="headerlink" title="Java到底是解释执行，还是编译执行？"></a>Java到底是解释执行，还是编译执行？</h1><blockquote>
+<p>“一次编写，到处运行”是Java语言的特性，这一重要特性依靠的是JVM虚拟机。</p>
+</blockquote>
+<p>JVM虚拟机通过读入字节码，将字节码解释成平台机器码进行执行。</p>
+<h2 id="那Java是解释执行吗？"><a href="#那Java是解释执行吗？" class="headerlink" title="那Java是解释执行吗？"></a>那Java是解释执行吗？</h2><p>不全是。也可以编译执行，直接执行机器码。 比如JIT即时编译技术，当一个方法被执行一定次数之后，就会被JIT编译成对应平台的机器码，下次执行时直接执行的就是平台机器码，不再是解释执行，前提条件是应用启动后需要进行成千上万次的预热。</p>
+<h2 id="那有没有不需要预热，直接就可以将Java代码编译成平台机器码的？"><a href="#那有没有不需要预热，直接就可以将Java代码编译成平台机器码的？" class="headerlink" title="那有没有不需要预热，直接就可以将Java代码编译成平台机器码的？"></a>那有没有不需要预热，直接就可以将Java代码编译成平台机器码的？</h2><p>有。比如在JDK9中加入的实验性特性AOT，可以提前把字节码编译成平台字节码，但是是以牺牲启动速度为代价的。</p>
+<p>编译成二进制执行，JDK9的实验性特性并不是唯一的途径，而且在JDK16中AOT相关工具已经被移除 <a href="https://openjdk.java.net/jeps/410" target="_blank" rel="noopener">JEP 410: Remove the Experimental AOT and JIT Compiler</a>。官方给的解释是用的人不多，维护AOT功能需要成本。<br>对于JIT和AOT来说，有更好的解决方案，就是<code>GraalVm</code>。</p>
+<h1 id="云原生时代，Java如何破局？"><a href="#云原生时代，Java如何破局？" class="headerlink" title="云原生时代，Java如何破局？"></a>云原生时代，Java如何破局？</h1><blockquote>
+<p>Java的一次编写,到处运行的优势，已经被容器技术削弱。</p>
+</blockquote>
+<p>云原生与Java的很多理念相悖。如果说微服务Java依托Spring Boot还能大行其道，那云原生就显得力不从心了。<br>云原生很重要的一点就是<code>原生</code>。推崇把程序编译成机器平台原生可执行的机器码,而不是通过虚拟机运行。<br>比如<code>Serverless</code>概念的<code>Faas</code>落地技术，函数即服务。推崇k8s在瞬间拉起N个服务执行，执行完成后关闭多余资源。<br>而Java这种依赖于JVM虚拟机的方式在快速启动和部署就没有优势了，而且包体积相对于其他原生语言来说也更加大和臃肿。<br>云原生的头牌语言是Go，可以编译成对应平台的机器码，外部依赖在编译时就已经构建好了，扔到服务器上就能直接运行。在资源节省上是Java所不能不及的。<br>Java依赖JVM动态生成字节码的技术，以及其他的很多黑魔法在云原生概念下都没有优势。</p>
+<p>如果Java去除了JVM虚拟机，那依托的JVM生态就很大一部分不可用。<br>并不是所有Java类库都能通过AOT提前编译成机器码的，比如Spring以及一些工具使用了动态字节码的技术在运行时修改的黑魔法就不能使用。</p>
+<p>云原生时代，Java也在寻找变革，并且提出了实践项目<br><img src="/eb8103ec/future.png" title="future"></p>
+<p>有关云原生的思考，推荐周志明的<a href="https://www.infoq.cn/article/rqfww2r2zpyqiolc1wbe" target="_blank" rel="noopener">云原生时代，Java 的危与机</a></p>
+
       
     </div>
 
@@ -490,8 +539,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -631,6 +689,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Java平台的组成部分"><span class="nav-number">1.</span> <span class="nav-text">Java平台的组成部分</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Java语言"><span class="nav-number">2.</span> <span class="nav-text">Java语言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Java的生态"><span class="nav-number">3.</span> <span class="nav-text">Java的生态</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Java到底是解释执行，还是编译执行？"><span class="nav-number">4.</span> <span class="nav-text">Java到底是解释执行，还是编译执行？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#那Java是解释执行吗？"><span class="nav-number">4.1.</span> <span class="nav-text">那Java是解释执行吗？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#那有没有不需要预热，直接就可以将Java代码编译成平台机器码的？"><span class="nav-number">4.2.</span> <span class="nav-text">那有没有不需要预热，直接就可以将Java代码编译成平台机器码的？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#云原生时代，Java如何破局？"><span class="nav-number">5.</span> <span class="nav-text">云原生时代，Java如何破局？</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
