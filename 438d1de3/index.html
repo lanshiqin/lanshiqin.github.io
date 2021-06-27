@@ -118,18 +118,27 @@
 
 
 
-  <meta name="description" content="编程是一种信仰">
+  <meta name="description" content="什么是字符集？什么是字符编码？他们之间有什么关系？软件开发中常见的 ASCII、GB2312、GBK、Unicode、UTF-8 这些大家都听说过，但是很多开发人员依然把字符集和字符编码混为一谈，搞不清概念。所以特别有必要在此梳理一下字符集和字符编码的概念以及他们之间的关系。">
 <meta name="keywords" content="蓝士钦">
 <meta property="og:type" content="article">
 <meta property="og:title" content="字符集和字符编码">
 <meta property="og:url" content="https://www.lanshiqin.com/438d1de3/index.html">
 <meta property="og:site_name" content="蓝士钦">
-<meta property="og:description" content="编程是一种信仰">
+<meta property="og:description" content="什么是字符集？什么是字符编码？他们之间有什么关系？软件开发中常见的 ASCII、GB2312、GBK、Unicode、UTF-8 这些大家都听说过，但是很多开发人员依然把字符集和字符编码混为一谈，搞不清概念。所以特别有必要在此梳理一下字符集和字符编码的概念以及他们之间的关系。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-06-21T14:48:32.071Z">
+<meta property="og:image" content="https://www.lanshiqin.com/438d1de3/ascii可显示字符.png">
+<meta property="og:image" content="https://www.lanshiqin.com/438d1de3/gb2312.png">
+<meta property="og:image" content="https://www.lanshiqin.com/438d1de3/GB18030_1.png">
+<meta property="og:image" content="https://www.lanshiqin.com/438d1de3/GB18030_2.png">
+<meta property="og:image" content="https://www.lanshiqin.com/438d1de3/GB18030_3.png">
+<meta property="og:image" content="https://www.lanshiqin.com/438d1de3/GB18030_4.png">
+<meta property="og:image" content="https://www.lanshiqin.com/438d1de3/GB18030_5.png">
+<meta property="og:image" content="https://www.lanshiqin.com/438d1de3/UTF8.png">
+<meta property="og:updated_time" content="2021-06-27T14:47:13.817Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="字符集和字符编码">
-<meta name="twitter:description" content="编程是一种信仰">
+<meta name="twitter:description" content="什么是字符集？什么是字符编码？他们之间有什么关系？软件开发中常见的 ASCII、GB2312、GBK、Unicode、UTF-8 这些大家都听说过，但是很多开发人员依然把字符集和字符编码混为一谈，搞不清概念。所以特别有必要在此梳理一下字符集和字符编码的概念以及他们之间的关系。">
+<meta name="twitter:image" content="https://www.lanshiqin.com/438d1de3/ascii可显示字符.png">
 
 
 
@@ -369,6 +378,22 @@
             
 
             
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2021-06-27 22:47:13" itemprop="dateModified" datetime="2021-06-27T22:47:13+08:00">2021-06-27</time>
+              
+            
           </span>
 
           
@@ -407,7 +432,51 @@
       
 
       
-        
+        <p>什么是字符集？什么是字符编码？他们之间有什么关系？<br>软件开发中常见的 ASCII、GB2312、GBK、Unicode、UTF-8 这些大家都听说过，但是很多开发人员依然把字符集和字符编码混为一谈，搞不清概念。所以特别有必要在此梳理一下字符集和字符编码的概念以及他们之间的关系。<br><a id="more"></a></p>
+<h1 id="字符集"><a href="#字符集" class="headerlink" title="字符集"></a>字符集</h1><p>日常使用的数字、字母、文字、标点符号，图形符号等都称作字符。由很多个字符组成的集合叫做<code>字符集</code>。<br>可以人为的根据某个规则将一些符号归纳为一组集合，这些文字符号的集合就称为一个字符集。</p>
+<h1 id="字符编码"><a href="#字符编码" class="headerlink" title="字符编码"></a>字符编码</h1><p>计算机底层使用的是二进制运算，所有的数据也是以二进制进行处理和传输。<br>为了让计算机能够识别和处理人类的文字、符号、数字等，就需要一个转换规则，把人类的字符转换成计算机认识的二进制，也就是0和1。这个转换规则称为<code>字符编码</code>。</p>
+<h1 id="ASCII"><a href="#ASCII" class="headerlink" title="ASCII"></a>ASCII</h1><blockquote>
+<p>American Standard Code for Information Interchange (美国信息交换标准代码)</p>
+</blockquote>
+<h2 id="ASCII字符集"><a href="#ASCII字符集" class="headerlink" title="ASCII字符集"></a>ASCII字符集</h2><p>由于计算机最早由美国人发明，所以只需要让计算机认识英文字符即可，于是美国人就定义了一组叫做ASCII的字符集。<br>ASCII包含可显示字符（大小写英文字母、阿拉伯数字、西文符号）和控制字符（回车、换行等）。</p>
+<h2 id="ASCII字符编码"><a href="#ASCII字符编码" class="headerlink" title="ASCII字符编码"></a>ASCII字符编码</h2><p>划分好了字符集后，就需要定制对应的转换规则。<br>ASCII字符编码规则使用8位表示一个字符，总共有256个字符，下图是ASCII的部分码表。</p>
+<img src="/438d1de3/ascii可显示字符.png" title="ascii可显示字符">
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><p>ASCII的局限在于只能显示26个基本拉丁字母、阿拉伯数字和英式标点符号。计算机发展至今，仅支持现代美国英语是不够的。世界上还有其他国家的语言字符，所以现代软件一般都使用后面提到的Unicode字符集。</p>
+<h1 id="GB2312"><a href="#GB2312" class="headerlink" title="GB2312"></a>GB2312</h1><blockquote>
+<p><a href="http://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=5664A728BD9D523DE3B99BC37AC7A2CC" target="_blank" rel="noopener">GB/T 2312-1980, 信息交换用汉字编码字符集-基本集</a></p>
+</blockquote>
+<h2 id="GB2312字符集"><a href="#GB2312字符集" class="headerlink" title="GB2312字符集"></a>GB2312字符集</h2><p>计算机普及到中国后，为了让计算机能显示中文，我们也必须制定一套字符集。<br>国家标准总局于1980年发布了<code>中华人民共和国国家标准简体中文字符集</code>，全称《信息交换用汉字编码字符集·基本集》。<a href="http://c.gb688.cn/bzgk/gb/showGb?type=online&amp;hcno=5664A728BD9D523DE3B99BC37AC7A2CC" target="_blank" rel="noopener">GB 2312-80</a><br>GB2312字符集标准共收录6763个汉字，其中一级汉字3755个，二级汉字3008个；同时收录了包括拉丁字母、希腊字母、日文平假名及片假名字母、俄语西里尔字母在内的682个字符。</p>
+<h2 id="GB2312字符编码"><a href="#GB2312字符编码" class="headerlink" title="GB2312字符编码"></a>GB2312字符编码</h2><p>规划了GB2312字符集后，需要制定对应的编码规则以便让计算机能够进行处理和转换，<code>GB2312字符集</code>对应的字符编码为<code>GB2312字符编码</code>。<br>GB2312字符编码兼容了ASCII字符编码的前127个字符，从127个字符之后开始每一个图形字符都采用两个字节表示。在ASCII里本来就有的数字、标点、字母都重新编了两个字节长的编码，这就是常说的“全角”字符，而原来在127号以下的那些字符就叫”半角“字符。以下是GB2312字符编码部分码表。</p>
+<img src="/438d1de3/gb2312.png" title="gb2312">
+<p>是不是很像谍战片里发电报的密文？字符编码就像密文对应的密码本，有了字符编码，计算机对应的字符处理程序才能根据对应的字符编码对字符进行处理。</p>
+<h1 id="GBK"><a href="#GBK" class="headerlink" title="GBK"></a>GBK</h1><blockquote>
+<p>GB2312的扩展</p>
+</blockquote>
+<h2 id="GBK字符集"><a href="#GBK字符集" class="headerlink" title="GBK字符集"></a>GBK字符集</h2><p>由于GB2312字符集只包含了常见的简体汉字，不包含繁体字和一些罕见字，为了支持这些字符，行业推出了GBK字符集标准。<br>GBK字符集是GB2312字符集的补充，K表示对GB2312的扩展，这个字符集纳入了对繁体汉字和罕见字符的支持。</p>
+<h2 id="GBK字符编码"><a href="#GBK字符编码" class="headerlink" title="GBK字符编码"></a>GBK字符编码</h2><p>GBK字符编码与GB2312字符编码方式完全相同，只是对GB2312进行了扩展。<br>GBK是一个行业标准（非国家标准），GBK曾经是由国家技术监督局标准化司公布的“技术规范指导性文件”。</p>
+<h1 id="GB18030"><a href="#GB18030" class="headerlink" title="GB18030"></a>GB18030</h1><blockquote>
+<p>信息技术 中文编码字符集 <a href="http://c.gb688.cn/bzgk/gb/showGb?type=online&amp;hcno=C344D8D120B341A8DD328954A9B27A99" target="_blank" rel="noopener">GB18030-2005</a></p>
+</blockquote>
+<p>GB18030总共有两套标准<br><a href="http://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=4F885660EB8B3AC463C2ED336DB3B67B" target="_blank" rel="noopener">GB18030-2000</a> 2000年发布，在GBK基础上增加了CJK统一汉字扩充A的汉字，为GBK的代替版本。现已废止。<br><a href="http://c.gb688.cn/bzgk/gb/showGb?type=online&amp;hcno=C344D8D120B341A8DD328954A9B27A99" target="_blank" rel="noopener">GB18030-2005</a> 2005年发布，在GB18030-2000基础上增加了CJK统一汉字扩充B的汉字。现行版本。</p>
+<h2 id="GB18030字符集"><a href="#GB18030字符集" class="headerlink" title="GB18030字符集"></a>GB18030字符集</h2><p>随着计算机在中国的逐步发展，国家对一些汉字字符集也进行了一些修正，纳入了少数民族的文字符号和一些日韩汉字。<br>GB18030标准向下与国家标准GB2312信息处理交换码所对应的内码兼容。在字汇上支持GB13000的全部中、日、韩（CJK）统一汉字（包括CJK统一汉字扩充Ａ、CJK统一汉字扩充Ｂ）字符和我国部分少数民族文字的字符。</p>
+<h2 id="GB18030字符编码"><a href="#GB18030字符编码" class="headerlink" title="GB18030字符编码"></a>GB18030字符编码</h2><p>采用单字节、双字节或四字节对字符编码。任何一个字节均由八位二进制位串组成，任何一个八位的值均由0x00至0xFF的十六进制记数法表示。凡数字前标有0x的表示采用十六进制，未标有0x的表示采用十进制。单字节部分采用GB/T11383-1989的编码结构与规则，使用0x00至0x7F码位。双字节部分采用两个八位二进制位串表示一个字符，其首字节码位从0x81至0xFE，尾字节码位分别是0x40至0x7E和0x80至0xFE。四字节部分采用GB/T11383-1989未采用的0x30到0x39作为对双字节编码扩充的后缀。这样扩充的四字节编码，其范围为0x81308130到0xFE39FE39。</p>
+<img src="/438d1de3/GB18030_1.png" title="GB18030_1">
+<img src="/438d1de3/GB18030_2.png" title="GB18030_2">   
+<p>单字节部分的码位分配<br><img src="/438d1de3/GB18030_3.png" title="GB18030_3"><br>双字节部分的码位<br><img src="/438d1de3/GB18030_4.png" title="GB18030_4"><br>四字节部分的码位分配收录了汉字和一部分我国少数民族文字<br><img src="/438d1de3/GB18030_5.png" title="GB18030_5"><br>详细的编码规则可查阅国家标准化管理委员会发布的<a href="http://c.gb688.cn/bzgk/gb/showGb?type=online&amp;hcno=C344D8D120B341A8DD328954A9B27A99" target="_blank" rel="noopener">GB18030-2005</a> </p>
+<h1 id="Unicode"><a href="#Unicode" class="headerlink" title="Unicode"></a>Unicode</h1><blockquote>
+<p>统一码，编码了世界上大部分的文字系统。</p>
+</blockquote>
+<p>除了中国以外，世界上的其他国家在计算机领域也在同步发展，每个国家都定制了自己的字符集。<br>随着互联网的发展，计算机之间的信息传输交互由于编码的不同，出现了乱码无法解析等现象。<br>那么有没有一套收录全世界各个国家名族的所有字符的字符集呢？答案是肯定的。</p>
+<h2 id="Unicode字符集"><a href="#Unicode字符集" class="headerlink" title="Unicode字符集"></a>Unicode字符集</h2><p>为了全世界的计算机能够统一标准的处理字符，<a href="https://home.unicode.org/" target="_blank" rel="noopener">Unicode联盟</a>制定了一套统一的文字编码系统Unicode。<br>Unicode联盟是统筹Unicode发展的非营利组织，有来自多个国家政府和各大软件商的代表参与。Unicode联盟积极与各标准制订机构合作，包括国际标准化组织（ISO）、国际电工委员会（IEC）、万维网联盟（W3C）、互联网工程工作小组（IETF）和欧洲计算机制造协会（ECMA）等。</p>
+<p>Unicode字符集每年都在修订和更新中，持续不断地纳入新的文字和字符。</p>
+<h2 id="Unicode字符编码"><a href="#Unicode字符编码" class="headerlink" title="Unicode字符编码"></a>Unicode字符编码</h2><p>Unicode编码系统可分为编码方式和实现方式两个层次。</p>
+<h2 id="编码方式"><a href="#编码方式" class="headerlink" title="编码方式"></a>编码方式</h2><p>Unicode字符编码包含了17个平面，我们常用的英文、文字、标点符号的编码基本覆盖在平面0，这个平面目前使用16位的编码空间，也就是每个字符占用2个字节，但是Unicode字符编码不是必须采用2个字节编码的，最长可以使用4个字节编码，也就是32位，理论上能表示2^32个字符，覆盖一切语言所用的符号。</p>
+<h3 id="Unicode编码的缺点"><a href="#Unicode编码的缺点" class="headerlink" title="Unicode编码的缺点"></a>Unicode编码的缺点</h3><p>Unicdoe编码的优点是能覆盖世界上任何一种语言符号，但是缺点也很明细，常用的文字字符采用2个字节16位的编码，在进行字符存储和网络传输时消耗的资源是比较多的。<br>比如一个仅包含7位ASCII字符的Unicode文件，每个字符都用2个字节进行Unicode编码传输，第一个字节的前8位始终为0，就造成了很大的浪费。</p>
+<h2 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h2><p>Unicode的实现方式不同于编码方式。一个字符的Unicode编码确定。但是在实际传输过程中，由于不同系统平台的设计不一定一致，以及出于节省空间的目的，对Unicode编码的实现方式有所不同。为了节省存储空间和提高网络传输效率，制定了Unicode转换格式（Unicode Transformation Format），简称为UTF。<br>UTF-32、UTF-16、UTF-8等都是为了转换Unicode码所制定的各种转换方案的具体实现。</p>
+<h4 id="UTF-8"><a href="#UTF-8" class="headerlink" title="UTF-8"></a>UTF-8</h4><p>UTF-8编码规则采变长字节进行编码<br><img src="/438d1de3/UTF8.png" title="UTF8"><br>在ASCII码的范围用一个字节表示，当文件中只有ASCII码时，存储的文件都为一个字节，读写都能和以前的ASCII文件兼容。</p>
+<p>文件中如果有大于ASCII码范围的字符，就会由上图所示的，第一字节的前几位表示该unicode字符的长度，比如110xxxxx前三位的二进制表示告诉我们这是个2Byte的Unicode字符；1110xxxx是个三位的Unicode字符，依此类推；xxx的位置由字符编码数的二进制表示的位填入。越靠右的x具有越少的特殊意义。只用最短的那个足够表达一个字符编码数的多字节串。</p>
+<p>Unicode字符集规定的标准编码方案是UCS-2（UTF-16），用两个字节表示一个Unicode字符。比如在JVM规范中明确说明了java的char类型使用的编码方案是UTF-16。除此之外Unicode的实现方式还包括UTF-7、Punycode、CESU-8、SCSU、UTF-32等。</p>
+
       
     </div>
 
@@ -490,8 +559,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -631,6 +709,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#字符集"><span class="nav-number">1.</span> <span class="nav-text">字符集</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#字符编码"><span class="nav-number">2.</span> <span class="nav-text">字符编码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ASCII"><span class="nav-number">3.</span> <span class="nav-text">ASCII</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ASCII字符集"><span class="nav-number">3.1.</span> <span class="nav-text">ASCII字符集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ASCII字符编码"><span class="nav-number">3.2.</span> <span class="nav-text">ASCII字符编码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#缺点"><span class="nav-number">3.2.1.</span> <span class="nav-text">缺点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GB2312"><span class="nav-number">4.</span> <span class="nav-text">GB2312</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#GB2312字符集"><span class="nav-number">4.1.</span> <span class="nav-text">GB2312字符集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GB2312字符编码"><span class="nav-number">4.2.</span> <span class="nav-text">GB2312字符编码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GBK"><span class="nav-number">5.</span> <span class="nav-text">GBK</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#GBK字符集"><span class="nav-number">5.1.</span> <span class="nav-text">GBK字符集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GBK字符编码"><span class="nav-number">5.2.</span> <span class="nav-text">GBK字符编码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GB18030"><span class="nav-number">6.</span> <span class="nav-text">GB18030</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#GB18030字符集"><span class="nav-number">6.1.</span> <span class="nav-text">GB18030字符集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GB18030字符编码"><span class="nav-number">6.2.</span> <span class="nav-text">GB18030字符编码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Unicode"><span class="nav-number">7.</span> <span class="nav-text">Unicode</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Unicode字符集"><span class="nav-number">7.1.</span> <span class="nav-text">Unicode字符集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Unicode字符编码"><span class="nav-number">7.2.</span> <span class="nav-text">Unicode字符编码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编码方式"><span class="nav-number">7.3.</span> <span class="nav-text">编码方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Unicode编码的缺点"><span class="nav-number">7.3.1.</span> <span class="nav-text">Unicode编码的缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现方式"><span class="nav-number">7.4.</span> <span class="nav-text">实现方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#UTF-8"><span class="nav-number">7.4.0.1.</span> <span class="nav-text">UTF-8</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
